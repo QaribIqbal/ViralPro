@@ -1,21 +1,85 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #f5f7fb;
+  /* Primary brand */
+  --primary: #0f172a;
+  --primary-foreground: #f8fafc;
+
+  /* CTA / Trust Blue */
+  --cta: #2563eb;
+  --cta-hover: #1d4ed8;
+  --cta-foreground: #ffffff;
+
+  /* AI Accent Cyan — sparingly */
+  --ai-accent: #22d3ee;
+  --ai-accent-muted: #ecfeff;
+
+  /* Backgrounds */
+  --bg: #f8fafc;
+  --bg-alt: #eff6ff;
+
+  /* Surfaces */
   --surface: #ffffff;
-  --surface-muted: #f8fafc;
-  --text: #111827;
+  --surface-muted: #f3f4f6;
+
+  /* Text */
+  --text: #0f172a;
   --text-muted: #64748b;
-  --border: #e2e8f0;
+  --text-subtle: #94a3b8;
+
+  /* Borders & Dividers */
+  --border: #d1d5db;
+  --border-strong: #9ca3af;
+
+  /* Status / Semantic */
+  --success: #10b981;
+  --success-muted: #ecfdf5;
+  --warning: #f59e0b;
+  --warning-muted: #fffbeb;
+  --destructive: #ef4444;
+  --destructive-muted: #fef2f2;
+  --neutral: #64748b;
 }
 
 .dark {
-  --bg: #0b1020;
-  --surface: #111827;
-  --surface-muted: #1f2937;
-  --text: #e5e7eb;
+  /* Primary brand — stays navy in dark mode */
+  --primary: #0f172a;
+  --primary-foreground: #f8fafc;
+
+  /* CTA / Trust Blue */
+  --cta: #60a5fa;
+  --cta-hover: #3b82f6;
+  --cta-foreground: #0f172a;
+
+  /* AI Accent Cyan */
+  --ai-accent: #67e8f9;
+  --ai-accent-muted: #164e63;
+
+  /* Backgrounds */
+  --bg: #0f172a;
+  --bg-alt: #020617;
+
+  /* Surfaces */
+  --surface: #111c31;
+  --surface-muted: #1a2740;
+
+  /* Text */
+  --text: #f8fafc;
   --text-muted: #94a3b8;
-  --border: #334155;
+  --text-subtle: #64748b;
+
+  /* Borders & Dividers */
+  --border: #1e293b;
+  --border-strong: #334155;
+
+  /* Status / Semantic */
+  --success: #34d399;
+  --success-muted: #064e3b;
+  --warning: #fbbf24;
+  --warning-muted: #78350f;
+  --destructive: #f87171;
+  --destructive-muted: #7f1d1d;
+  --neutral: #94a3b8;
 }
 
 * {
@@ -28,9 +92,135 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* Smooth transitions for theme switching */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Override transitions on elements that have their own */
+button,
+a,
+input,
+textarea,
+select {
+  transition-property: background-color, border-color, color, box-shadow, opacity, transform;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes vp-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes vp-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes vp-shine {
+  0% {
+    transform: translateX(-120%);
+  }
+  60%,
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+.vp-reveal {
+  opacity: 0;
+  animation: vp-fade-up 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.vp-delay-1 {
+  animation-delay: 0.08s;
+}
+
+.vp-delay-2 {
+  animation-delay: 0.16s;
+}
+
+.vp-delay-3 {
+  animation-delay: 0.24s;
+}
+
+.vp-float {
+  animation: vp-float 6s ease-in-out infinite;
+}
+
+.vp-card-hover {
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vp-card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 34px -22px rgba(15, 23, 42, 0.45);
+  border-color: color-mix(in srgb, var(--cta) 42%, var(--border));
+}
+
+.vp-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.vp-shine::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -35%;
+  width: 25%;
+  height: 140%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.48) 48%,
+    transparent 100%
+  );
+  transform: translateX(-120%);
+}
+
+.vp-shine:hover::after {
+  animation: vp-shine 0.95s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-reveal,
+  .vp-float,
+  .vp-shine::after {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .vp-card-hover:hover {
+    transform: none;
+  }
 }

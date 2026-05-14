@@ -8,6 +8,11 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 export const metadata: Metadata = {
   title: "ViralPro",
   description: "ViralPro content platform",
+  icons: {
+    icon: "/viralpro-logo.png",
+    shortcut: "/viralpro-logo.png",
+    apple: "/viralpro-logo.png",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

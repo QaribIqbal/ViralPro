@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -48,10 +49,19 @@ export default function SignInPage() {
   return (
     <main className="grid min-h-screen bg-[var(--bg)] lg:grid-cols-2">
       <section className="relative flex flex-col justify-center px-8 py-10 sm:px-16">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(79,70,229,0.2),transparent_40%),radial-gradient(circle_at_60%_10%,rgba(14,165,233,0.12),transparent_35%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(37,99,235,0.18),transparent_40%),radial-gradient(circle_at_60%_10%,rgba(34,211,238,0.12),transparent_35%)]" />
         <div className="relative max-w-xl">
           <div className="mb-8 flex items-center gap-3">
-            <div className="h-11 w-11 rounded-xl bg-indigo-500/90" />
+            <div className="h-11 w-11 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+              <Image
+                src="/viralpro-logo.png"
+                alt="ViralPro logo"
+                width={44}
+                height={44}
+                className="h-full w-full object-cover"
+                priority
+              />
+            </div>
             <span className="text-3xl font-semibold text-[var(--text)]">ViralPro</span>
           </div>
 

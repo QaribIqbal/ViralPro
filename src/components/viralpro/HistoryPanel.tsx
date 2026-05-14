@@ -18,8 +18,8 @@ export function HistoryPanel({
           onClick={() => onSelect(item.id)}
           className={`w-full rounded-xl border p-3 text-left transition ${
             activeId === item.id
-              ? "border-slate-900 bg-slate-900 text-white dark:bg-indigo-500 dark:border-indigo-500"
-              : "border-[var(--border)] bg-[var(--surface)] hover:border-slate-400"
+              ? "border-[var(--cta)] bg-[var(--cta)] text-white"
+              : "border-[var(--border)] bg-[var(--surface)] text-[var(--text)] hover:border-[var(--cta)]/40"
           }`}
         >
           <p className="line-clamp-1 text-sm font-medium">{item.title}</p>

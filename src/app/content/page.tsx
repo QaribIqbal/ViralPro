@@ -26,7 +26,7 @@ export default function ContentPage() {
                   <td className="px-4 py-3 text-[var(--text)]">{item.title}</td>
                   <td className="px-4 py-3 text-[var(--text-muted)]">{item.keyword}</td>
                   <td className="px-4 py-3">
-                    <span className="rounded-full bg-indigo-500/10 px-2 py-1 text-xs text-indigo-500">{item.status}</span>
+                    <span className="rounded-full bg-[var(--cta)]/10 px-2 py-1 text-xs text-[var(--cta)]">{item.status}</span>
                   </td>
                   <td className="px-4 py-3 text-[var(--text-muted)]">{item.updatedAt}</td>
                 </tr>

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:n8n-env": "node scripts/check-n8n-env.mjs"
   },
   "dependencies": {
     "firebase": "^12.13.0",

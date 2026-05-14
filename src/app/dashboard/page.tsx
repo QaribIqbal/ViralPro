@@ -14,7 +14,7 @@ export default function DashboardPage() {
           <Card key={metric.id} className="p-5">
             <p className="text-sm text-[var(--text-muted)]">{metric.label}</p>
             <p className="mt-2 text-3xl font-semibold text-[var(--text)]">{metric.value}</p>
-            <p className="mt-1 text-xs text-emerald-500">{metric.change}</p>
+            <p className="mt-1 text-xs text-[var(--success)]">{metric.change}</p>
           </Card>
         ))}
       </div>
