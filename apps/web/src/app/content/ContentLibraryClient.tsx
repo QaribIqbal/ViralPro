@@ -305,11 +305,10 @@ function ArticleLibraryPanel({
               <motion.article
                 key={article.id}
                 layout
-                className={`group rounded-[24px] border p-3 transition ${
-                  selected
-                    ? "border-cyan-300/35 bg-cyan-300/[0.08] shadow-[0_18px_42px_-30px_rgba(34,211,238,0.72)]"
-                    : "border-white/10 bg-white/[0.045] hover:border-white/18 hover:bg-white/[0.07]"
-                }`}
+                className={`group rounded-[24px] border p-3 transition ${selected
+                  ? "border-cyan-300/35 bg-cyan-300/[0.08] shadow-[0_18px_42px_-30px_rgba(34,211,238,0.72)]"
+                  : "border-white/10 bg-white/[0.045] hover:border-white/18 hover:bg-white/[0.07]"
+                  }`}
                 whileHover={{ y: -3, scale: 1.006 }}
                 transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
               >
@@ -425,7 +424,7 @@ function ArticleMetaPanel({
         </div>
 
         <div className="flex shrink-0 flex-wrap gap-2">
-          <Button type="button" className="h-10 gap-2 rounded-full bg-cyan-300 px-4 text-slate-950 hover:bg-cyan-200" onClick={onOpen}>
+          <Button type="button" className="h-10 gap-2 rounded-full bg-cyan-500 px-4 text-slate-950 hover:bg-cyan-400" onClick={onOpen}>
             <Icon name="focus" />
             Focus
           </Button>
@@ -583,11 +582,10 @@ function FocusArticleModal({
                     <button
                       type="button"
                       onClick={() => setExportOpen(!exportOpen)}
-                      className={`hidden h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-all sm:inline-flex ${
-                        exportOpen
-                          ? "border-cyan-300/40 bg-cyan-300/10 text-cyan-100"
-                          : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/[0.1]"
-                      }`}
+                      className={`hidden h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-all sm:inline-flex ${exportOpen
+                        ? "border-cyan-300/40 bg-cyan-300/10 text-cyan-100"
+                        : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/[0.1]"
+                        }`}
                     >
                       Export <Icon name="chevron" className={`h-3.5 w-3.5 transition-transform duration-200 ${exportOpen ? "rotate-180" : ""}`} />
                     </button>
