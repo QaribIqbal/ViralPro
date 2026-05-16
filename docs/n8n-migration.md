@@ -21,6 +21,7 @@ After migration, update only environment variables:
 - `N8N_BLOG_GENERATE_WEBHOOK_URL=https://your-n8n-cloud-domain/webhook/viralpro-blog-generate`
 - `N8N_KEYWORD_RESEARCH_WEBHOOK_URL=https://your-n8n-cloud-domain/webhook/viralpro-keyword-research`
 - `N8N_WEBHOOK_SECRET=your-shared-secret`
+- `N8N_WEBHOOK_URL=https://your-n8n-cloud-domain/webhook/viralpro-image-generate`
 
 No frontend code changes are required.
 

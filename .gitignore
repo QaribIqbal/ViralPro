@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/apps/**/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -15,6 +16,7 @@
 
 # next.js
 /.next/
+/apps/**/.next/
 /out/
 
 # production
@@ -23,6 +25,7 @@
 # misc
 .DS_Store
 *.pem
+/apps/**/.wrangler/
 
 # debug
 npm-debug.log*
@@ -30,8 +33,18 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files
+.env
+.env.local
+.dev.vars
+apps/**/.env
+apps/**/.env.local
+apps/**/.dev.vars
+!.env.example
+!.env.local.example
+!apps/**/.env.example
+!apps/**/.env.local.example
+!apps/**/.dev.vars.example
 
 # vercel
 .vercel

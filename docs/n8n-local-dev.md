@@ -10,6 +10,7 @@ Local n8n base URL:
 - `http://192.168.1.8:5678/webhook/viralpro-image-generate`
 - `http://192.168.1.8:5678/webhook/viralpro-blog-generate`
 - `http://192.168.1.8:5678/webhook/viralpro-keyword-research`
+- `http://192.168.1.8:5678/webhook/viralpro-image-generate` (set as `N8N_WEBHOOK_URL` for image route)
 
 ## LAN/Wi-Fi Access Note
 When testing from another device on same network, use local IP (`192.168.1.8`) instead of `localhost`.

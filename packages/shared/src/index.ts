@@ -1,0 +1,1 @@
+export const API_RESPONSE_VERSION = "2026-05-15";
