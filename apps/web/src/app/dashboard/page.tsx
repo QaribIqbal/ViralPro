@@ -124,7 +124,7 @@ export default function DashboardPage() {
       <Topbar title="Overview" subtitle="Monitor your usage and content library at a glance" />
       <div className="space-y-6 p-4 sm:p-6">
         {error ? <p className="text-sm text-rose-500">{error}</p> : null}
-        <div className="vp-glass-panel relative overflow-hidden rounded-[28px] border border-[var(--border)] p-7 sm:p-9">
+        <div className="vp-reveal vp-glass-panel relative overflow-hidden rounded-[28px] border border-[var(--border)] p-7 sm:p-9">
           <div className="pointer-events-none absolute inset-y-0 right-0 w-[30%] bg-[radial-gradient(circle_at_70%_50%,var(--cta),transparent_60%)] opacity-[0.08]" />
           <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_320px]">
             <div>
@@ -150,13 +150,25 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="hidden h-[250px] rounded-3xl border border-[var(--border)] bg-[var(--cta-soft,var(--cta))]/6 p-6 lg:block">
-              <div className="mx-auto mt-3 flex h-48 w-48 items-center justify-center rounded-full border border-[var(--ai-accent)]/20 bg-[var(--ai-accent)]/8">
-                <svg className="h-16 w-16 text-[var(--ai-accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                  <path d="M7 3h7l5 5v13H7z" />
-                  <path d="M14 3v5h5" />
-                  <path d="M10 13h6M10 17h6" />
-                </svg>
+            <div className="hidden relative h-[250px] overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface-muted)] lg:block">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[var(--cta)]/10 to-[var(--ai-accent)]/10" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="relative flex h-32 w-32 items-center justify-center">
+                  <div className="absolute inset-0 animate-spin rounded-full border-[1.5px] border-dashed border-[var(--cta)]/30" style={{ animationDuration: "12s" }} />
+                  <div className="absolute inset-3 animate-spin rounded-full border-[1.5px] border-dashed border-[var(--ai-accent)]/40" style={{ animationDuration: "16s", animationDirection: "reverse" }} />
+                  <div className="vp-idle-pulse flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-[var(--cta)] to-[var(--ai-accent)] text-white shadow-[0_0_30px_rgba(109,40,217,0.3)]">
+                    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M9.5 8A2.5 2.5 0 0 1 12 5.5 2.5 2.5 0 0 1 14.5 8 2.5 2.5 0 0 1 17 10.5v3A2.5 2.5 0 0 1 14.5 16 2.5 2.5 0 0 1 12 18.5 2.5 2.5 0 0 1 9.5 16 2.5 2.5 0 0 1 7 13.5v-3A2.5 2.5 0 0 1 9.5 8z" />
+                      <path d="M10 11h4M10 14h4" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute bottom-5 left-0 right-0 flex justify-center">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface)]/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--text)] backdrop-blur-md shadow-sm">
+                  <span className="vp-badge-pulse h-1.5 w-1.5 rounded-full bg-[var(--ai-accent)]" />
+                  Engine Active
+                </span>
               </div>
             </div>
           </div>
@@ -247,7 +259,7 @@ export default function DashboardPage() {
               </div>
               <div className="px-6 py-8 text-center">
                 <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-[var(--success)]/20 bg-[var(--success)]/8 px-4 py-1.5 text-sm font-semibold text-[var(--success)]">
-                  <span className="h-2.5 w-2.5 rounded-full bg-[var(--success)]" />
+                  <span className="vp-badge-pulse h-2.5 w-2.5 rounded-full bg-[var(--success)]" />
                   All Systems Operational
                 </div>
                 <p className="mx-auto mt-5 max-w-md text-[13px] leading-relaxed text-[var(--text-muted)]">

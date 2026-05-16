@@ -218,22 +218,25 @@ export function ImageStudio() {
   };
 
   return (
-    <Stagger className="space-y-6 p-4 sm:p-6">
+    <Stagger className="mx-auto max-w-7xl space-y-7 p-4 sm:p-6 lg:p-8">
       <StaggerItem>
-        <Card className="relative overflow-hidden p-5 vp-ai-border">
+        <div className="relative overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7 shadow-sm">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[var(--ai-accent-muted)] to-transparent opacity-50" />
           <AiScanLine active={loading} />
-          <div className="relative flex flex-wrap items-start justify-between gap-4">
-            <div>
+          <div className="relative z-10 flex flex-wrap items-start justify-between gap-6">
+            <div className="max-w-2xl">
               <PoweredByAiBadge>Powered by AI image generation</PoweredByAiBadge>
-              <h2 className="mt-3 text-lg font-semibold text-[var(--text)]">Visual Studio</h2>
-              <p className="mt-1 text-xs text-[var(--text)]">
-                Generate high-fidelity visual assets using advanced AI models.
+              <h2 className="mt-3 text-[28px] font-semibold leading-[1.18] tracking-tight text-[var(--text)] sm:text-[32px]">
+                Visual Studio
+              </h2>
+              <p className="mt-3 text-[15px] leading-relaxed text-[var(--text-muted)]">
+                Generate high-fidelity visual assets using advanced AI models for your content workflow.
               </p>
             </div>
             <AiStatus text={loading ? "Generating pixels..." : "Prompt engine online"} />
           </div>
 
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="relative z-10 mt-8 grid gap-6 md:grid-cols-2">
             <div className="md:col-span-2">
               <label className="mb-2 block text-sm font-medium text-[var(--text)]" htmlFor="image-prompt">
                 Visual Prompt
@@ -292,13 +295,13 @@ export function ImageStudio() {
 
           {error ? <p className="mt-3 text-sm text-rose-500">{error}</p> : null}
 
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <Button type="button" onClick={handleGenerateImage} disabled={loading || !prompt.trim()} className="shadow-[0_16px_44px_-22px_var(--cta)]">
+          <div className="relative z-10 mt-8 flex flex-wrap items-center gap-3">
+            <Button type="button" onClick={handleGenerateImage} disabled={loading || !prompt.trim()} className="h-12 rounded-full px-7 shadow-[0_16px_44px_-22px_var(--cta)]">
               {loading ? "Generating Visual..." : "Generate Visual"}
             </Button>
             {loading ? <AiStatus text="AI is scanning composition..." /> : null}
           </div>
-        </Card>
+        </div>
       </StaggerItem>
 
       <StaggerItem>

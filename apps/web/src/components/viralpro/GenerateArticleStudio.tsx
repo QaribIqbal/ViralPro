@@ -151,14 +151,14 @@ function Toggle({ checked, onChange, ariaLabel }: { checked: boolean; onChange: 
       aria-checked={checked}
       aria-label={ariaLabel}
       onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-9 w-[68px] items-center rounded-full border transition ${checked
+      className={`relative inline-flex h-7 w-12 items-center rounded-full border transition ${checked
         ? "border-[var(--cta)] bg-[var(--cta)]/25"
         : "border-[var(--border)] bg-[var(--surface-muted)]"
         }`}
     >
       <span
-        className={`inline-block h-7 w-7 rounded-full bg-[var(--primary)] shadow-[0_8px_18px_rgba(15,23,42,0.18)] transition-transform duration-200 ease-[var(--motion-ease-premium)] ${
-          checked ? "translate-x-9" : "translate-x-1"
+        className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200 ease-[var(--motion-ease-premium)] ${
+          checked ? "translate-x-6" : "translate-x-1"
         }`}
       />
     </button>
@@ -311,8 +311,9 @@ export function GenerateArticleStudio() {
         </div>
       </StaggerItem>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
         <StaggerItem>
+          <div className="sticky top-24 space-y-6">
           <Card className="rounded-[22px] border-[var(--border)] bg-[var(--surface)]/70 p-6 sm:p-7">
             <SectionHeader
               icon={<Icon name="edit" className="h-5 w-5" />}
@@ -411,9 +412,7 @@ export function GenerateArticleStudio() {
               </div>
             </div>
           </Card>
-        </StaggerItem>
 
-        <StaggerItem className="space-y-6">
           <Card className="rounded-[22px] border-[var(--border)] bg-[var(--surface)]/70 p-6 sm:p-7">
             <SectionHeader
               icon={<Icon name="settings" className="h-5 w-5" />}
@@ -543,6 +542,10 @@ export function GenerateArticleStudio() {
               />
             </div>
           </Card>
+          </div>
+        </StaggerItem>
+
+        <StaggerItem className="space-y-6">
 
           <Card className="rounded-[22px] border-[var(--border)] bg-[var(--surface)]/70 p-6 sm:p-7">
             <SectionHeader
@@ -593,6 +596,7 @@ export function GenerateArticleStudio() {
                   value={form.contentImageCount}
                   onChange={(e) => updateField("contentImageCount", Number(e.target.value))}
                   className="w-full cursor-pointer appearance-none rounded-lg accent-[var(--cta)]"
+                  style={{ "--range-fill": `${(form.contentImageCount / 5) * 100}%` } as CSSProperties}
                 />
               </div>
 

@@ -9,7 +9,7 @@ export default function SettingsPage() {
   return (
     <AppShell>
       <Topbar title="Settings" subtitle="Configure your integrations and workspace settings" />
-      <div className="grid gap-4 p-4 sm:grid-cols-3 sm:p-6">
+      <div className="vp-reveal grid gap-4 p-4 sm:grid-cols-3 sm:p-6">
         <Card className="p-6">
           <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">Active API Keys</h2>
           <p className="mt-3 text-3xl font-semibold">{settings.apiKeysConfigured}</p>

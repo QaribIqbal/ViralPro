@@ -228,7 +228,7 @@ function enhanceArticleImageFallback(root: HTMLElement | null) {
 
 function StatPill({ icon, children }: { icon: IconName; children: ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-medium text-slate-300">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-medium text-[var(--text)]">
       <Icon name={icon} className="h-3.5 w-3.5 text-[var(--ai-accent)]" />
       {children}
     </span>
@@ -238,7 +238,7 @@ function StatPill({ icon, children }: { icon: IconName; children: ReactNode }) {
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">{label}</span>
+      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">{label}</span>
       {children}
     </label>
   );
@@ -292,7 +292,7 @@ function ArticleLibraryPanel({
           ))
         ) : articles.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-[var(--border)] bg-[var(--surface-muted)] px-6 py-12 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--ai-accent)]/10 text-[var(--ai-accent)]">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--ai-accent)]/10 text-[var(--ai-accent)] vp-idle-pulse">
               <Icon name="file" className="h-5 w-5" />
             </div>
             <h3 className="text-base font-semibold text-[var(--text)]">Your library is empty</h3>

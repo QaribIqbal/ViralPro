@@ -9,7 +9,7 @@ export function PoweredByAiBadge({
       className={`inline-flex items-center gap-1.5 rounded-full border border-[var(--ai-accent)]/20 bg-[var(--ai-accent)]/10 px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-[var(--ai-badge-text)] shadow-sm ${className}`}
     >
       <span className="relative flex h-1.5 w-1.5">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--ai-accent)] opacity-75"></span>
+        <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--ai-accent)] vp-badge-pulse opacity-60"></span>
         <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--ai-accent)]"></span>
       </span>
       {children}
@@ -46,7 +46,7 @@ export function AiStatus({ text }: { text: string }) {
   return (
     <div className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1 text-[11px] font-medium text-[var(--text)] shadow-sm backdrop-blur-md">
       <span className="relative flex h-1.5 w-1.5">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--ai-accent)] opacity-75"></span>
+        <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--ai-accent)] vp-badge-pulse opacity-60"></span>
         <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--ai-accent)]"></span>
       </span>
       {text}

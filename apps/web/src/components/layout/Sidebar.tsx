@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import type { NavItem } from "@/server/domain/types";
 
 type SidebarIconName =
@@ -87,7 +88,7 @@ export function Sidebar() {
   }, []);
 
   return (
-    <aside className="relative z-20 m-3 flex w-auto flex-col rounded-3xl border border-[var(--border)] p-4 vp-glass-panel lg:m-4 lg:h-[calc(100vh-2rem)] lg:w-64 lg:p-5">
+    <aside className="relative z-20 m-3 flex w-auto flex-col rounded-3xl border border-[var(--border)] p-4 vp-glass-panel lg:m-4 lg:h-[calc(100vh-2rem)] lg:w-64 lg:p-5 lg:sticky lg:top-4">
       <div className="mb-6 flex items-center gap-3 px-2">
         <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-[10px] bg-[var(--cta)] shadow-sm">
           <Image
@@ -116,17 +117,24 @@ export function Sidebar() {
               href={item.href}
               className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium tracking-tight transition-all duration-200 ${
                 active
-                  ? "bg-[var(--cta)] text-[var(--cta-foreground)] shadow-sm"
+                  ? "text-[var(--cta-foreground)]"
                   : "text-[var(--text-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--text)]"
               }`}
             >
+              {active && (
+                <motion.div
+                  layoutId="sidebar-active"
+                  className="absolute inset-0 rounded-xl bg-[var(--cta)] shadow-sm"
+                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                />
+              )}
               <SidebarIcon
                 name={iconName || "dashboard"}
-                className={`h-4.5 w-4.5 shrink-0 transition-transform duration-200 ${
+                className={`relative z-10 h-4.5 w-4.5 shrink-0 transition-transform duration-200 ${
                   active ? "text-[var(--cta-foreground)]" : "text-[var(--text-muted)] group-hover:scale-105"
                 }`}
               />
-              <span>{item.label}</span>
+              <span className="relative z-10">{item.label}</span>
             </Link>
           );
         })}

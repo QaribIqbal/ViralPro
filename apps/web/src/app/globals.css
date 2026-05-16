@@ -214,6 +214,26 @@ select {
   }
 }
 
+@keyframes vp-badge-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes vp-idle-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 1;
+  }
+}
+
 
 @keyframes vp-float {
   0%,
@@ -328,8 +348,16 @@ select {
 .vp-focus-glow:focus,
 .vp-focus-glow:focus-visible {
   border-color: var(--cta);
-  box-shadow: 0 0 0 3px var(--cta-muted, rgba(0, 122, 255, 0.2));
+  box-shadow: 0 0 0 3px var(--cta-soft);
   outline: none;
+}
+
+.vp-badge-pulse {
+  animation: vp-badge-pulse 2.5s ease-in-out infinite;
+}
+
+.vp-idle-pulse {
+  animation: vp-idle-pulse 4s ease-in-out infinite;
 }
 
 .vp-input:hover {

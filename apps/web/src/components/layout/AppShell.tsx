@@ -4,7 +4,7 @@ import { NeuralBackdrop } from "@/components/ui/AiVisuals";
 
 export function AppShell({ children }: PropsWithChildren) {
   return (
-    <div className="relative min-h-screen min-h-[100dvh] overflow-hidden bg-transparent lg:flex">
+    <div className="relative min-h-screen min-h-[100dvh] bg-transparent lg:flex">
       <NeuralBackdrop />
       <Sidebar />
       <div className="relative z-10 flex-1 lg:pl-1">

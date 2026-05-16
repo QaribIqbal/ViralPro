@@ -190,9 +190,10 @@ export function OutputPanel({
             key="html"
             ref={articleRef}
             className="article-content vp-article-doc"
-            initial={false}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3, ease: [0.2, 0, 0, 1] }}
           >
             <div dangerouslySetInnerHTML={{ __html: normalizedHtml }} />
           </motion.article>
@@ -200,11 +201,11 @@ export function OutputPanel({
 
         {!loading && !normalizedHtml ? (
           isJson ? (
-            <motion.pre key="json" className="m-4 max-h-[600px] overflow-auto whitespace-pre-wrap break-words rounded-lg bg-[var(--bg)] p-4 text-xs text-[var(--text-muted)]" initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.pre key="json" className="m-4 max-h-[600px] overflow-auto whitespace-pre-wrap break-words rounded-lg bg-[var(--bg)] p-4 text-xs text-[var(--text-muted)]" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               <code>{output}</code>
             </motion.pre>
           ) : (
-            <motion.p key="text" className="px-5 py-4 whitespace-pre-line text-sm text-[var(--text-muted)]" initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>{output}</motion.p>
+            <motion.p key="text" className="px-5 py-4 whitespace-pre-line text-sm text-[var(--text-muted)]" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>{output}</motion.p>
           )
         ) : null}
         </AnimatePresence>

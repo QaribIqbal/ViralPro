@@ -10,7 +10,7 @@ export default function BillingPage() {
     <AppShell>
       <Topbar title="Billing" subtitle="Manage your subscription, view usage, and track upcoming renewals" />
       <div className="space-y-4 p-4 sm:p-6">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="vp-reveal grid gap-4 sm:grid-cols-3">
           <Card className="p-6">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">Current Plan</p>
             <p className="mt-3 text-2xl font-semibold text-[var(--text)]">{billing.plan}</p>
