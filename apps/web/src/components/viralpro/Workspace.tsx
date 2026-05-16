@@ -13,7 +13,7 @@ export function Workspace() {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [activeHistoryId, setActiveHistoryId] = useState("");
-  const [output, setOutput] = useState("Select a history item or generate a new article draft.");
+  const [output, setOutput] = useState("Choose an item from your history or create a new draft to get started.");
 
   useEffect(() => {
     void (async () => {
@@ -48,7 +48,7 @@ export function Workspace() {
   return (
     <div className="grid gap-6 p-4 sm:p-6 lg:grid-cols-[300px_1fr]">
       <Card className="p-4">
-        <h2 className="mb-3 text-base font-semibold text-[var(--text)]">Recent Articles</h2>
+        <h2 className="mb-3 text-base font-semibold text-[var(--text)]">Recent Drafts</h2>
         <HistoryPanel
           items={history}
           activeId={activeHistoryId}
@@ -62,31 +62,31 @@ export function Workspace() {
 
       <div className="space-y-6">
         <Card className="p-5">
-          <h2 className="text-base font-semibold text-[var(--text)]">Content Workspace</h2>
+          <h2 className="text-base font-semibold text-[var(--text)]">Editorial Workspace</h2>
           <p className="mt-1 text-sm text-[var(--text-muted)]">
-            API-ready module consuming backend demo objects.
+            Refine and manage your AI-generated content in real-time.
           </p>
 
           <div className="mt-5 space-y-4">
             <label className="block text-sm font-medium text-[var(--text)]" htmlFor="prompt">
-              Article Prompt
+              Writing Prompt
             </label>
             <Input
               id="prompt"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Write a detailed outline about local SEO for dentists"
+              placeholder="e.g., Best SEO strategies for dentists in 2026"
             />
             <div className="flex flex-wrap gap-3">
               <Button type="button" onClick={handleGenerate} disabled={loading}>
-                {loading ? "Generating..." : "Generate"}
+                {loading ? "Generating..." : "Start Writing"}
               </Button>
               <Button variant="secondary" type="button">
                 Save Draft
               </Button>
             </div>
             {activeHistory ? (
-              <p className="text-xs text-[var(--text-muted)]">Active history: {activeHistory.title}</p>
+              <p className="text-xs text-[var(--text-muted)]">Currently viewing: {activeHistory.title}</p>
             ) : null}
           </div>
         </Card>

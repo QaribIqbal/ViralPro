@@ -71,39 +71,39 @@ export default function DashboardPage() {
     () => [
       {
         id: "plan",
-        label: "User Plan",
+        label: "Current Plan",
         value: plan,
-        sub: "Current subscription tier",
+        sub: "Your active subscription",
         tone: "from-emerald-500/15 to-emerald-500/5 border-emerald-500/30",
       },
       {
         id: "articles-generated",
-        label: "Articles Generated",
+        label: "Articles Created",
         value: `${articlesGenerated}/${UI_LIMITS.articles}`,
-        sub: `${Math.max(UI_LIMITS.articles - articlesGenerated, 0)} remaining`,
+        sub: `${Math.max(UI_LIMITS.articles - articlesGenerated, 0)} available`,
         tone: "from-sky-500/15 to-sky-500/5 border-sky-500/30",
         progress: Math.min((articlesGenerated / UI_LIMITS.articles) * 100, 100),
       },
       {
         id: "images-generated",
-        label: "Images Generated",
+        label: "Images Created",
         value: `${imagesGenerated}/${UI_LIMITS.images}`,
-        sub: `${Math.max(UI_LIMITS.images - imagesGenerated, 0)} remaining`,
+        sub: `${Math.max(UI_LIMITS.images - imagesGenerated, 0)} available`,
         tone: "from-amber-500/15 to-amber-500/5 border-amber-500/30",
         progress: Math.min((imagesGenerated / UI_LIMITS.images) * 100, 100),
       },
       {
         id: "articles-total",
-        label: "Articles in Library",
+        label: "Content Library",
         value: `${totalArticles}`,
-        sub: "Saved content items",
+        sub: "Total articles created",
         tone: "from-violet-500/15 to-violet-500/5 border-violet-500/30",
       },
       {
         id: "images-total",
-        label: "Images in Library",
+        label: "Image Assets",
         value: `${totalImages}`,
-        sub: "Saved generated images",
+        sub: "Total visuals generated",
         tone: "from-fuchsia-500/15 to-fuchsia-500/5 border-fuchsia-500/30",
       },
     ],
@@ -112,7 +112,7 @@ export default function DashboardPage() {
 
   return (
     <AppShell>
-      <Topbar title="Dashboard" subtitle="Usage and library overview" />
+      <Topbar title="Overview" subtitle="Monitor your usage and content library at a glance" />
       <div className="space-y-5 p-4 sm:p-6">
         {error ? <p className="text-sm text-rose-500">{error}</p> : null}
         <div className="relative overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface)]/86 p-5 shadow-[0_20px_70px_-55px_rgba(15,23,42,0.7)] backdrop-blur">
@@ -120,9 +120,9 @@ export default function DashboardPage() {
           <div className="relative flex flex-wrap items-center justify-between gap-4">
             <div>
               <PoweredByAiBadge>Powered by AI insights</PoweredByAiBadge>
-              <h2 className="mt-3 text-2xl font-semibold text-[var(--text)]">Automation command center</h2>
+              <h2 className="mt-3 text-2xl font-semibold text-[var(--text)]">Performance Overview</h2>
               <p className="mt-1 max-w-2xl text-sm text-[var(--text-muted)]">
-                Usage, production output, and content library health update as ViralPro generates assets in the background.
+                Track your content production, usage limits, and library health in real-time.
               </p>
             </div>
           </div>
@@ -133,9 +133,9 @@ export default function DashboardPage() {
             <StaggerItem key={card.id}>
               <Card className={`relative overflow-hidden border bg-gradient-to-br ${card.tone} p-5 shadow-sm`}>
                 <div className="absolute right-4 top-4 h-14 w-14 rounded-full bg-white/18 blur-2xl" />
-                <p className="text-sm text-[var(--text-muted)]">{card.label}</p>
+                <p className="text-sm font-medium text-[var(--text)]/80">{card.label}</p>
                 <p className="mt-2 text-3xl font-semibold text-[var(--text)]">{card.value}</p>
-                <p className="mt-1 text-xs text-[var(--text-muted)]">{card.sub}</p>
+                <p className="mt-1 text-xs text-[var(--text)]/70">{card.sub}</p>
                 {typeof card.progress === "number" ? (
                   <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-black/10">
                     <div

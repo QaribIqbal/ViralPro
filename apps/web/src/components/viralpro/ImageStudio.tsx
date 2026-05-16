@@ -138,11 +138,13 @@ export function ImageStudio() {
 
     void (async () => {
       try {
-        const data = await apiRequest<{ items: Array<ImageItem & {
-          image_url?: string | null;
-          prompt?: string | null;
-          created_at?: string | null;
-        }> }>("/images");
+        const data = await apiRequest<{
+          items: Array<ImageItem & {
+            image_url?: string | null;
+            prompt?: string | null;
+            created_at?: string | null;
+          }>
+        }>("/images");
         if (!mounted) return;
 
         const mapped = (Array.isArray(data.items) ? data.items : []).map((item) => ({
@@ -223,242 +225,242 @@ export function ImageStudio() {
   return (
     <Stagger className="space-y-6 p-4 sm:p-6">
       <StaggerItem>
-      <Card className="relative overflow-hidden p-5 vp-ai-border">
-        <AiScanLine active={loading} />
-        <div className="relative flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <PoweredByAiBadge>Powered by AI image generation</PoweredByAiBadge>
-            <h2 className="mt-3 text-lg font-semibold text-[var(--text)]">AI Image Studio</h2>
-            <p className="mt-1 text-sm text-[var(--text-muted)]">
-              Trigger n8n workflow for Gemini image generation with premium creative controls.
-            </p>
-          </div>
-          <AiStatus text={loading ? "Generating pixels..." : "Prompt engine online"} />
-        </div>
-
-        <div className="mt-4 grid gap-4 md:grid-cols-2">
-          <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-medium text-[var(--text)]" htmlFor="image-prompt">
-              Prompt
-            </label>
-            <textarea
-              id="image-prompt"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Modern workspace desk setup with natural lighting, editorial style"
-              className="vp-focus-glow min-h-[110px] w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)]"
-            />
+        <Card className="relative overflow-hidden p-5 vp-ai-border">
+          <AiScanLine active={loading} />
+          <div className="relative flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <PoweredByAiBadge>Powered by AI image generation</PoweredByAiBadge>
+              <h2 className="mt-3 text-lg font-semibold text-[var(--text)]">Visual Studio</h2>
+              <p className="mt-1 text-xs text-[var(--text)]">
+                Generate high-fidelity visual assets using advanced AI models.
+              </p>
+            </div>
+            <AiStatus text={loading ? "Generating pixels..." : "Prompt engine online"} />
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium text-[var(--text)]">Style</label>
-            <select
-              value={style}
-              onChange={(e) => setStyle(e.target.value)}
-              className="h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text)]"
-            >
-              <option value="product">Product</option>
-              <option value="photoreal">Photoreal</option>
-              <option value="cinematic">Cinematic</option>
-              <option value="illustration">Illustration</option>
-              <option value="minimal">Minimal</option>
-            </select>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div className="md:col-span-2">
+              <label className="mb-2 block text-sm font-medium text-[var(--text)]" htmlFor="image-prompt">
+                Visual Prompt
+              </label>
+              <textarea
+                id="image-prompt"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="e.g., A minimalist office desk with soft natural light and lush plants."
+                className="vp-focus-glow min-h-[110px] w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)]"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-[var(--text)]">Style</label>
+              <select
+                value={style}
+                onChange={(e) => setStyle(e.target.value)}
+                className="h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text)]"
+              >
+                <option value="product">Product</option>
+                <option value="photoreal">Photoreal</option>
+                <option value="cinematic">Cinematic</option>
+                <option value="illustration">Illustration</option>
+                <option value="minimal">Minimal</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-[var(--text)]">Aspect Ratio</label>
+              <select
+                value={aspectRatio}
+                onChange={(e) => setAspectRatio(e.target.value)}
+                className="h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text)]"
+              >
+                <option value="1:1">1:1</option>
+                <option value="16:9">16:9</option>
+                <option value="9:16">9:16</option>
+                <option value="4:3">4:3</option>
+                <option value="3:4">3:4</option>
+              </select>
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="mb-2 block text-sm font-medium text-[var(--text)]" htmlFor="negative-prompt">
+                Excluded Elements (optional)
+              </label>
+              <Input
+                id="negative-prompt"
+                value={negativePrompt}
+                onChange={(e) => setNegativePrompt(e.target.value)}
+                placeholder="e.g., Low quality, text, watermarks, blurry"
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium text-[var(--text)]">Aspect Ratio</label>
-            <select
-              value={aspectRatio}
-              onChange={(e) => setAspectRatio(e.target.value)}
-              className="h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text)]"
-            >
-              <option value="1:1">1:1</option>
-              <option value="16:9">16:9</option>
-              <option value="9:16">9:16</option>
-              <option value="4:3">4:3</option>
-              <option value="3:4">3:4</option>
-            </select>
+          {error ? <p className="mt-3 text-sm text-rose-500">{error}</p> : null}
+
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <Button type="button" onClick={handleGenerateImage} disabled={loading || !prompt.trim()} className="shadow-[0_16px_44px_-22px_var(--cta)]">
+              {loading ? "Generating Visual..." : "Generate Visual"}
+            </Button>
+            {loading ? <AiStatus text="AI is scanning composition..." /> : null}
           </div>
-
-          <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-medium text-[var(--text)]" htmlFor="negative-prompt">
-              Negative Prompt (optional)
-            </label>
-            <Input
-              id="negative-prompt"
-              value={negativePrompt}
-              onChange={(e) => setNegativePrompt(e.target.value)}
-              placeholder="blurry, watermark, distorted text"
-            />
-          </div>
-        </div>
-
-        {error ? <p className="mt-3 text-sm text-rose-500">{error}</p> : null}
-
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <Button type="button" onClick={handleGenerateImage} disabled={loading || !prompt.trim()} className="shadow-[0_16px_44px_-22px_var(--cta)]">
-            {loading ? "Generating Image..." : "Generate Image"}
-          </Button>
-          {loading ? <AiStatus text="AI is scanning composition..." /> : null}
-        </div>
-      </Card>
+        </Card>
       </StaggerItem>
 
       <StaggerItem>
-      <Card className="p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-base font-semibold text-[var(--text)]">Generated History</h3>
-          {generatedImages.length > 0 ? (
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => {
-                setGeneratedImages([]);
-                saveGeneratedHistory([]);
-              }}
-            >
-              Clear
-            </Button>
-          ) : null}
-        </div>
+        <Card className="p-5">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-base font-semibold text-[var(--text)]">Recent Generations</h3>
+            {generatedImages.length > 0 ? (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  setGeneratedImages([]);
+                  saveGeneratedHistory([]);
+                }}
+              >
+                Clear
+              </Button>
+            ) : null}
+          </div>
 
-        {generatedImages.length === 0 ? (
-          <p className="text-sm text-[var(--text-muted)]">No generated images yet.</p>
-        ) : (
-          <motion.div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" layout>
-            {generatedImages.map((image, index) => (
-              <motion.div
+          {generatedImages.length === 0 ? (
+            <p className="text-sm text-[var(--text-muted)]">Your visual history is empty.</p>
+          ) : (
+            <motion.div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" layout>
+              {generatedImages.map((image, index) => (
+                <motion.div
+                  key={imageRenderKey(image, index)}
+                  className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-sm"
+                  layout
+                  initial={{ opacity: 0, y: 16, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.32 }}
+                  whileHover={{ y: -4 }}
+                >
+                  <button type="button" onClick={() => setSelectedImage(image)} className="block w-full text-left">
+                    <div className="relative">
+                      <Image
+                        src={image.url}
+                        alt={image.title}
+                        width={1024}
+                        height={1024}
+                        unoptimized={image.url.startsWith("data:") || image.url.startsWith("blob:")}
+                        className="h-52 w-full object-cover"
+                      />
+                      <PoweredByAiBadge className="absolute left-3 top-3 bg-[var(--surface)]/80 backdrop-blur">AI Generated</PoweredByAiBadge>
+                    </div>
+                  </button>
+                  <div className="space-y-2 p-3">
+                    <p className="text-sm font-medium text-[var(--text)]">{image.title}</p>
+                    <p className="line-clamp-2 text-xs text-[var(--text-muted)]">{image.prompt}</p>
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-[11px] text-[var(--cta)]">{image.model}</p>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        className="h-8 px-2 text-xs"
+                        onClick={() => void downloadImage(image)}
+                      >
+                        Export
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </Card>
+      </StaggerItem>
+
+      <StaggerItem>
+        <Card className="p-5">
+          <h3 className="mb-3 text-base font-semibold text-[var(--text)]">Visual Assets</h3>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {allImages.map((image, index) => (
+              <motion.button
                 key={imageRenderKey(image, index)}
-                className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-sm"
-                layout
-                initial={{ opacity: 0, y: 16, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.32 }}
+                type="button"
+                onClick={() => setSelectedImage(image)}
+                className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] text-left"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
                 whileHover={{ y: -4 }}
               >
-                <button type="button" onClick={() => setSelectedImage(image)} className="block w-full text-left">
-                  <div className="relative">
-                    <Image
-                      src={image.url}
-                      alt={image.title}
-                      width={1024}
-                      height={1024}
-                      unoptimized={image.url.startsWith("data:") || image.url.startsWith("blob:")}
-                      className="h-52 w-full object-cover"
-                    />
-                    <PoweredByAiBadge className="absolute left-3 top-3 bg-[var(--surface)]/80 backdrop-blur">AI generated</PoweredByAiBadge>
-                  </div>
-                </button>
-                <div className="space-y-2 p-3">
+                <div className="relative">
+                  <Image
+                    src={image.url}
+                    alt={image.title}
+                    width={1024}
+                    height={1024}
+                    unoptimized={image.url.startsWith("data:") || image.url.startsWith("blob:")}
+                    className="h-52 w-full object-cover"
+                  />
+                  <PoweredByAiBadge className="absolute left-3 top-3 bg-[var(--surface)]/80 backdrop-blur">AI Generated</PoweredByAiBadge>
+                </div>
+                <div className="space-y-1 p-3">
                   <p className="text-sm font-medium text-[var(--text)]">{image.title}</p>
                   <p className="line-clamp-2 text-xs text-[var(--text-muted)]">{image.prompt}</p>
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-[11px] text-[var(--cta)]">{image.model}</p>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      className="h-8 px-2 text-xs"
-                      onClick={() => void downloadImage(image)}
-                    >
-                      Download
-                    </Button>
-                  </div>
+                  <p className="text-[11px] text-[var(--cta)]">{image.model}</p>
                 </div>
-              </motion.div>
+              </motion.button>
             ))}
-          </motion.div>
-        )}
-      </Card>
-      </StaggerItem>
-
-      <StaggerItem>
-      <Card className="p-5">
-        <h3 className="mb-3 text-base font-semibold text-[var(--text)]">Image Library</h3>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {allImages.map((image, index) => (
-            <motion.button
-              key={imageRenderKey(image, index)}
-              type="button"
-              onClick={() => setSelectedImage(image)}
-              className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] text-left"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              whileHover={{ y: -4 }}
-            >
-              <div className="relative">
-                <Image
-                  src={image.url}
-                  alt={image.title}
-                  width={1024}
-                  height={1024}
-                  unoptimized={image.url.startsWith("data:") || image.url.startsWith("blob:")}
-                  className="h-52 w-full object-cover"
-                />
-                <PoweredByAiBadge className="absolute left-3 top-3 bg-[var(--surface)]/80 backdrop-blur">AI generated</PoweredByAiBadge>
-              </div>
-              <div className="space-y-1 p-3">
-                <p className="text-sm font-medium text-[var(--text)]">{image.title}</p>
-                <p className="line-clamp-2 text-xs text-[var(--text-muted)]">{image.prompt}</p>
-                <p className="text-[11px] text-[var(--cta)]">{image.model}</p>
-              </div>
-            </motion.button>
-          ))}
-        </div>
-      </Card>
+          </div>
+        </Card>
       </StaggerItem>
 
       {portalReady
         ? createPortal(
-      <AnimatePresence>
-      {selectedImage ? (
-        <motion.div
-          className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
-          onClick={() => setSelectedImage(null)}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <motion.div
-            className="max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-2xl bg-[var(--surface)] shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, scale: 0.96, y: 18 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: 12 }}
-            transition={{ type: "spring", stiffness: 380, damping: 34 }}
-          >
-            <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
-              <div>
-                <p className="text-sm font-semibold text-[var(--text)]">{selectedImage.title}</p>
-                <p className="text-xs text-[var(--text-muted)]">{selectedImage.model}</p>
-              </div>
-              <div className="flex gap-2">
-                <Button type="button" variant="secondary" onClick={() => void downloadImage(selectedImage)}>
-                  Download
-                </Button>
-                <Button type="button" variant="ghost" onClick={() => setSelectedImage(null)}>
-                  Close
-                </Button>
-              </div>
-            </div>
-            <div className="bg-black p-2">
-              <Image
-                src={selectedImage.url}
-                alt={selectedImage.title}
-                width={1600}
-                height={1200}
-                unoptimized={selectedImage.url.startsWith("data:") || selectedImage.url.startsWith("blob:")}
-                className="mx-auto max-h-[75vh] w-auto max-w-full object-contain"
-              />
-            </div>
-            <div className="px-4 py-3">
-              <PoweredByAiBadge className="mb-2">AI generated</PoweredByAiBadge>
-              <p className="text-sm text-[var(--text-muted)]">{selectedImage.prompt}</p>
-            </div>
-          </motion.div>
-        </motion.div>
-      ) : null}
-      </AnimatePresence>
-        , document.body)
+          <AnimatePresence>
+            {selectedImage ? (
+              <motion.div
+                className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+                onClick={() => setSelectedImage(null)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <motion.div
+                  className="max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-2xl bg-[var(--surface)] shadow-2xl"
+                  onClick={(e) => e.stopPropagation()}
+                  initial={{ opacity: 0, scale: 0.96, y: 18 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.97, y: 12 }}
+                  transition={{ type: "spring", stiffness: 380, damping: 34 }}
+                >
+                  <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
+                    <div>
+                      <p className="text-sm font-semibold text-[var(--text)]">{selectedImage.title}</p>
+                      <p className="text-xs text-[var(--text-muted)]">{selectedImage.model}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button type="button" variant="secondary" onClick={() => void downloadImage(selectedImage)}>
+                        Export
+                      </Button>
+                      <Button type="button" variant="ghost" onClick={() => setSelectedImage(null)}>
+                        Dismiss
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="bg-black p-2">
+                    <Image
+                      src={selectedImage.url}
+                      alt={selectedImage.title}
+                      width={1600}
+                      height={1200}
+                      unoptimized={selectedImage.url.startsWith("data:") || selectedImage.url.startsWith("blob:")}
+                      className="mx-auto max-h-[75vh] w-auto max-w-full object-contain"
+                    />
+                  </div>
+                  <div className="px-4 py-3">
+                    <PoweredByAiBadge className="mb-2">AI Generated</PoweredByAiBadge>
+                    <p className="text-sm text-[var(--text-muted)]">{selectedImage.prompt}</p>
+                  </div>
+                </motion.div>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
+          , document.body)
         : null}
     </Stagger>
   );

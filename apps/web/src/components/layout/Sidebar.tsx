@@ -106,10 +106,10 @@ export function Sidebar() {
         </motion.div>
         <div>
           <p className="text-lg font-semibold text-[var(--text)]">ViralPro</p>
-          <p className="text-xs text-[var(--text-muted)]">Content OS</p>
+          <p className="text-xs text-[var(--text-muted)]">Creative Engine</p>
         </div>
       </div>
-      <PoweredByAiBadge className="mb-4 hidden lg:inline-flex">AI automation engine</PoweredByAiBadge>
+      <PoweredByAiBadge className="mb-4 hidden lg:inline-flex">Intelligent Content Generation</PoweredByAiBadge>
       <nav className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-1">
         {items.map((item) => {
           const active = pathname === item.href;

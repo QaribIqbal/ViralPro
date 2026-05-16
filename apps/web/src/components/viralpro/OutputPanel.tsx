@@ -94,7 +94,7 @@ function enhanceArticleImageFallback(root: HTMLElement | null) {
       fallback.className = "article-image-fallback";
       fallback.setAttribute("role", "note");
       fallback.setAttribute("aria-live", "polite");
-      fallback.textContent = "Image unavailable";
+      fallback.textContent = "Preview unavailable";
       element.insertAdjacentElement("afterend", fallback);
 
       const onError = () => {
@@ -158,8 +158,8 @@ export function OutputPanel({
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] px-5 py-4">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-base font-semibold text-[var(--text)]">Generated Output</h3>
-            {normalizedHtml ? <PoweredByAiBadge>AI content</PoweredByAiBadge> : null}
+            <h3 className="text-base font-semibold text-[var(--text)]">Article Preview</h3>
+            {normalizedHtml ? <PoweredByAiBadge>AI Generated</PoweredByAiBadge> : null}
           </div>
           {loading ? <div className="mt-2"><AiStatus text="Generating insights..." /></div> : null}
         </div>
@@ -175,7 +175,7 @@ export function OutputPanel({
               whileHover={{ y: -1 }}
               whileTap={{ scale: 0.97 }}
             >
-              {copied ? "Copied" : "Copy HTML"}
+              {copied ? "Copied!" : "Copy Code"}
             </motion.button>
           ) : null}
         </AnimatePresence>

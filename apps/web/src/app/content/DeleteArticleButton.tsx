@@ -46,7 +46,7 @@ export function DeleteArticleButton({ id }: { id: string }) {
         onClose={() => setShowModal(false)}
         title="Delete Article"
         variant="danger"
-        description="Are you sure you want to delete this article? This action cannot be undone."
+        description="This will permanently delete the article. This action is irreversible."
         footer={
           <>
             <Button variant="ghost" onClick={() => setShowModal(false)}>
@@ -59,7 +59,7 @@ export function DeleteArticleButton({ id }: { id: string }) {
         }
       >
         <p className="text-sm text-[var(--text-muted)]">
-          This article will be permanently removed from your library.
+          All associated content and metadata will be permanently removed from your library.
         </p>
       </Modal>
     </>

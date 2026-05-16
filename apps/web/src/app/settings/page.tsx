@@ -8,18 +8,18 @@ export default function SettingsPage() {
 
   return (
     <AppShell>
-      <Topbar title="Settings" subtitle="Integrations and configuration" />
+      <Topbar title="Settings" subtitle="Configure your integrations and workspace settings" />
       <div className="grid gap-4 p-4 sm:grid-cols-3 sm:p-6">
         <Card className="p-5">
-          <h2 className="text-sm text-[var(--text-muted)]">API Keys Configured</h2>
+          <h2 className="text-sm text-[var(--text-muted)]">Active API Keys</h2>
           <p className="mt-2 text-3xl font-semibold">{settings.apiKeysConfigured}</p>
         </Card>
         <Card className="p-5">
-          <h2 className="text-sm text-[var(--text-muted)]">WordPress Connected</h2>
-          <p className="mt-2 text-3xl font-semibold">{settings.wordpressConnected ? "Yes" : "No"}</p>
+          <h2 className="text-sm text-[var(--text-muted)]">WordPress Status</h2>
+          <p className="mt-2 text-3xl font-semibold">{settings.wordpressConnected ? "Connected" : "Not Connected"}</p>
         </Card>
         <Card className="p-5">
-          <h2 className="text-sm text-[var(--text-muted)]">Sitemaps</h2>
+          <h2 className="text-sm text-[var(--text-muted)]">Indexed Sitemaps</h2>
           <p className="mt-2 text-3xl font-semibold">{settings.sitemapCount}</p>
         </Card>
       </div>

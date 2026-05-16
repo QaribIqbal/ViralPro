@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* Primary brand */
   --primary: #0f172a;
@@ -13,6 +15,7 @@
   /* AI Accent Cyan — sparingly */
   --ai-accent: #22d3ee;
   --ai-accent-muted: #ecfeff;
+  --ai-badge-text: #2563eb;
 
   /* Backgrounds */
   --bg: #f8fafc;
@@ -54,6 +57,7 @@
   /* AI Accent Cyan */
   --ai-accent: #67e8f9;
   --ai-accent-muted: #164e63;
+  --ai-badge-text: #67e8f9;
 
   /* Backgrounds */
   --bg: #0f172a;

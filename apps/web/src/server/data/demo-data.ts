@@ -11,12 +11,12 @@ import type {
 
 export const navItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard" },
-  { label: "Generate", href: "/generate" },
-  { label: "Content", href: "/content" },
+  { label: "Studio", href: "/generate" },
+  { label: "Library", href: "/content" },
   { label: "Images", href: "/images" },
   { label: "Settings", href: "/settings" },
   { label: "Billing", href: "/billing" },
-  { label: "Docs", href: "/docs" },
+  { label: "Help Center", href: "/docs" },
 ];
 
 export const historyItems: HistoryItem[] = [
@@ -24,29 +24,29 @@ export const historyItems: HistoryItem[] = [
     id: "h1",
     title: "Best Coffee Machines for Small Kitchens",
     keyword: "best coffee machines 2026",
-    excerpt: "A practical guide to compact espresso and drip options.",
+    excerpt: "A practical guide to choosing compact espresso and drip options.",
     status: "done",
   },
   {
     id: "h2",
-    title: "How to Build Local SEO Content Clusters",
+    title: "Building Local SEO Content Clusters",
     keyword: "local seo content strategy",
-    excerpt: "Plan topic clusters that rank in local and AI search.",
+    excerpt: "Learn how to plan topic clusters that rank in local and AI search results.",
     status: "done",
   },
   {
     id: "h3",
     title: "B2B SaaS Onboarding Email Sequence",
     keyword: "b2b onboarding email sequence",
-    excerpt: "Drafting a concise, conversion-focused onboarding series.",
+    excerpt: "Drafting a high-conversion onboarding series for new SaaS users.",
     status: "draft",
   },
 ];
 
 export const dashboardMetrics: DashboardMetric[] = [
-  { id: "m1", label: "Articles", value: "128", change: "+14%" },
-  { id: "m2", label: "Images", value: "42", change: "+8%" },
-  { id: "m3", label: "Usage", value: "63%", change: "-3%" },
+  { id: "m1", label: "Articles Generated", value: "128", change: "+14%" },
+  { id: "m2", label: "Visual Assets", value: "42", change: "+8%" },
+  { id: "m3", label: "Quota Used", value: "63%", change: "-3%" },
 ];
 
 export const contentItems: ContentItem[] = [

@@ -9,7 +9,7 @@ export function PoweredByAiBadge({
 }: PropsWithChildren<{ className?: string }>) {
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-full border border-[var(--ai-accent)]/30 bg-[var(--ai-accent)]/10 px-3 py-1 text-xs font-semibold text-[var(--cta)] shadow-[0_0_24px_rgba(34,211,238,0.12)] ${className}`}
+      className={`inline-flex items-center gap-2 rounded-full border border-[var(--ai-accent)]/30 bg-[var(--ai-accent)]/12 px-3 py-1 text-xs font-semibold text-[var(--ai-badge-text)] ${className}`}
     >
       <span className="relative flex h-2 w-2">
         <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--ai-accent)] opacity-70 motion-safe:animate-ping" />
@@ -31,9 +31,9 @@ export function AiOrb({ className = "" }: { className?: string }) {
         reduceMotion
           ? undefined
           : {
-              scale: [1, 1.06, 1],
-              opacity: [0.72, 0.95, 0.72],
-            }
+            scale: [1, 1.06, 1],
+            opacity: [0.72, 0.95, 0.72],
+          }
       }
       transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
     />
@@ -63,7 +63,7 @@ export function NeuralBackdrop({ className = "" }: { className?: string }) {
 
 export function AiStatus({ text }: { text: string }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-[var(--ai-accent)]/25 bg-[var(--surface)]/75 px-3 py-1.5 text-xs font-medium text-[var(--text-muted)] shadow-sm backdrop-blur">
+    <div className="inline-flex items-center gap-2 rounded-full border border-[var(--ai-accent)]/25 bg-[var(--surface)]/75 px-3 py-1.5 text-xs font-medium text-[var(--text)] shadow-sm backdrop-blur">
       <span className="h-1.5 w-1.5 rounded-full bg-[var(--ai-accent)] shadow-[0_0_14px_var(--ai-accent)] motion-safe:animate-pulse" />
       {text}
     </div>

@@ -8,7 +8,7 @@ export default function BillingPage() {
 
   return (
     <AppShell>
-      <Topbar title="Billing" subtitle="Subscription and usage" />
+      <Topbar title="Billing" subtitle="Manage your subscription, view usage, and track upcoming renewals" />
       <div className="space-y-4 p-4 sm:p-6">
         <div className="grid gap-4 sm:grid-cols-3">
           <Card className="p-5">
@@ -16,11 +16,11 @@ export default function BillingPage() {
             <p className="mt-2 text-2xl font-semibold text-[var(--text)]">{billing.plan}</p>
           </Card>
           <Card className="p-5">
-            <p className="text-sm text-[var(--text-muted)]">Renewal Date</p>
+            <p className="text-sm text-[var(--text-muted)]">Next Renewal</p>
             <p className="mt-2 text-2xl font-semibold text-[var(--text)]">{billing.renewalDate}</p>
           </Card>
           <Card className="p-5">
-            <p className="text-sm text-[var(--text-muted)]">Usage</p>
+            <p className="text-sm text-[var(--text-muted)]">Plan Usage</p>
             <p className="mt-2 text-2xl font-semibold text-[var(--text)]">{billing.usage}</p>
           </Card>
         </div>

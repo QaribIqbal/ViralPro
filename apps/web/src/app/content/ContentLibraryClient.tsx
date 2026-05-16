@@ -139,7 +139,7 @@ function toExportable(article: ArticleDetail, draft: ArticleDraft): ExportableAr
 }
 
 function titleFor(article: ArticleSummary | ArticleDetail | null, draft?: ArticleDraft | null) {
-  if (!article) return "Untitled article";
+  if (!article) return "Untitled Article";
   return draft?.title || article.title || article.topic;
 }
 
@@ -275,10 +275,10 @@ function ArticleLibraryPanel({
     <section className="min-h-0 rounded-[28px] border border-white/10 bg-slate-950/78 p-4 shadow-[0_24px_80px_-48px_rgba(2,6,23,0.95)] ring-1 ring-white/[0.03] backdrop-blur-xl lg:p-5">
       <div className="mb-5 flex items-end justify-between gap-4 px-1">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/80">Content library</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/80">Content Library</p>
           <h2 className="mt-2 text-2xl font-semibold text-white">Articles</h2>
         </div>
-        <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-slate-300">{articles.length} total</span>
+        <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-slate-300">{articles.length} Total</span>
       </div>
 
       <div className="space-y-3 overflow-y-auto pr-1 lg:max-h-[calc(100vh-245px)]">
@@ -295,8 +295,8 @@ function ArticleLibraryPanel({
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-300/10 text-cyan-200">
               <Icon name="file" className="h-5 w-5" />
             </div>
-            <h3 className="text-base font-semibold text-white">No generated articles yet</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-400">Generated articles will appear here with SEO signals and publishing metadata.</p>
+            <h3 className="text-base font-semibold text-white">Your library is empty</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-400">Once you generate your first article, it will appear here with SEO insights and publishing tools.</p>
           </div>
         ) : (
           articles.map((article) => {
@@ -398,8 +398,8 @@ function ArticleMetaPanel({
           <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-3xl bg-cyan-300/10 text-cyan-200">
             <Icon name="spark" className="h-6 w-6" />
           </div>
-          <h2 className="text-2xl font-semibold text-white">Choose an article</h2>
-          <p className="mt-3 text-sm leading-6 text-slate-400">Select a generated article to see publishing details, SEO signals, and open the immersive reader.</p>
+          <h2 className="text-2xl font-semibold text-white">Select an article</h2>
+          <p className="mt-3 text-sm leading-6 text-slate-400">Pick an article from the list to view SEO performance, edit content, or export files.</p>
         </div>
       </section>
     );
@@ -426,7 +426,7 @@ function ArticleMetaPanel({
         <div className="flex shrink-0 flex-wrap gap-2">
           <Button type="button" className="h-10 gap-2 rounded-full bg-cyan-500 px-4 text-slate-950 hover:bg-cyan-400" onClick={onOpen}>
             <Icon name="focus" />
-            Focus
+            Editor
           </Button>
           <Button type="button" variant="secondary" className="h-10 gap-2 rounded-full border-white/10 bg-white/[0.08] px-4 text-white hover:bg-white/[0.12]" disabled={!dirty || saving} onClick={onSave}>
             <Icon name="save" />
@@ -453,9 +453,9 @@ function ArticleMetaPanel({
           </div>
         </div>
         <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-5">
-          <p className="text-sm font-medium text-slate-400">Article depth</p>
+          <p className="text-sm font-medium text-slate-400">Article length</p>
           <p className="mt-4 text-4xl font-semibold text-white">{words.toLocaleString()}</p>
-          <p className="mt-3 text-sm text-slate-400">words across a {minutes} minute read</p>
+          <p className="mt-3 text-sm text-slate-400">Words across a {minutes} minute read</p>
         </div>
         <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-5">
           <p className="text-sm font-medium text-slate-400">Updated</p>
@@ -467,17 +467,17 @@ function ArticleMetaPanel({
       <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
         <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-5">
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-base font-semibold text-white">Editorial snapshot</h3>
-            <span className="text-xs text-slate-500">Preview snippet</span>
+            <h3 className="text-base font-semibold text-white">Content Preview</h3>
+            <span className="text-xs text-slate-500">Snapshot</span>
           </div>
-          <p className="line-clamp-4 text-sm leading-7 text-slate-300">{draft.excerpt || draft.metaDescription || draft.contentMarkdown || "The generated article body is ready to inspect in focus mode."}</p>
+          <p className="line-clamp-4 text-sm leading-7 text-slate-300">{draft.excerpt || draft.metaDescription || draft.contentMarkdown || "Your article is ready. Open the editor to review and polish the final version."}</p>
         </div>
         <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-5">
-          <h3 className="text-base font-semibold text-white">Quick actions</h3>
+          <h3 className="text-base font-semibold text-white">Actions</h3>
           <div className="mt-4 grid gap-2">
             <button type="button" onClick={onExportMarkdown} className="flex h-11 items-center justify-between rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm font-medium text-slate-200 hover:bg-white/[0.08]">Export Markdown <Icon name="external" className="h-4 w-4 text-slate-400" /></button>
             <button type="button" onClick={onExportHtml} className="flex h-11 items-center justify-between rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm font-medium text-slate-200 hover:bg-white/[0.08]">Export HTML <Icon name="external" className="h-4 w-4 text-slate-400" /></button>
-            <button type="button" onClick={onDelete} disabled={deleting} className="flex h-11 items-center justify-between rounded-2xl border border-red-400/15 bg-red-400/10 px-4 text-sm font-medium text-red-200 hover:bg-red-400/15 disabled:opacity-60">{deleting ? "Deleting" : "Delete article"} <Icon name="trash" className="h-4 w-4" /></button>
+            <button type="button" onClick={onDelete} disabled={deleting} className="flex h-11 items-center justify-between rounded-2xl border border-red-400/15 bg-red-400/10 px-4 text-sm font-medium text-red-200 hover:bg-red-400/15 disabled:opacity-60">{deleting ? "Deleting" : "Delete Article"} <Icon name="trash" className="h-4 w-4" /></button>
           </div>
         </div>
       </div>
@@ -623,7 +623,7 @@ function FocusArticleModal({
                       )}
                     </AnimatePresence>
                   </div>
-                  <button type="button" onClick={onToggleEdit} className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium ${editMode ? "border-cyan-300/40 bg-cyan-300/14 text-cyan-100" : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/[0.1]"}`}><Icon name="edit" /><span className="hidden sm:inline">{editMode ? "Reading" : "Edit"}</span></button>
+                  <button type="button" onClick={onToggleEdit} className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium ${editMode ? "border-cyan-300/40 bg-cyan-300/14 text-cyan-100" : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/[0.1]"}`}><Icon name="edit" /><span className="hidden sm:inline">{editMode ? "Reading View" : "Edit Content"}</span></button>
                   <button type="button" onClick={onSave} disabled={!dirty || saving} className="inline-flex h-10 items-center gap-2 rounded-full bg-cyan-300 px-4 text-sm font-semibold text-slate-950 hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-50"><Icon name="save" /><span className="hidden sm:inline">{saving ? "Saving" : "Save"}</span></button>
                   <button type="button" onClick={onDelete} className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-slate-300 hover:bg-red-400/12 hover:text-red-200" aria-label="More actions"><Icon name="more" /></button>
                 </div>
@@ -691,7 +691,7 @@ function FocusArticleModal({
 
                   <aside className="hidden xl:block">
                     <div className="sticky top-8 space-y-3">
-                      <button type="button" onClick={onToggleEdit} className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.055] px-4 py-3 text-sm font-medium text-slate-200 hover:bg-white/[0.09]">Edit article <Icon name="edit" /></button>
+                      <button type="button" onClick={onToggleEdit} className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.055] px-4 py-3 text-sm font-medium text-slate-200 hover:bg-white/[0.09]">Edit Content <Icon name="edit" /></button>
                       <button type="button" onClick={onExportHtml} className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.055] px-4 py-3 text-sm font-medium text-slate-200 hover:bg-white/[0.09]">HTML export <Icon name="external" /></button>
                       <button type="button" onClick={onExportMarkdown} className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.055] px-4 py-3 text-sm font-medium text-slate-200 hover:bg-white/[0.09]">Markdown <Icon name="copy" /></button>
                     </div>
