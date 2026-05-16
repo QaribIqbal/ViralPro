@@ -117,7 +117,7 @@ export function Sidebar() {
               href={item.href}
               className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium tracking-tight transition-all duration-200 ${
                 active
-                  ? "text-[var(--cta-foreground)]"
+                  ? "text-white"
                   : "text-[var(--text-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--text)]"
               }`}
             >
@@ -131,7 +131,7 @@ export function Sidebar() {
               <SidebarIcon
                 name={iconName || "dashboard"}
                 className={`relative z-10 h-4.5 w-4.5 shrink-0 transition-transform duration-200 ${
-                  active ? "text-[var(--cta-foreground)]" : "text-[var(--text-muted)] group-hover:scale-105"
+                  active ? "text-white" : "text-[var(--text-muted)] group-hover:scale-105"
                 }`}
               />
               <span className="relative z-10">{item.label}</span>

@@ -137,7 +137,7 @@ export default function DashboardPage() {
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
                   href="/generate"
-                  className="inline-flex h-12 items-center rounded-full bg-[var(--cta)] px-7 text-base font-semibold text-[var(--cta-foreground)] shadow-sm transition hover:bg-[var(--cta-hover)] active:scale-[0.97]"
+                  className="inline-flex h-12 items-center rounded-full bg-[var(--cta)] px-7 text-base font-semibold text-white shadow-sm transition hover:bg-[var(--cta-hover)] active:scale-[0.97]"
                 >
                   Generate New Article
                 </Link>
@@ -150,11 +150,11 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="hidden relative h-[250px] overflow-hidden rounded-3xl border border-[var(--border)] bg-[#080B11] lg:block">
+            <div className="hidden relative h-[250px] overflow-hidden rounded-3xl border-transparent dark:border-[var(--border)] bg-transparent dark:bg-[#080B11] lg:block">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,var(--cta-soft)_0%,transparent_60%)] opacity-40" />
 
               {/* Motherboard Traces */}
-              <svg viewBox="0 0 400 250" className="absolute left-1/2 top-1/2 h-[250px] w-[400px] -translate-x-1/2 -translate-y-1/2 text-[var(--border-strong)]">
+              <svg viewBox="0 0 400 250" className="absolute left-1/2 top-1/2 h-[250px] w-[400px] -translate-x-1/2 -translate-y-1/2 text-slate-300 dark:text-[var(--border-strong)]">
                 {/* Static traces */}
                 <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-50">
                   <path d="M40 50 h 60 l 40 40 h 30" />
@@ -198,7 +198,7 @@ export default function DashboardPage() {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="relative">
                   <div className="absolute inset-0 animate-ping rounded-xl bg-[var(--cta)] opacity-20" style={{ animationDuration: "3s" }} />
-                  <div className="vp-idle-pulse flex h-20 w-20 items-center justify-center rounded-xl border-2 border-[var(--cta)] bg-[#0C101A] shadow-[0_0_40px_rgba(109,40,217,0.4)]">
+                  <div className="vp-idle-pulse flex h-20 w-20 items-center justify-center rounded-xl border-2 border-[var(--cta)] bg-white dark:bg-[#0C101A] shadow-[0_0_40px_rgba(109,40,217,0.4)]">
                     <svg className="h-10 w-10 text-[var(--ai-accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
                       <rect x="9" y="9" width="6" height="6" />

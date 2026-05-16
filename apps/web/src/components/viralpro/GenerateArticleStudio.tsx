@@ -80,7 +80,7 @@ function ToggleRow({ label, description, checked, onChange, badge }: { label: st
       <div className="min-w-0">
         <p className="text-sm font-medium text-[var(--text)]">
           {label}
-          {badge ? <span className="ml-2 rounded-full bg-[var(--cta)]/10 px-2 py-0.5 text-[11px] font-medium text-[var(--cta)]">{badge}</span> : null}
+          {badge ? <span className="ml-2 rounded-full bg-[var(--cta)] px-2.5 py-0.5 text-[11px] font-semibold text-white shadow-sm">{badge}</span> : null}
         </p>
         {description ? <p className="mt-0.5 text-xs text-[var(--text)]/60">{description}</p> : null}
       </div>
@@ -287,7 +287,7 @@ export function GenerateArticleStudio() {
             <div className="rounded-xl border border-[var(--border)] bg-black/5 p-4">
               <div className="flex justify-between mb-3">
                 <span className="text-sm font-medium">Target Word Count</span>
-                <span className="text-xs font-bold text-[var(--cta)]">{form.wordCount} words</span>
+                <span className="rounded-full bg-[var(--cta)] px-2.5 py-0.5 text-xs font-bold text-white shadow-sm">{form.wordCount} words</span>
               </div>
               <input
                 type="range"
@@ -338,7 +338,7 @@ export function GenerateArticleStudio() {
                   <div className="rounded-xl border border-[var(--border)] bg-black/5 p-4">
                     <div className="flex justify-between mb-3 text-sm">
                       <span>Total Support Images</span>
-                      <span className="font-bold text-[var(--cta)]">{form.contentImageCount}</span>
+                      <span className="rounded-full bg-[var(--cta)] px-2.5 py-0.5 text-xs font-bold text-white shadow-sm">{form.contentImageCount}</span>
                     </div>
                     <input
                       type="range"
