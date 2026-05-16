@@ -58,7 +58,7 @@ export default function SignInPage() {
   };
 
   return (
-    <main className="grid min-h-screen bg-[var(--bg)] lg:grid-cols-2">
+    <main className="grid min-h-screen lg:grid-cols-2">
       <section className="relative flex flex-col justify-center px-8 py-10 sm:px-16">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(37,99,235,0.18),transparent_40%),radial-gradient(circle_at_60%_10%,rgba(34,211,238,0.12),transparent_35%)]" />
         <div className="relative max-w-xl">
@@ -90,13 +90,13 @@ export default function SignInPage() {
 
       <section className="flex items-center justify-center px-6 py-10 sm:px-10">
         <form
-          className="w-full max-w-lg rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8 shadow-sm"
+          className="vp-glass-panel w-full max-w-lg rounded-3xl p-8 shadow-2xl"
           onSubmit={(e) => {
             e.preventDefault();
             void handleEmailSignIn();
           }}
         >
-          <div className="mb-4 flex justify-end">
+          <div className="mb-6 flex justify-end">
             <Button type="button" variant="secondary" onClick={toggleTheme}>
               Toggle Theme
             </Button>

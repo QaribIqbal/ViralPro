@@ -1,8 +1,8 @@
 "use client";
 
-import { type ReactNode, useState } from "react";
+import { type CSSProperties, type ReactNode, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { AiScanLine, AiStatus, PoweredByAiBadge } from "@/components/ui/AiVisuals";
+import { PoweredByAiBadge } from "@/components/ui/AiVisuals";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -65,10 +65,10 @@ function Icon({ name, className = "h-5 w-5" }: { name: IconName; className?: str
 function SectionHeader({ icon, title, subtitle }: { icon: ReactNode; title: string; subtitle: string }) {
   return (
     <div className="mb-6 flex items-start gap-3">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--cta)]/10 text-[var(--cta)]">{icon}</span>
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[var(--border-strong)] bg-[var(--surface)]/70 text-[var(--ai-accent)] dark:bg-white/5">{icon}</span>
       <div>
-        <h3 className="text-lg font-semibold text-[var(--text)]">{title}</h3>
-        <p className="mt-0.5 text-sm text-[var(--text)]/70">{subtitle}</p>
+        <h3 className="text-[21px] font-semibold tracking-tight text-[var(--text)]">{title}</h3>
+        <p className="mt-1 text-[14px] leading-relaxed text-[var(--text)]/72">{subtitle}</p>
       </div>
     </div>
   );
@@ -76,13 +76,13 @@ function SectionHeader({ icon, title, subtitle }: { icon: ReactNode; title: stri
 
 function ToggleRow({ label, description, checked, onChange, badge }: { label: string; description?: string; checked: boolean; onChange: (v: boolean) => void; badge?: string }) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-xl border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/20 backdrop-blur-md px-4 py-3 transition hover:border-[var(--cta)]/50">
+    <div className="flex items-center justify-between gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)]/60 px-4 py-3.5 backdrop-blur-md transition hover:border-[var(--border-strong)] dark:bg-white/[0.03]">
       <div className="min-w-0">
-        <p className="text-sm font-medium text-[var(--text)]">
+        <p className="text-[15px] font-medium text-[var(--text)]">
           {label}
-          {badge ? <span className="ml-2 rounded-full bg-[var(--cta)]/10 px-2 py-0.5 text-[11px] font-medium text-[var(--cta)]">{badge}</span> : null}
+          {badge ? <span className="ml-2 rounded-full bg-[var(--cta)]/12 px-2 py-0.5 text-[11px] font-medium text-[var(--cta)]">{badge}</span> : null}
         </p>
-        {description ? <p className="mt-0.5 text-xs text-[var(--text)]/60">{description}</p> : null}
+        {description ? <p className="mt-1 text-[13px] text-[var(--text)]/62">{description}</p> : null}
       </div>
       <Toggle checked={checked} onChange={onChange} ariaLabel={label} />
     </div>
@@ -156,19 +156,18 @@ function Toggle({ checked, onChange, ariaLabel }: { checked: boolean; onChange: 
         : "border-[var(--border)] bg-[var(--surface-muted)]"
         }`}
     >
-      <motion.span
-        layout
-        className="inline-block h-7 w-7 rounded-full bg-[var(--primary)] shadow-[0_8px_18px_rgba(15,23,42,0.18)]"
-        animate={{ x: checked ? 36 : 4 }}
-        transition={{ type: "spring", stiffness: 480, damping: 32 }}
+      <span
+        className={`inline-block h-7 w-7 rounded-full bg-[var(--primary)] shadow-[0_8px_18px_rgba(15,23,42,0.18)] transition-transform duration-200 ease-[var(--motion-ease-premium)] ${
+          checked ? "translate-x-9" : "translate-x-1"
+        }`}
       />
     </button>
   );
 }
 
-function FieldLabel({ htmlFor, children }: { htmlFor?: string; children: string }) {
+function FieldLabel({ htmlFor, children }: { htmlFor?: string; children: ReactNode }) {
   return (
-    <label htmlFor={htmlFor} className="mb-2 block text-sm font-semibold text-[var(--text)]">
+    <label htmlFor={htmlFor} className="mb-2 block text-[14px] font-medium text-[var(--text)]/90">
       {children}
     </label>
   );
@@ -280,411 +279,421 @@ export function GenerateArticleStudio() {
   };
 
   return (
-    <Stagger className="space-y-5 p-4 sm:p-6">
+    <Stagger className="mx-auto max-w-7xl space-y-7 p-4 sm:p-6 lg:p-8">
       <StaggerItem>
-        <div className="relative overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface)]/88 p-5 backdrop-blur vp-ai-border">
-          <AiScanLine active={loading} />
-          <div className="relative flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <PoweredByAiBadge>Powered by AI writing engine</PoweredByAiBadge>
-              <h2 className="mt-3 text-2xl font-semibold text-[var(--text)]">Create High-Performance Content</h2>
-              <p className="mt-1 max-w-2xl text-xs text-[var(--text)]">
-                Our AI analyzes intent, SEO structure, and brand voice to build the perfect draft.
+        <div className="relative overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7 shadow-sm">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[var(--ai-accent-muted)] to-transparent opacity-50" />
+          <div className="relative z-10 flex items-start justify-between gap-6">
+            <div className="max-w-2xl">
+              <PoweredByAiBadge>Guided AI writing assistant</PoweredByAiBadge>
+              <h2 className="mt-3 text-[28px] font-semibold leading-[1.18] tracking-tight text-[var(--text)] sm:text-[32px]">
+                Create your next article with a simple brief
+              </h2>
+              <p className="mt-3 text-[15px] leading-relaxed text-[var(--text-muted)]">
+                Share your topic and preferences, then we will generate a ready-to-edit draft for your content workflow.
               </p>
             </div>
-            <AiStatus text={loading ? "AI is analyzing..." : "Ready to generate"} />
-          </div>
-        </div>
-      </StaggerItem>
-      {/* Usage Stats */}
-      <StaggerItem className="grid gap-4 sm:grid-cols-2">
-        <div className="relative overflow-hidden flex items-center gap-4 rounded-2xl p-4 backdrop-blur-2xl bg-gradient-to-b from-white/40 to-white/10 border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.8)] dark:from-white/10 dark:to-white/0 dark:border-white/10 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15)]">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--cta)]/10 text-[var(--cta)]">
-            <Icon name="article" className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-[var(--text)]/60">Article Generations</p>
-            <p className="text-xl font-bold text-[var(--text)]">0 <span className="text-sm font-normal text-[var(--text)]/60">/&nbsp;999,999</span></p>
-          </div>
-        </div>
-        <div className="relative overflow-hidden flex items-center gap-4 rounded-2xl p-4 backdrop-blur-2xl bg-gradient-to-b from-white/40 to-white/10 border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.8)] dark:from-white/10 dark:to-white/0 dark:border-white/10 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15)]">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600">
-            <Icon name="image" className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-[var(--text)]/60">Image Credits</p>
-            <p className="text-xl font-bold text-[var(--text)]">680 <span className="text-sm font-normal text-[var(--text)]/60">remaining</span></p>
-          </div>
-        </div>
-      </StaggerItem>
-
-      {/* Main Form Grid */}
-      <StaggerItem className="grid gap-5 xl:grid-cols-[1fr_1fr]">
-        {/* Left Column: Content Brief */}
-        <Card className="relative overflow-hidden rounded-2xl p-5 backdrop-blur-2xl bg-gradient-to-b from-white/40 to-white/10 border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.8)] dark:from-white/10 dark:to-white/0 dark:border-white/10 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15)]">
-          <SectionHeader icon={<Icon name="edit" className="h-5 w-5" />} title="Content Brief" subtitle="Set your topic and basic configurations" />
-
-          <div className="space-y-4">
-            <div>
-              <FieldLabel htmlFor="topic">Topic *</FieldLabel>
-              <Input
-                id="topic"
-                placeholder="e.g., Best Coffee Brewing Methods"
-                value={form.topic}
-                onChange={(event) => updateField("topic", event.target.value)}
-              />
+            <div className="hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-2.5 text-[13px] text-[var(--text-muted)] lg:block">
+              Ready to generate
             </div>
+          </div>
+        </div>
+      </StaggerItem>
 
-            <ToggleRow
-              label="Live Web Search"
-              description="Incorporate real-time data and trending topics into your content"
-              checked={form.liveWebResearch}
-              onChange={(next) => updateField("liveWebResearch", next)}
+      <StaggerItem className="grid gap-4 md:grid-cols-2">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] p-5 backdrop-blur-sm">
+          <p className="text-[13px] text-[var(--text-muted)]">Article generations</p>
+          <p className="mt-1 text-[24px] font-semibold text-[var(--text)]">128 <span className="text-[14px] font-medium text-[var(--text-muted)]">this month</span></p>
+        </div>
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] p-5 backdrop-blur-sm">
+          <p className="text-[13px] text-[var(--text-muted)]">Image credits</p>
+          <p className="mt-1 text-[24px] font-semibold text-[var(--text)]">680 <span className="text-[14px] font-medium text-[var(--text-muted)]">remaining</span></p>
+        </div>
+      </StaggerItem>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <StaggerItem>
+          <Card className="rounded-[22px] border-[var(--border)] bg-[var(--surface)]/70 p-6 sm:p-7">
+            <SectionHeader
+              icon={<Icon name="edit" className="h-5 w-5" />}
+              title="Content brief"
+              subtitle="Start with a clear topic, then add your main keyword."
             />
-
-            <div>
-              <FieldLabel htmlFor="target-keyword">Target Keyword</FieldLabel>
-              <Input
-                id="target-keyword"
-                placeholder="e.g., coffee brewing"
-                value={form.targetKeyword}
-                onChange={(event) => updateField("targetKeyword", event.target.value)}
-              />
-            </div>
-
-            <div>
-              <FieldLabel htmlFor="ai-model">AI Model</FieldLabel>
-              <select
-                id="ai-model"
-                value={form.aiModel}
-                onChange={(event) => updateField("aiModel", event.target.value)}
-                className="h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 text-sm text-[var(--text)] focus:border-[var(--cta)] focus:outline-none focus:ring-2 focus:ring-[var(--cta)]/30"
-              >
-                <option value="claude-sonnet-4.6">Claude Sonnet 4.6 (Default)</option>
-                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
-                <option value="gpt-4.1">GPT-4.1</option>
-              </select>
-            </div>
-
-            <div className="rounded-xl border border-[var(--border)]">
-              <button
-                type="button"
-                onClick={() => setShowOutline((prev) => !prev)}
-                className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-[var(--text)] transition hover:bg-[var(--surface-muted)]/50"
-              >
-                <span className="inline-flex items-center gap-2"><Icon name="outline" className="h-4 w-4" /> Custom Outline <span className="text-xs font-normal text-[var(--text)]/60">(Optional)</span></span>
-                <span className={`text-[var(--text)]/60 transition-transform duration-200 ${showOutline ? "rotate-180" : ""}`}>▾</span>
-              </button>
-              <AnimatePresence initial={false}>
-                {showOutline ? (
-                  <motion.div
-                    className="border-t border-[var(--border)] p-4"
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.24 }}
-                  >
-                    <textarea
-                      aria-label="Custom Outline"
-                      value={form.customOutline}
-                      onChange={(event) => updateField("customOutline", event.target.value)}
-                      placeholder="H2: Introduction&#10;H2: Main section&#10;H2: Conclusion"
-                      className="min-h-[100px] w-full rounded-xl border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/20 backdrop-blur-md px-4 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--cta)] focus:outline-none focus:ring-2 focus:ring-[var(--cta)]/30"
-                    />
-                  </motion.div>
-                ) : null}
-              </AnimatePresence>
-            </div>
-          </div>
-        </Card>
-
-        {/* Right Column: Content Settings */}
-        <Card className="relative overflow-hidden rounded-2xl p-5 backdrop-blur-2xl bg-gradient-to-b from-white/40 to-white/10 border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.8)] dark:from-white/10 dark:to-white/0 dark:border-white/10 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15)]">
-          <SectionHeader icon={<Icon name="settings" className="h-5 w-5" />} title="Article Configuration" subtitle="Select the style, voice, and length of your article" />
-
-          <div className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-5">
               <div>
-                <FieldLabel htmlFor="article-type">Content Format</FieldLabel>
-                <select
-                  id="article-type"
-                  value={form.articleType}
-                  onChange={(event) => updateField("articleType", event.target.value)}
-                  className="h-11 w-full rounded-xl border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/20 backdrop-blur-md px-4 text-sm text-[var(--text)] focus:border-[var(--cta)] focus:outline-none focus:ring-2 focus:ring-[var(--cta)]/30"
-                >
-                  <option value="informational">Informational</option>
-                  <option value="how-to">How-to Guide</option>
-                  <option value="comparison">Comparison</option>
-                  <option value="listicle">Listicle</option>
-                  <option value="story">Story</option>
-                </select>
-              </div>
-              <div>
-                <FieldLabel htmlFor="tone">Tone</FieldLabel>
-                <select
-                  id="tone"
-                  value={form.tone}
-                  onChange={(event) => updateField("tone", event.target.value)}
-                  className="h-11 w-full rounded-xl border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/20 backdrop-blur-md px-4 text-sm text-[var(--text)] focus:border-[var(--cta)] focus:outline-none focus:ring-2 focus:ring-[var(--cta)]/30"
-                >
-                  <option value="professional">Professional</option>
-                  <option value="conversational">Conversational</option>
-                  <option value="authoritative">Authoritative</option>
-                  <option value="friendly">Friendly</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <FieldLabel htmlFor="language">Language</FieldLabel>
-                <select
-                  id="language"
-                  value={form.language}
-                  onChange={(event) => updateField("language", event.target.value)}
-                  className="h-11 w-full rounded-xl border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/20 backdrop-blur-md px-4 text-sm text-[var(--text)] focus:border-[var(--cta)] focus:outline-none focus:ring-2 focus:ring-[var(--cta)]/30"
-                >
-                  <option value="english">English</option>
-                  <option value="urdu">Urdu</option>
-                  <option value="spanish">Spanish</option>
-                  <option value="french">French</option>
-                </select>
-              </div>
-              <div>
-                <FieldLabel htmlFor="intended-audience">Target Audience</FieldLabel>
+                <FieldLabel htmlFor="topic">What do you want to write about? <span className="text-[var(--cta)]">*</span></FieldLabel>
                 <Input
-                  id="intended-audience"
-                  placeholder="e.g., Coffee enthusiasts"
-                  value={form.intendedAudience}
-                  onChange={(event) => updateField("intendedAudience", event.target.value)}
+                  id="topic"
+                  placeholder="e.g., Best coffee brewing methods for beginners"
+                  value={form.topic}
+                  onChange={(e) => updateField("topic", e.target.value)}
+                  className="!h-12 !rounded-xl"
+                />
+                <p className="mt-1.5 text-[13px] text-[var(--text-muted)]">Use a short, clear topic. You can refine details below.</p>
+              </div>
+
+              <ToggleRow
+                label="Use live web research"
+                description="Pull in recent context and trends to improve factual relevance."
+                checked={form.liveWebResearch}
+                onChange={(next) => updateField("liveWebResearch", next)}
+              />
+
+              <div>
+                <FieldLabel htmlFor="target-keyword">Main keyword</FieldLabel>
+                <Input
+                  id="target-keyword"
+                  placeholder="e.g., coffee brewing"
+                  value={form.targetKeyword}
+                  onChange={(e) => updateField("targetKeyword", e.target.value)}
+                  className="!h-12 !rounded-xl"
+                />
+              </div>
+              <ToggleRow
+                label="Use brand voice"
+                description="Align writing style with your existing brand tone."
+                checked={form.brandVoiceKnowledge}
+                onChange={(next) => updateField("brandVoiceKnowledge", next)}
+              />
+              <ToggleRow
+                label="Use first-person voice"
+                description="Helpful for founder stories, personal insights, and opinion pieces."
+                checked={form.firstPerson}
+                onChange={(next) => updateField("firstPerson", next)}
+              />
+              <ToggleRow
+                label="Add AI content images"
+                description="Generate supporting visuals with your article."
+                checked={form.generateContentImages}
+                onChange={(next) => updateField("generateContentImages", next)}
+              />
+
+              <div className="rounded-2xl border border-[var(--border)] overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setShowOutline((prev) => !prev)}
+                  className="flex w-full items-center justify-between px-4 py-3.5 text-left text-[15px] font-medium text-[var(--text)] transition hover:bg-[var(--surface-muted)]"
+                >
+                  <span className="flex items-center gap-2">
+                    <Icon name="outline" className="h-4 w-4 opacity-70" />
+                    Custom Outline
+                    <span className="text-xs font-normal text-[var(--text-muted)]">(Optional)</span>
+                  </span>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    className={`transition-transform duration-300 ${showOutline ? "rotate-180" : ""}`}
+                  >
+                    <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <AnimatePresence initial={false}>
+                  {showOutline && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                    >
+                      <div className="p-4 pt-0 border-t border-[var(--border)]">
+                        <textarea
+                          value={form.customOutline}
+                          onChange={(e) => updateField("customOutline", e.target.value)}
+                          placeholder="H2: Introduction&#10;H2: Main section&#10;H2: Conclusion"
+                          className="mt-4 flex h-32 w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-sm text-[var(--text)] transition-colors focus-visible:border-[var(--cta)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--cta)]"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </Card>
+        </StaggerItem>
+
+        <StaggerItem className="space-y-6">
+          <Card className="rounded-[22px] border-[var(--border)] bg-[var(--surface)]/70 p-6 sm:p-7">
+            <SectionHeader
+              icon={<Icon name="settings" className="h-5 w-5" />}
+              title="Article settings"
+              subtitle="Choose style, tone, and length."
+            />
+            <div className="space-y-5">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <FieldLabel htmlFor="article-type">Article type</FieldLabel>
+                  <select
+                    id="article-type"
+                    value={form.articleType}
+                    onChange={(e) => updateField("articleType", e.target.value)}
+                    className="flex h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-sm text-[var(--text)] transition-colors focus-visible:border-[var(--cta)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--cta)]"
+                  >
+                    <option value="informational">Informational</option>
+                    <option value="how-to">How-to guide</option>
+                    <option value="listicle">Listicle</option>
+                  </select>
+                </div>
+                <div>
+                  <FieldLabel htmlFor="tone">Tone</FieldLabel>
+                  <select
+                    id="tone"
+                    value={form.tone}
+                    onChange={(e) => updateField("tone", e.target.value)}
+                    className="flex h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-sm text-[var(--text)] transition-colors focus-visible:border-[var(--cta)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--cta)]"
+                  >
+                    <option value="professional">Professional</option>
+                    <option value="conversational">Conversational</option>
+                    <option value="authoritative">Authoritative</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <FieldLabel htmlFor="ai-model">AI model</FieldLabel>
+                <select
+                  id="ai-model"
+                  value={form.aiModel}
+                  onChange={(e) => updateField("aiModel", e.target.value)}
+                  className="flex h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-sm text-[var(--text)] transition-colors focus-visible:border-[var(--cta)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--cta)]"
+                >
+                  <option value="claude-sonnet-4.6">Claude Sonnet 4.6 (quality)</option>
+                  <option value="gemini-2.5-pro">Gemini 2.5 Pro (speed)</option>
+                  <option value="gpt-4.1">GPT-4.1 (balanced)</option>
+                </select>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <FieldLabel htmlFor="language">Language</FieldLabel>
+                  <select
+                    id="language"
+                    value={form.language}
+                    onChange={(e) => updateField("language", e.target.value)}
+                    className="flex h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-sm text-[var(--text)] transition-colors focus-visible:border-[var(--cta)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--cta)]"
+                  >
+                    <option value="english">English</option>
+                    <option value="urdu">Urdu</option>
+                    <option value="spanish">Spanish</option>
+                    <option value="french">French</option>
+                  </select>
+                </div>
+                <div>
+                  <FieldLabel htmlFor="intended-audience">Target Audience</FieldLabel>
+                  <Input
+                    id="intended-audience"
+                    placeholder="e.g., Coffee enthusiasts"
+                    value={form.intendedAudience}
+                    onChange={(e) => updateField("intendedAudience", e.target.value)}
+                    className="!h-12 !rounded-xl"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <FieldLabel htmlFor="additional-context">Extra instructions</FieldLabel>
+                <textarea
+                  id="additional-context"
+                  value={form.additionalContext}
+                  onChange={(e) => updateField("additionalContext", e.target.value)}
+                  placeholder="Anything important the article should include or avoid?"
+                  className="flex h-28 w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-sm text-[var(--text)] transition-colors focus-visible:border-[var(--cta)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--cta)]"
+                />
+              </div>
+
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)]/55 p-4 dark:bg-white/[0.03]">
+                <div className="mb-3 flex items-center justify-between">
+                  <FieldLabel>Target length</FieldLabel>
+                  <span className="rounded-full bg-[var(--cta)]/10 px-3 py-1 text-[12px] font-semibold text-[var(--cta)]">{form.wordCount} words</span>
+                </div>
+                <input
+                  type="range"
+                  min={500}
+                  max={5000}
+                  step={100}
+                  value={form.wordCount}
+                  onChange={(e) => updateField("wordCount", Number(e.target.value))}
+                  style={{ "--range-fill": `${((form.wordCount - 500) / 4500) * 100}%` } as CSSProperties}
+                  className="w-full cursor-pointer appearance-none rounded-lg accent-[var(--cta)]"
                 />
               </div>
             </div>
+          </Card>
 
-            <div>
-              <FieldLabel htmlFor="additional-context">Additional Context</FieldLabel>
-              <textarea
-                id="additional-context"
-                value={form.additionalContext}
-                onChange={(event) => updateField("additionalContext", event.target.value)}
-                placeholder="Include any specific information or context"
-                className="min-h-[100px] w-full rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--cta)] focus:outline-none focus:ring-2 focus:ring-[var(--cta)]/30"
+          <Card className="rounded-[22px] border-[var(--border)] bg-[var(--surface)]/70 p-6 sm:p-7">
+            <SectionHeader
+              icon={<Icon name="bulb" className="h-5 w-5" />}
+              title="AI Intelligence"
+              subtitle="Train the AI on your brand voice and competitor strategies"
+            />
+            <div className="space-y-3">
+              <ToggleRow
+                label="Brand Voice"
+                description="Apply your unique brand personality and style guidelines"
+                checked={form.brandVoiceKnowledge}
+                onChange={(next) => updateField("brandVoiceKnowledge", next)}
+              />
+              <ToggleRow
+                label="Competitor Analysis"
+                description="Analyze top ranking pages for pattern discovery"
+                checked={form.competitorAnalysis}
+                onChange={(next) => updateField("competitorAnalysis", next)}
+                badge="Pro"
               />
             </div>
+          </Card>
 
-            <div className="rounded-xl border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/20 backdrop-blur-md p-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-[var(--text)]">Word Count</p>
-                <span className="rounded-lg bg-[var(--cta)]/10 px-3 py-1 text-sm font-semibold text-[var(--cta)]">{form.wordCount}</span>
-              </div>
-              <input
-                aria-label="Word Count"
-                type="range"
-                min={500}
-                max={5000}
-                step={100}
-                value={form.wordCount}
-                onChange={(event) => updateField("wordCount", Number(event.target.value))}
-                className="mt-3 w-full accent-[var(--cta)]"
-              />
-              <div className="mt-1 flex justify-between text-xs text-[var(--text)]/60">
-                <span>500</span>
-                <span>5,000</span>
+          <Card className="rounded-[22px] border-[var(--border)] bg-[var(--surface)]/70 p-6 sm:p-7">
+            <SectionHeader
+              icon={<Icon name="blocks" className="h-5 w-5" />}
+              title="Structural elements"
+              subtitle="Choose specific components to include in your draft"
+            />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <ToggleRow label="Local SEO Boost" checked={form.geoOptimization} onChange={(v) => updateField("geoOptimization", v)} badge="Beta" />
+              <ToggleRow label="Engaging Intro" description="Add a compelling hook" checked={form.hook} onChange={(v) => updateField("hook", v)} />
+              <ToggleRow label="Interactive Widget" description="Add HTML elements" checked={form.htmlElement} onChange={(v) => updateField("htmlElement", v)} />
+              <ToggleRow label="Internal Linking" checked={form.internalLinks} onChange={(v) => updateField("internalLinks", v)} />
+              
+              <div className="col-span-full rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-3 transition hover:border-[var(--border-strong)]">
+                <p className="mb-2 text-sm font-medium text-[var(--text)]">Readability Level</p>
+                <select
+                  value={form.readabilityLevel}
+                  onChange={(e) => updateField("readabilityLevel", e.target.value)}
+                  className="h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text)] transition-colors focus-visible:border-[var(--cta)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--cta)]"
+                >
+                  <option value="default-7th">Default (7th Grade)</option>
+                  <option value="5th-grade">5th Grade</option>
+                  <option value="college">College Level</option>
+                </select>
               </div>
             </div>
-          </div>
-        </Card>
-      </StaggerItem>
+          </Card>
 
-      {/* Content Intelligence */}
-      <StaggerItem>
-        <Card className="relative overflow-hidden rounded-2xl p-5 backdrop-blur-2xl bg-gradient-to-b from-white/40 to-white/10 border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.8)] dark:from-white/10 dark:to-white/0 dark:border-white/10 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15)]">
-          <SectionHeader icon={<Icon name="bulb" className="h-5 w-5" />} title="AI Intelligence" subtitle="Train the AI on your brand voice and competitor strategies" />
-          <div className="space-y-3">
-            <ToggleRow
-              label="Brand Voice"
-              description="Apply your unique brand personality and style guidelines"
-              checked={form.brandVoiceKnowledge}
-              onChange={(next) => updateField("brandVoiceKnowledge", next)}
+          <Card className="rounded-[22px] border-[var(--border)] bg-[var(--surface)]/70 p-6 sm:p-7">
+            <SectionHeader
+              icon={<Icon name="image" className="h-5 w-5" />}
+              title="Image settings"
+              subtitle="Configure automatic image generation"
             />
-            <ToggleRow
-              label="Competitor Analysis"
-              description="Available on Pro, Unlimited, and Lifetime plans"
-              checked={form.competitorAnalysis}
-              onChange={(next) => updateField("competitorAnalysis", next)}
-              badge="Pro"
-            />
-          </div>
-        </Card>
-      </StaggerItem>
+            <div className="space-y-4">
+              <ToggleRow label="Generate Cover Image" checked={form.generateCoverImage} onChange={(v) => updateField("generateCoverImage", v)} />
+              
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)]/55 p-4 dark:bg-white/[0.03]">
+                <div className="mb-3 flex items-center justify-between">
+                  <p className="text-sm font-medium text-[var(--text)]">Content images count</p>
+                  <span className="rounded-full bg-[var(--cta)]/10 px-3 py-1 text-[12px] font-semibold text-[var(--cta)]">{form.contentImageCount}</span>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={5}
+                  step={1}
+                  value={form.contentImageCount}
+                  onChange={(e) => updateField("contentImageCount", Number(e.target.value))}
+                  className="w-full cursor-pointer appearance-none rounded-lg accent-[var(--cta)]"
+                />
+              </div>
 
-      {/* Article Elements */}
-      <StaggerItem>
-        <Card className="relative overflow-hidden rounded-2xl p-5 backdrop-blur-2xl bg-gradient-to-b from-white/40 to-white/10 border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.8)] dark:from-white/10 dark:to-white/0 dark:border-white/10 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15)]">
-          <SectionHeader icon={<Icon name="blocks" className="h-5 w-5" />} title="Structural Elements" subtitle="Choose the components you want to include in your draft" />
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            <ToggleRow label="Local SEO Boost" description="Optimize for local search and AI discovery" checked={form.geoOptimization} onChange={(next) => updateField("geoOptimization", next)} badge="Beta" />
-            <ToggleRow label="First Person" description='Write using "I" perspective' checked={form.firstPerson} onChange={(next) => updateField("firstPerson", next)} />
-            <ToggleRow label="Engaging Intro" description="Add a compelling opening hook" checked={form.hook} onChange={(next) => updateField("hook", next)} />
-            <ToggleRow label="HTML Element" description="Interactive widget" checked={form.htmlElement} onChange={(next) => updateField("htmlElement", next)} />
-            <div className="rounded-xl border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/20 backdrop-blur-md px-4 py-3">
-              <p className="mb-2 text-sm font-medium text-[var(--text)]">Readability Level</p>
-              <select
-                value={form.readabilityLevel}
-                onChange={(event) => updateField("readabilityLevel", event.target.value)}
-                className="h-9 w-full rounded-lg border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/20 backdrop-blur-md px-3 text-sm text-[var(--text)] focus:border-[var(--cta)] focus:outline-none"
-                aria-label="Readability level"
+              <div className="rounded-2xl border border-[var(--border)] overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setShowAdvancedImageSettings((prev) => !prev)}
+                  className="flex w-full items-center justify-between px-4 py-3.5 text-left text-[15px] font-medium text-[var(--text)] transition hover:bg-[var(--surface-muted)]"
+                >
+                  <span className="flex items-center gap-2">
+                    <Icon name="palette" className="h-4 w-4 opacity-70" />
+                    Advanced Image Settings
+                  </span>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    className={`transition-transform duration-300 ${showAdvancedImageSettings ? "rotate-180" : ""}`}
+                  >
+                    <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <AnimatePresence initial={false}>
+                  {showAdvancedImageSettings && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                    >
+                      <div className="p-4 pt-0 border-t border-[var(--border)] space-y-4 pt-4">
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <div>
+                            <FieldLabel htmlFor="image-style">Image Style</FieldLabel>
+                            <select
+                              id="image-style"
+                              value={form.imageStyle}
+                              onChange={(e) => updateField("imageStyle", e.target.value)}
+                              className="h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text)] transition-colors focus-visible:border-[var(--cta)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--cta)]"
+                            >
+                              <option value="photoreal">Photoreal</option>
+                              <option value="illustration">Illustration</option>
+                              <option value="cinematic">Cinematic</option>
+                            </select>
+                          </div>
+                          <div>
+                            <FieldLabel htmlFor="image-ratio">Aspect Ratio</FieldLabel>
+                            <select
+                              id="image-ratio"
+                              value={form.imageAspectRatio}
+                              onChange={(e) => updateField("imageAspectRatio", e.target.value)}
+                              className="h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text)] transition-colors focus-visible:border-[var(--cta)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--cta)]"
+                            >
+                              <option value="16:9">16:9</option>
+                              <option value="4:3">4:3</option>
+                              <option value="1:1">1:1</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="rounded-[22px] border-[var(--border)] bg-[var(--surface)]/70 p-6 sm:p-7">
+            <div className="flex flex-col gap-4">
+              <Button
+                onClick={handleGenerate}
+                disabled={loading}
+                className={`!h-12 !rounded-full !px-8 !text-base !font-medium`}
+                aria-busy={loading}
               >
-                <option value="default-7th">Default (7th)</option>
-                <option value="5th-grade">5th Grade</option>
-                <option value="9th-grade">9th Grade</option>
-                <option value="college">College</option>
-              </select>
-            </div>
-            <ToggleRow label="Internal Links" description="Link to your content" checked={form.internalLinks} onChange={(next) => updateField("internalLinks", next)} />
-          </div>
-        </Card>
-      </StaggerItem>
-
-      {/* Image Settings */}
-      <StaggerItem>
-        <Card className="relative overflow-hidden rounded-2xl p-5 vp-ai-border backdrop-blur-2xl bg-gradient-to-b from-white/40 to-white/10 border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.8)] dark:from-white/10 dark:to-white/0 dark:border-white/10 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15)]">
-          <SectionHeader icon={<Icon name="image" className="h-5 w-5" />} title="Image Settings" subtitle="Configure automatic image generation" />
-
-          <div className="space-y-3">
-            <ToggleRow
-              label="Generate Content Images"
-              description="Add images throughout your article"
-              checked={form.generateContentImages}
-              onChange={(next) => updateField("generateContentImages", next)}
-            />
-
-            <AnimatePresence initial={false}>
-              {form.generateContentImages ? (
-                <motion.div
-                  className="ml-2 space-y-3 border-l-2 border-[var(--cta)]/20 pl-4"
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.22 }}
-                >
-                  <label className="flex items-center gap-3 text-sm text-[var(--text)]">
-                    <input
-                      type="checkbox"
-                      checked={form.generateCoverImage}
-                      onChange={(event) => updateField("generateCoverImage", event.target.checked)}
-                      className="h-4 w-4 rounded accent-[var(--cta)]"
-                    />
-                    Generate Cover Image
-                  </label>
-
-                  <div className="rounded-xl border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/20 backdrop-blur-md p-4">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-[var(--text)]">Content Images</p>
-                      <span className="rounded-lg bg-[var(--cta)]/10 px-3 py-1 text-sm font-semibold text-[var(--cta)]">{form.contentImageCount}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min={0}
-                      max={5}
-                      value={form.contentImageCount}
-                      onChange={(event) => updateField("contentImageCount", Number(event.target.value))}
-                      aria-label="Number of content images"
-                      className="mt-3 w-full accent-[var(--cta)]"
-                    />
-                    <div className="mt-1 flex justify-between text-xs text-[var(--text)]/60">
-                      <span>0</span>
-                      <span>5</span>
-                    </div>
-                  </div>
-                </motion.div>
+                {loading ? (
+                  <span className="flex items-center gap-3">
+                    <svg className="h-5 w-5 animate-spin text-white" viewBox="0 0 24 24" aria-hidden="true">
+                      <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3.5" fill="none" />
+                      <path className="opacity-90" fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-3.5A6.5 6.5 0 0 0 12 5.5z" />
+                    </svg>
+                    Generating your article...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2.5">
+                    <Icon name="rocket" className="h-5 w-5" />
+                    Generate my article
+                  </span>
+                )}
+              </Button>
+              <p className="text-center text-[13px] text-[var(--text-muted)]">Most drafts are ready in about 60–90 seconds.</p>
+              {error ? (
+                <div className="rounded-2xl border border-red-500/25 bg-red-500/10 p-3 text-sm text-red-300">
+                  {error}
+                </div>
               ) : null}
-            </AnimatePresence>
-
-            <div className="flex items-center gap-2 rounded-xl bg-[var(--cta)]/5 px-4 py-2.5 text-xs text-[var(--text)]/70">
-              <span className="text-[var(--cta)]"><Icon name="bulb" className="h-4 w-4" /></span>
-              Est. {form.contentImageCount + (form.generateCoverImage ? 1 : 0)} image credits per article · Monthly: 40/700
             </div>
-          </div>
-
-          <div className="mt-4 rounded-xl border border-[var(--border)]">
-            <button
-              type="button"
-              onClick={() => setShowAdvancedImageSettings((prev) => !prev)}
-              className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-[var(--text)] transition hover:bg-white/10 dark:hover:bg-white/5"
-            >
-              <span className="inline-flex items-center gap-2"><Icon name="palette" className="h-4 w-4" /> Advanced Image Settings <span className="text-xs font-normal text-[var(--text)]/60">(Optional)</span></span>
-              <span className={`text-[var(--text)]/60 transition-transform duration-200 ${showAdvancedImageSettings ? "rotate-180" : ""}`}>▾</span>
-            </button>
-
-            <AnimatePresence initial={false}>
-              {showAdvancedImageSettings ? (
-                <motion.div
-                  className="grid gap-4 border-t border-[var(--border)] p-4 sm:grid-cols-2"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.24 }}
-                >
-                  <div>
-                    <FieldLabel htmlFor="image-style">Image Style</FieldLabel>
-                    <select
-                      id="image-style"
-                      value={form.imageStyle}
-                      onChange={(event) => updateField("imageStyle", event.target.value)}
-                      className="h-11 w-full rounded-xl border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/20 backdrop-blur-md px-4 text-sm text-[var(--text)] focus:border-[var(--cta)] focus:outline-none"
-                    >
-                      <option value="photoreal">Photoreal</option>
-                      <option value="illustration">Illustration</option>
-                      <option value="minimal">Minimal</option>
-                      <option value="cinematic">Cinematic</option>
-                    </select>
-                  </div>
-                  <div>
-                    <FieldLabel htmlFor="image-ratio">Aspect Ratio</FieldLabel>
-                    <select
-                      id="image-ratio"
-                      value={form.imageAspectRatio}
-                      onChange={(event) => updateField("imageAspectRatio", event.target.value)}
-                      className="h-11 w-full rounded-xl border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/20 backdrop-blur-md px-4 text-sm text-[var(--text)] focus:border-[var(--cta)] focus:outline-none"
-                    >
-                      <option value="16:9">16:9</option>
-                      <option value="4:3">4:3</option>
-                      <option value="1:1">1:1</option>
-                      <option value="9:16">9:16</option>
-                    </select>
-                  </div>
-                </motion.div>
-              ) : null}
-            </AnimatePresence>
-          </div>
-        </Card>
-      </StaggerItem>
-
-      {/* Generate Action */}
-      <StaggerItem>
-        <Card className="relative overflow-hidden rounded-2xl p-5 backdrop-blur-2xl bg-gradient-to-b from-white/40 to-white/10 border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.8)] dark:from-white/10 dark:to-white/0 dark:border-white/10 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15)]">
-          <AiScanLine active={loading} />
-          <Button type="button" onClick={handleGenerate} disabled={loading} className="h-14 w-full text-base shadow-[0_16px_44px_-22px_var(--cta)]">
-            <span className="inline-flex items-center gap-2">
-              <Icon name="rocket" className="h-4 w-4" />
-              {loading ? "Generating Content..." : "Generate Article"}
-            </span>
-          </Button>
-
-          <div className="mt-4 flex items-start gap-3 rounded-xl bg-[var(--cta)]/5 px-4 py-3">
-            <span className="mt-0.5 text-[var(--cta)]"><Icon name="info" className="h-4 w-4" /></span>
-            <div>
-              <p className="text-sm font-medium text-[var(--text)]">Background Generation</p>
-              <p className="mt-0.5 text-xs text-[var(--text-muted)]">
-                We&apos;re building your content. You can find the finished article in your Library shortly.
-              </p>
-            </div>
-          </div>
-
-          {error ? <p className="mt-4 text-sm text-rose-500">{error}</p> : null}
-        </Card>
-      </StaggerItem>
+          </Card>
+        </StaggerItem>
+      </div>
 
       <StaggerItem>
         <OutputPanel loading={loading} output={output} htmlDoc={outputHtml} />

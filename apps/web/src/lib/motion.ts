@@ -17,17 +17,15 @@ export const spring = {
 } as const;
 
 export const pageVariants: Variants = {
-  initial: { opacity: 0, y: 10, filter: "blur(8px)" },
+  initial: { opacity: 0, y: 8 },
   animate: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: { duration: motionDurations.base, ease: motionEase },
   },
   exit: {
     opacity: 0,
     y: -8,
-    filter: "blur(6px)",
     transition: { duration: motionDurations.fast, ease: motionEase },
   },
 };
@@ -84,19 +82,17 @@ export const modalBackdrop: Variants = {
 };
 
 export const modalPanel: Variants = {
-  hidden: { opacity: 0, y: 18, scale: 0.96, filter: "blur(8px)" },
+  hidden: { opacity: 0, y: 10, scale: 0.98 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    filter: "blur(0px)",
     transition: spring,
   },
   exit: {
     opacity: 0,
-    y: 12,
-    scale: 0.97,
-    filter: "blur(6px)",
+    y: 8,
+    scale: 0.98,
     transition: { duration: motionDurations.fast, ease: motionEase },
   },
 };

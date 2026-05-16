@@ -50,12 +50,10 @@ export function Stagger({
   children,
   className = "",
 }: PropsWithChildren<{ className?: string }>) {
-  const reduceMotion = useReducedMotion();
-
   return (
     <motion.div
       className={className}
-      initial={reduceMotion ? false : "hidden"}
+      initial={false}
       animate="visible"
       variants={staggerContainer}
     >
@@ -69,7 +67,7 @@ export function StaggerItem({
   className = "",
 }: PropsWithChildren<{ className?: string }>) {
   return (
-    <motion.div className={className} variants={staggerItem}>
+    <motion.div className={`animate-page-in ${className}`} initial={false} variants={staggerItem}>
       {children}
     </motion.div>
   );

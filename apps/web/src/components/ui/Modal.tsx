@@ -49,7 +49,7 @@ export function Modal({
       {isOpen ? (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
           <motion.div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/40 backdrop-blur-[4px]"
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -64,7 +64,7 @@ export function Modal({
             exit="exit"
             variants={modalPanel}
           >
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--ai-accent)]/70 to-transparent" />
+            {/* Removed top neon gradient border for cleaner look */}
             <div className="mb-6">
               <div className="flex items-center justify-between">
                 <h3 className={`text-xl font-bold ${variant === 'danger' ? 'text-rose-500' : 'text-[var(--text)]'}`}>

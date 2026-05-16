@@ -61,8 +61,8 @@ export default function SignUpPage() {
   };
 
   return (
-    <main className="grid min-h-screen place-items-center bg-[var(--bg)] p-6">
-      <form className="w-full max-w-md rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-sm" onSubmit={(e) => {
+    <main className="grid min-h-screen place-items-center p-6">
+      <form className="vp-glass-panel w-full max-w-md rounded-3xl p-7 shadow-2xl" onSubmit={(e) => {
         e.preventDefault();
         void handleEmailSignUp();
       }}>

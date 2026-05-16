@@ -17,9 +17,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
+    <html lang="en" className={`${inter.variable} dark`} suppressHydrationWarning>
+      <body className="min-h-screen min-h-[100dvh] bg-[var(--app-bg-solid)] text-[var(--text)]">
+        <ThemeProvider>
+          <div id="app-root" className="min-h-screen min-h-[100dvh] bg-transparent">
+            {children}
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

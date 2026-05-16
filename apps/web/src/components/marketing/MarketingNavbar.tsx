@@ -38,7 +38,7 @@ export function MarketingNavbar() {
             </Button>
           </Link>
           <Link href="/sign-up">
-            <Button type="button" className="h-10 px-4 vp-shine">
+            <Button type="button" className="h-10 px-4">
               Start Free Trial
             </Button>
           </Link>

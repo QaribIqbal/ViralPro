@@ -4,8 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { PoweredByAiBadge } from "@/components/ui/AiVisuals";
 import type { NavItem } from "@/server/domain/types";
 
 type SidebarIconName =
@@ -89,56 +87,63 @@ export function Sidebar() {
   }, []);
 
   return (
-    <aside className="relative z-20 w-full border-b border-[var(--border)] bg-[var(--surface)]/86 p-4 shadow-[16px_0_60px_rgba(15,23,42,0.04)] backdrop-blur-xl lg:h-screen lg:w-64 lg:border-b-0 lg:border-r lg:p-6">
-      <div className="mb-6 flex items-center gap-3">
-        <motion.div
-          className="h-10 w-10 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-[0_0_28px_rgba(34,211,238,0.12)]"
-          whileHover={{ scale: 1.035, rotate: -1 }}
-        >
+    <aside className="relative z-20 m-3 flex w-auto flex-col rounded-3xl border border-[var(--border)] p-4 vp-glass-panel lg:m-4 lg:h-[calc(100vh-2rem)] lg:w-64 lg:p-5">
+      <div className="mb-6 flex items-center gap-3 px-2">
+        <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-[10px] bg-[var(--cta)] shadow-sm">
           <Image
             src="/viralpro-logo.png"
-            alt="ViralPro logo"
-            width={40}
-            height={40}
-            className="h-full w-full object-cover"
+            alt="ViralPro"
+            width={24}
+            height={24}
+            className="relative z-10 brightness-0 invert"
             priority
           />
-        </motion.div>
+        </div>
         <div>
-          <p className="text-lg font-semibold text-[var(--text)]">ViralPro</p>
-          <p className="text-xs text-[var(--text-muted)]">Creative Engine</p>
+          <h2 className="text-lg font-semibold tracking-tight text-[var(--text)] leading-none">ViralPro</h2>
+          <p className="mt-1 text-[10px] font-medium text-[var(--ai-accent)] uppercase tracking-wider">Creative Engine</p>
         </div>
       </div>
-      <PoweredByAiBadge className="mb-4 hidden lg:inline-flex">Intelligent Content Generation</PoweredByAiBadge>
-      <nav className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-1">
+
+      <nav className="flex flex-col gap-0.5 overflow-y-auto">
         {items.map((item) => {
           const active = pathname === item.href;
+          const iconName = iconByHref[item.href];
+
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex items-center gap-2 overflow-hidden rounded-xl px-3 py-2 text-sm transition ${
+              className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium tracking-tight transition-all duration-200 ${
                 active
-                  ? "text-white"
-                  : "text-[var(--text-muted)] hover:bg-[var(--surface-muted)]"
+                  ? "bg-[var(--cta)] text-[var(--cta-foreground)] shadow-sm"
+                  : "text-[var(--text-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--text)]"
               }`}
             >
-              {active ? (
-                <motion.span
-                  layoutId="sidebar-active"
-                  className="absolute inset-0 rounded-xl bg-[var(--cta)] shadow-[0_10px_28px_rgba(37,99,235,0.24)]"
-                  transition={{ type: "spring", stiffness: 420, damping: 36 }}
-                />
-              ) : null}
               <SidebarIcon
-                name={iconByHref[item.href] ?? "docs"}
-                className="relative h-4 w-4 shrink-0"
+                name={iconName || "dashboard"}
+                className={`h-4.5 w-4.5 shrink-0 transition-transform duration-200 ${
+                  active ? "text-[var(--cta-foreground)]" : "text-[var(--text-muted)] group-hover:scale-105"
+                }`}
               />
-              <span className="relative">{item.label}</span>
+              <span>{item.label}</span>
             </Link>
           );
         })}
       </nav>
+
+      <div className="mt-auto pt-6">
+        <div className="rounded-[14px] border border-[var(--border)] bg-[var(--surface-muted)] p-4 shadow-sm">
+           <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">Usage This Month</p>
+           <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--border)]">
+              <div className="h-full origin-left scale-x-[0.74] rounded-full bg-[var(--cta)] transition-transform duration-700 ease-[var(--motion-ease-premium)]" />
+           </div>
+           <p className="mt-2 flex justify-between text-xs font-medium text-[var(--text-muted)]">
+              <span>12 / 50 Articles</span>
+              <span className="text-[var(--text)]">74%</span>
+           </p>
+        </div>
+      </div>
     </aside>
   );
 }

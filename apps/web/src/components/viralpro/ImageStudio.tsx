@@ -119,12 +119,7 @@ export function ImageStudio() {
   const [libraryImages, setLibraryImages] = useState<GeneratedImage[]>([]);
   const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
   const [selectedImage, setSelectedImage] = useState<GeneratedImage | null>(null);
-  const [portalReady, setPortalReady] = useState(false);
-
-  useEffect(() => {
-    setPortalReady(true);
-    return () => setPortalReady(false);
-  }, []);
+  const [portalReady] = useState(() => typeof window !== "undefined");
 
   useEffect(() => {
     let mounted = true;

@@ -1,7 +1,4 @@
-"use client";
-
 import type { PropsWithChildren } from "react";
-import { motion, useReducedMotion } from "framer-motion";
 
 export function PoweredByAiBadge({
   children = "Powered by AI",
@@ -9,11 +6,11 @@ export function PoweredByAiBadge({
 }: PropsWithChildren<{ className?: string }>) {
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-full border border-[var(--ai-accent)]/30 bg-[var(--ai-accent)]/12 px-3 py-1 text-xs font-semibold text-[var(--ai-badge-text)] ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border border-[var(--ai-accent)]/20 bg-[var(--ai-accent)]/10 px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-[var(--ai-badge-text)] shadow-sm ${className}`}
     >
-      <span className="relative flex h-2 w-2">
-        <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--ai-accent)] opacity-70 motion-safe:animate-ping" />
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--ai-accent)]" />
+      <span className="relative flex h-1.5 w-1.5">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--ai-accent)] opacity-75"></span>
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--ai-accent)]"></span>
       </span>
       {children}
     </span>
@@ -21,23 +18,7 @@ export function PoweredByAiBadge({
 }
 
 export function AiOrb({ className = "" }: { className?: string }) {
-  const reduceMotion = useReducedMotion();
-
-  return (
-    <motion.div
-      aria-hidden="true"
-      className={`vp-ai-orb ${className}`}
-      animate={
-        reduceMotion
-          ? undefined
-          : {
-            scale: [1, 1.06, 1],
-            opacity: [0.72, 0.95, 0.72],
-          }
-      }
-      transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
-    />
-  );
+  return <div aria-hidden="true" className={`vp-ai-orb ${className}`} />;
 }
 
 export function AiScanLine({ active = true }: { active?: boolean }) {
@@ -52,19 +33,22 @@ export function NeuralBackdrop({ className = "" }: { className?: string }) {
   return (
     <div
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}
+      className={`pointer-events-none absolute inset-0 overflow-hidden opacity-50 ${className}`}
     >
-      <div className="vp-neural-grid absolute inset-0 opacity-70" />
-      <AiOrb className="absolute right-[8%] top-24 h-48 w-48 opacity-50" />
-      <div className="absolute left-[12%] top-[42%] h-56 w-56 rounded-full bg-[var(--cta)]/10 blur-3xl" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,var(--cta)_0%,transparent_40%),radial-gradient(circle_at_80%_8%,var(--ai-accent)_0%,transparent_38%)] opacity-10" />
+      <AiOrb className="absolute right-[8%] top-24 h-44 w-44 opacity-20" />
+      <div className="absolute left-[12%] top-[42%] h-52 w-52 rounded-full bg-[var(--cta)] opacity-10 blur-3xl" />
     </div>
   );
 }
 
 export function AiStatus({ text }: { text: string }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-[var(--ai-accent)]/25 bg-[var(--surface)]/75 px-3 py-1.5 text-xs font-medium text-[var(--text)] shadow-sm backdrop-blur">
-      <span className="h-1.5 w-1.5 rounded-full bg-[var(--ai-accent)] shadow-[0_0_14px_var(--ai-accent)] motion-safe:animate-pulse" />
+    <div className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1 text-[11px] font-medium text-[var(--text)] shadow-sm backdrop-blur-md">
+      <span className="relative flex h-1.5 w-1.5">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--ai-accent)] opacity-75"></span>
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--ai-accent)]"></span>
+      </span>
       {text}
     </div>
   );

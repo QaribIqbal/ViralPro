@@ -166,10 +166,10 @@ function readingMinutes(article: ArticleSummary | ArticleDetail | null, draft?: 
 }
 
 function statusClass(status: ArticleStatus) {
-  if (status === "completed" || status === "published") return "border-emerald-400/20 bg-emerald-400/10 text-emerald-300";
-  if (status === "failed") return "border-red-400/20 bg-red-400/10 text-red-300";
-  if (status === "generating" || status === "queued") return "border-cyan-300/25 bg-cyan-300/10 text-cyan-200";
-  return "border-slate-400/20 bg-slate-400/10 text-slate-300";
+  if (status === "completed" || status === "published") return "border-[var(--success)]/20 bg-[var(--success)]/8 text-[var(--success)]";
+  if (status === "failed") return "border-[var(--destructive)]/20 bg-[var(--destructive)]/8 text-[var(--destructive)]";
+  if (status === "generating" || status === "queued") return "border-[var(--ai-accent)]/25 bg-[var(--ai-accent)]/8 text-[var(--ai-accent)]";
+  return "border-[var(--border)] bg-[var(--surface-muted)] text-[var(--text-muted)]";
 }
 
 function escapeHtml(value: string) {
@@ -229,7 +229,7 @@ function enhanceArticleImageFallback(root: HTMLElement | null) {
 function StatPill({ icon, children }: { icon: IconName; children: ReactNode }) {
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-medium text-slate-300">
-      <Icon name={icon} className="h-3.5 w-3.5 text-cyan-200" />
+      <Icon name={icon} className="h-3.5 w-3.5 text-[var(--ai-accent)]" />
       {children}
     </span>
   );
@@ -246,7 +246,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 
 function ArticleThumbnail({ article }: { article: ArticleSummary }) {
   return (
-    <div className="relative h-28 overflow-hidden rounded-2xl border border-white/10 bg-[radial-gradient(circle_at_24%_24%,rgba(34,211,238,0.28),transparent_28%),linear-gradient(135deg,rgba(37,99,235,0.52),rgba(15,23,42,0.95)_58%,rgba(16,185,129,0.24))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
+    <div className="relative h-28 overflow-hidden rounded-2xl border border-[var(--border)] bg-[radial-gradient(circle_at_24%_24%,var(--cta),transparent_28%),linear-gradient(135deg,var(--cta),var(--bg)_58%,var(--ai-accent))] opacity-80 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
       <div className="absolute right-3 top-3 rounded-full border border-white/15 bg-black/20 px-2 py-1 text-[10px] font-semibold text-white/80 backdrop-blur">
         SEO {article.seo_score ?? "n/a"}
       </div>
@@ -272,31 +272,31 @@ function ArticleLibraryPanel({
   onSelect: (id: string) => void;
 }) {
   return (
-    <section className="min-h-0 rounded-[28px] border border-white/10 bg-slate-950/78 p-4 shadow-[0_24px_80px_-48px_rgba(2,6,23,0.95)] ring-1 ring-white/[0.03] backdrop-blur-xl lg:p-5">
+    <section className="min-h-0 rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-sm backdrop-blur-xl lg:p-5">
       <div className="mb-5 flex items-end justify-between gap-4 px-1">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/80">Content Library</p>
-          <h2 className="mt-2 text-2xl font-semibold text-white">Articles</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ai-accent)]">Content Library</p>
+          <h2 className="mt-2 text-2xl font-semibold text-[var(--text)]">Articles</h2>
         </div>
-        <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-slate-300">{articles.length} Total</span>
+        <span className="rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-1 text-xs font-medium text-[var(--text-muted)]">{articles.length} Total</span>
       </div>
 
       <div className="space-y-3 overflow-y-auto pr-1 lg:max-h-[calc(100vh-245px)]">
         {loading ? (
           Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-              <div className="mb-4 h-24 rounded-xl bg-white/[0.07]" />
-              <div className="h-4 w-3/4 rounded-full bg-white/10" />
-              <div className="mt-3 h-3 w-1/2 rounded-full bg-white/10" />
+            <div key={index} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] p-4">
+              <div className="mb-4 h-24 rounded-xl bg-[var(--surface-glass)]" />
+              <div className="h-4 w-3/4 rounded-full bg-[var(--border)]" />
+              <div className="mt-3 h-3 w-1/2 rounded-full bg-[var(--border)]" />
             </div>
           ))
         ) : articles.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-white/15 bg-white/[0.04] px-6 py-12 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-300/10 text-cyan-200">
+          <div className="rounded-3xl border border-dashed border-[var(--border)] bg-[var(--surface-muted)] px-6 py-12 text-center">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--ai-accent)]/10 text-[var(--ai-accent)]">
               <Icon name="file" className="h-5 w-5" />
             </div>
-            <h3 className="text-base font-semibold text-white">Your library is empty</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-400">Once you generate your first article, it will appear here with SEO insights and publishing tools.</p>
+            <h3 className="text-base font-semibold text-[var(--text)]">Your library is empty</h3>
+            <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">Once you generate your first article, it will appear here with SEO insights and publishing tools.</p>
           </div>
         ) : (
           articles.map((article) => {
@@ -306,8 +306,8 @@ function ArticleLibraryPanel({
                 key={article.id}
                 layout
                 className={`group rounded-[24px] border p-3 transition ${selected
-                  ? "border-cyan-300/35 bg-cyan-300/[0.08] shadow-[0_18px_42px_-30px_rgba(34,211,238,0.72)]"
-                  : "border-white/10 bg-white/[0.045] hover:border-white/18 hover:bg-white/[0.07]"
+                  ? "border-[var(--cta)]/30 bg-[var(--cta)]/8 shadow-sm"
+                  : "border-[var(--border)] bg-[var(--surface-muted)] hover:border-[var(--border-strong)] hover:bg-[var(--surface)]"
                   }`}
                 whileHover={{ y: -3, scale: 1.006 }}
                 transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
@@ -316,21 +316,21 @@ function ArticleLibraryPanel({
                   type="button"
                   onClick={() => onOpen(article.id)}
                   onMouseEnter={() => onSelect(article.id)}
-                  className="block w-full rounded-[18px] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70"
+                  className="block w-full rounded-[18px] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta)]/50"
                 >
                   <ArticleThumbnail article={article} />
                   <div className="px-1 pt-4">
                     <div className="mb-2 flex items-start justify-between gap-3">
-                      <h3 className="line-clamp-2 text-[15px] font-semibold leading-5 text-white">{article.title ?? article.topic}</h3>
+                      <h3 className="line-clamp-2 text-[15px] font-semibold leading-5 text-[var(--text)]">{article.title ?? article.topic}</h3>
                       <span className={`shrink-0 rounded-full border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] ${statusClass(article.status)}`}>
                         {article.status}
                       </span>
                     </div>
-                    <p className="line-clamp-2 text-sm leading-6 text-slate-400">{article.excerpt || article.primary_keyword || article.topic}</p>
+                    <p className="line-clamp-2 text-sm leading-6 text-[var(--text-muted)]">{article.excerpt || article.primary_keyword || article.topic}</p>
                   </div>
                 </button>
                 <div className="mt-4 flex items-center justify-between gap-3 px-1">
-                  <div className="flex flex-wrap gap-2 text-[11px] text-slate-400">
+                  <div className="flex flex-wrap gap-2 text-[11px] text-[var(--text-muted)]">
                     <span>{formatRelativeDate(article.updated_at)}</span>
                     <span>{article.word_count ?? 0} words</span>
                     <span>SEO {article.seo_score ?? "n/a"}</span>
@@ -338,7 +338,7 @@ function ArticleLibraryPanel({
                   <button
                     type="button"
                     onClick={() => onOpen(article.id)}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-slate-300 transition hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface-muted)] text-[var(--text-muted)] transition hover:border-[var(--cta)]/40 hover:bg-[var(--cta)]/10 hover:text-[var(--cta)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta)]"
                     aria-label={`Open ${article.title ?? article.topic} in focus mode`}
                   >
                     <Icon name="focus" />
@@ -384,22 +384,22 @@ function ArticleMetaPanel({
 }) {
   if (loading && !article) {
     return (
-      <section className="rounded-[32px] border border-white/10 bg-white/[0.05] p-6 shadow-[0_24px_80px_-52px_rgba(2,6,23,0.92)] backdrop-blur-xl">
-        <div className="h-6 w-48 rounded-full bg-white/10" />
-        <div className="mt-5 h-48 rounded-3xl bg-white/[0.06]" />
+      <section className="rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-sm backdrop-blur-xl">
+        <div className="h-6 w-48 rounded-full bg-[var(--border)]" />
+        <div className="mt-5 h-48 rounded-3xl bg-[var(--surface-muted)]" />
       </section>
     );
   }
 
   if (!article || !draft) {
     return (
-      <section className="flex min-h-[520px] items-center justify-center rounded-[32px] border border-white/10 bg-white/[0.05] p-8 text-center shadow-[0_24px_80px_-52px_rgba(2,6,23,0.92)] backdrop-blur-xl">
+      <section className="flex min-h-[520px] items-center justify-center rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-8 text-center shadow-sm backdrop-blur-xl">
         <div className="max-w-md">
-          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-3xl bg-cyan-300/10 text-cyan-200">
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-3xl bg-[var(--ai-accent)]/10 text-[var(--ai-accent)]">
             <Icon name="spark" className="h-6 w-6" />
           </div>
-          <h2 className="text-2xl font-semibold text-white">Select an article</h2>
-          <p className="mt-3 text-sm leading-6 text-slate-400">Pick an article from the list to view SEO performance, edit content, or export files.</p>
+          <h2 className="text-2xl font-semibold text-[var(--text)]">Select an article</h2>
+          <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">Pick an article from the list to view SEO performance, edit content, or export files.</p>
         </div>
       </section>
     );
@@ -411,7 +411,7 @@ function ArticleMetaPanel({
   const minutes = readingMinutes(article, draft);
 
   return (
-    <section className="rounded-[32px] border border-white/10 bg-white/[0.055] p-5 shadow-[0_24px_80px_-52px_rgba(2,6,23,0.92)] ring-1 ring-white/[0.03] backdrop-blur-xl sm:p-6 xl:p-7">
+    <section className="rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-sm backdrop-blur-xl sm:p-6 xl:p-7">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
         <div className="max-w-3xl">
           <div className="flex flex-wrap items-center gap-2">
@@ -419,16 +419,16 @@ function ArticleMetaPanel({
             <StatPill icon="clock">{minutes} min read</StatPill>
             <StatPill icon="spark">AI generated</StatPill>
           </div>
-          <h2 className="mt-5 max-w-4xl text-3xl font-semibold leading-tight text-white sm:text-4xl">{title}</h2>
-          <p className="mt-4 max-w-3xl text-base leading-7 text-slate-300">{draft.excerpt || article.meta_description || "Open focus mode to review the full article in a dedicated editorial workspace."}</p>
+          <h2 className="mt-5 max-w-4xl text-3xl font-semibold leading-tight text-[var(--text)] sm:text-4xl">{title}</h2>
+          <p className="mt-4 max-w-3xl text-base leading-7 text-[var(--text-muted)]">{draft.excerpt || article.meta_description || "Open focus mode to review the full article in a dedicated editorial workspace."}</p>
         </div>
 
         <div className="flex shrink-0 flex-wrap gap-2">
-          <Button type="button" className="h-10 gap-2 rounded-full bg-cyan-500 px-4 text-slate-950 hover:bg-cyan-400" onClick={onOpen}>
+          <Button type="button" className="h-10 gap-2 rounded-full bg-[var(--cta)] px-4 text-[var(--cta-foreground)] hover:bg-[var(--cta-hover)]" onClick={onOpen}>
             <Icon name="focus" />
             Editor
           </Button>
-          <Button type="button" variant="secondary" className="h-10 gap-2 rounded-full border-white/10 bg-white/[0.08] px-4 text-white hover:bg-white/[0.12]" disabled={!dirty || saving} onClick={onSave}>
+          <Button type="button" variant="secondary" className="h-10 gap-2 rounded-full border-[var(--border)] bg-[var(--surface-muted)] px-4 text-[var(--text)] hover:bg-[var(--surface)]" disabled={!dirty || saving} onClick={onSave}>
             <Icon name="save" />
             {saving ? "Saving" : dirty ? "Save" : "Saved"}
           </Button>
@@ -436,48 +436,48 @@ function ArticleMetaPanel({
       </div>
 
       {(error || notice) ? (
-        <div className={`mt-5 rounded-2xl border px-4 py-3 text-sm ${error ? "border-red-400/20 bg-red-400/10 text-red-200" : "border-emerald-400/20 bg-emerald-400/10 text-emerald-200"}`}>
+        <div className={`mt-5 rounded-2xl border px-4 py-3 text-sm ${error ? "border-[var(--destructive)]/20 bg-[var(--destructive)]/8 text-[var(--destructive)]" : "border-[var(--success)]/20 bg-[var(--success)]/8 text-[var(--success)]"}`}>
           {error || notice}
         </div>
       ) : null}
 
       <div className="mt-8 grid gap-4 md:grid-cols-3">
-        <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-5">
+        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface-muted)] p-5">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-slate-400">SEO score</p>
-            <Icon name="trend" className="h-4 w-4 text-emerald-300" />
+            <p className="text-sm font-medium text-[var(--text-muted)]">SEO score</p>
+            <Icon name="trend" className="h-4 w-4 text-[var(--success)]" />
           </div>
-          <p className="mt-4 text-4xl font-semibold text-white">{score || "n/a"}</p>
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
-            <div className="h-full rounded-full bg-gradient-to-r from-blue-500 via-cyan-300 to-emerald-400" style={{ width: `${Math.min(100, Math.max(0, score))}%` }} />
+          <p className="mt-4 text-4xl font-semibold text-[var(--text)]">{score || "n/a"}</p>
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-[var(--border)]">
+            <div className="h-full rounded-full bg-gradient-to-r from-[var(--cta)] to-[var(--ai-accent)]" style={{ width: `${Math.min(100, Math.max(0, score))}%` }} />
           </div>
         </div>
-        <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-5">
-          <p className="text-sm font-medium text-slate-400">Article length</p>
-          <p className="mt-4 text-4xl font-semibold text-white">{words.toLocaleString()}</p>
-          <p className="mt-3 text-sm text-slate-400">Words across a {minutes} minute read</p>
+        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface-muted)] p-5">
+          <p className="text-sm font-medium text-[var(--text-muted)]">Article length</p>
+          <p className="mt-4 text-4xl font-semibold text-[var(--text)]">{words.toLocaleString()}</p>
+          <p className="mt-3 text-sm text-[var(--text-muted)]">Words across a {minutes} minute read</p>
         </div>
-        <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-5">
-          <p className="text-sm font-medium text-slate-400">Updated</p>
-          <p className="mt-4 text-3xl font-semibold text-white">{formatRelativeDate(article.updated_at)}</p>
-          <p className="mt-3 text-sm text-slate-400">{formatDate(article.updated_at)}</p>
+        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface-muted)] p-5">
+          <p className="text-sm font-medium text-[var(--text-muted)]">Updated</p>
+          <p className="mt-4 text-3xl font-semibold text-[var(--text)]">{formatRelativeDate(article.updated_at)}</p>
+          <p className="mt-3 text-sm text-[var(--text-muted)]">{formatDate(article.updated_at)}</p>
         </div>
       </div>
 
       <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-5">
+        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface-muted)] p-5">
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-base font-semibold text-white">Content Preview</h3>
-            <span className="text-xs text-slate-500">Snapshot</span>
+            <h3 className="text-base font-semibold text-[var(--text)]">Content Preview</h3>
+            <span className="text-xs text-[var(--text-muted)]">Snapshot</span>
           </div>
-          <p className="line-clamp-4 text-sm leading-7 text-slate-300">{draft.excerpt || draft.metaDescription || draft.contentMarkdown || "Your article is ready. Open the editor to review and polish the final version."}</p>
+          <p className="line-clamp-4 text-sm leading-7 text-[var(--text-muted)]">{draft.excerpt || draft.metaDescription || draft.contentMarkdown || "Your article is ready. Open the editor to review and polish the final version."}</p>
         </div>
-        <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-5">
-          <h3 className="text-base font-semibold text-white">Actions</h3>
+        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface-muted)] p-5">
+          <h3 className="text-base font-semibold text-[var(--text)]">Actions</h3>
           <div className="mt-4 grid gap-2">
-            <button type="button" onClick={onExportMarkdown} className="flex h-11 items-center justify-between rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm font-medium text-slate-200 hover:bg-white/[0.08]">Export Markdown <Icon name="external" className="h-4 w-4 text-slate-400" /></button>
-            <button type="button" onClick={onExportHtml} className="flex h-11 items-center justify-between rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm font-medium text-slate-200 hover:bg-white/[0.08]">Export HTML <Icon name="external" className="h-4 w-4 text-slate-400" /></button>
-            <button type="button" onClick={onDelete} disabled={deleting} className="flex h-11 items-center justify-between rounded-2xl border border-red-400/15 bg-red-400/10 px-4 text-sm font-medium text-red-200 hover:bg-red-400/15 disabled:opacity-60">{deleting ? "Deleting" : "Delete Article"} <Icon name="trash" className="h-4 w-4" /></button>
+            <button type="button" onClick={onExportMarkdown} className="flex h-11 items-center justify-between rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 text-sm font-medium text-[var(--text)] hover:bg-[var(--surface-glass)]">Export Markdown <Icon name="external" className="h-4 w-4 text-[var(--text-muted)]" /></button>
+            <button type="button" onClick={onExportHtml} className="flex h-11 items-center justify-between rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 text-sm font-medium text-[var(--text)] hover:bg-[var(--surface-glass)]">Export HTML <Icon name="external" className="h-4 w-4 text-[var(--text-muted)]" /></button>
+            <button type="button" onClick={onDelete} disabled={deleting} className="flex h-11 items-center justify-between rounded-2xl border border-[var(--destructive)]/15 bg-[var(--destructive)]/8 px-4 text-sm font-medium text-[var(--destructive)] hover:bg-[var(--destructive)]/12 disabled:opacity-60">{deleting ? "Deleting" : "Delete Article"} <Icon name="trash" className="h-4 w-4" /></button>
           </div>
         </div>
       </div>
@@ -524,7 +524,7 @@ function FocusArticleModal({
 }) {
   const readerRef = useRef<HTMLElement>(null);
   const exportRef = useRef<HTMLDivElement>(null);
-  const [portalReady, setPortalReady] = useState(false);
+  const [portalReady] = useState(() => typeof window !== "undefined");
   const [exportOpen, setExportOpen] = useState(false);
 
   useEffect(() => {
@@ -539,11 +539,6 @@ function FocusArticleModal({
   }, [exportOpen]);
 
   useEffect(() => {
-    setPortalReady(true);
-    return () => setPortalReady(false);
-  }, []);
-
-  useEffect(() => {
     if (!open || editMode) return;
     enhanceArticleImageFallback(readerRef.current);
   }, [open, editMode, readerHtml]);
@@ -554,20 +549,20 @@ function FocusArticleModal({
         <motion.div className="fixed inset-0 z-[1200] bg-slate-950/86 text-white backdrop-blur-xl" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.22 }} role="dialog" aria-modal="true" aria-label="Focused article reader">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(34,211,238,0.16),transparent_34%),radial-gradient(circle_at_80%_12%,rgba(37,99,235,0.2),transparent_30%)]" />
           <div className="absolute left-0 right-0 top-0 z-20 h-1 bg-white/10">
-            <div className="h-full bg-gradient-to-r from-blue-500 via-cyan-300 to-emerald-400" style={{ width: `${progress}%` }} />
+            <div className="h-full bg-gradient-to-r from-[var(--cta)] to-[var(--ai-accent)]" style={{ width: `${progress}%` }} />
           </div>
 
           <motion.div className="relative z-10 flex h-full flex-col" initial={{ y: 28, scale: 0.985 }} animate={{ y: 0, scale: 1 }} exit={{ y: 18, scale: 0.99 }} transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}>
             <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/72 px-4 py-3 backdrop-blur-2xl sm:px-6">
               <div className="mx-auto flex max-w-[1480px] items-center justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
-                  <button type="button" onClick={onClose} className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300" aria-label="Back to content library">
+                  <button type="button" onClick={onClose} className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta)]" aria-label="Back to content library">
                     <Icon name="arrow-left" />
                   </button>
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-white">{titleFor(article, draft)}</p>
                     <div className="mt-1 flex items-center gap-2 text-xs text-slate-400">
-                      <span className="inline-flex items-center gap-1 text-emerald-300"><Icon name="check" className="h-3.5 w-3.5" />{dirty ? "Unsaved changes" : "Saved"}</span>
+                      <span className="inline-flex items-center gap-1 text-[var(--success)]"><Icon name="check" className="h-3.5 w-3.5" />{dirty ? "Unsaved changes" : "Saved"}</span>
                       {article ? <span>{readingMinutes(article, draft)} min read</span> : null}
                       {article?.seo_score ? <span>SEO {article.seo_score}</span> : null}
                     </div>
@@ -575,7 +570,7 @@ function FocusArticleModal({
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button type="button" onClick={onClose} className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300" aria-label="Close focus mode">
+                  <button type="button" onClick={onClose} className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta)]" aria-label="Close focus mode">
                     <Icon name="close" />
                   </button>
                   <div className="relative" ref={exportRef}>
@@ -583,7 +578,7 @@ function FocusArticleModal({
                       type="button"
                       onClick={() => setExportOpen(!exportOpen)}
                       className={`hidden h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-all sm:inline-flex ${exportOpen
-                        ? "border-cyan-300/40 bg-cyan-300/10 text-cyan-100"
+                        ? "border-[var(--cta)]/40 bg-[var(--cta)]/10 text-[var(--cta)]"
                         : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/[0.1]"
                         }`}
                     >
@@ -623,8 +618,8 @@ function FocusArticleModal({
                       )}
                     </AnimatePresence>
                   </div>
-                  <button type="button" onClick={onToggleEdit} className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium ${editMode ? "border-cyan-300/40 bg-cyan-300/14 text-cyan-100" : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/[0.1]"}`}><Icon name="edit" /><span className="hidden sm:inline">{editMode ? "Reading View" : "Edit Content"}</span></button>
-                  <button type="button" onClick={onSave} disabled={!dirty || saving} className="inline-flex h-10 items-center gap-2 rounded-full bg-cyan-300 px-4 text-sm font-semibold text-slate-950 hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-50"><Icon name="save" /><span className="hidden sm:inline">{saving ? "Saving" : "Save"}</span></button>
+                  <button type="button" onClick={onToggleEdit} className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium ${editMode ? "border-[var(--cta)]/40 bg-[var(--cta)]/10 text-[var(--cta)]" : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/[0.1]"}`}><Icon name="edit" /><span className="hidden sm:inline">{editMode ? "Reading View" : "Edit Content"}</span></button>
+                  <button type="button" onClick={onSave} disabled={!dirty || saving} className="inline-flex h-10 items-center gap-2 rounded-full bg-[var(--cta)] px-4 text-sm font-semibold text-[var(--cta-foreground)] hover:bg-[var(--cta-hover)] disabled:cursor-not-allowed disabled:opacity-50"><Icon name="save" /><span className="hidden sm:inline">{saving ? "Saving" : "Save"}</span></button>
                   <button type="button" onClick={onDelete} className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-slate-300 hover:bg-red-400/12 hover:text-red-200" aria-label="More actions"><Icon name="more" /></button>
                 </div>
               </div>
@@ -640,14 +635,14 @@ function FocusArticleModal({
                 <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
                   <div className="rounded-[28px] border border-white/10 bg-slate-950/60 p-5 shadow-2xl">
                     <Field label="HTML Content">
-                      <textarea value={draft.contentHtml} onChange={(event) => onUpdateDraft("contentHtml", event.target.value)} className="min-h-[62vh] w-full resize-y rounded-2xl border border-white/10 bg-slate-950/80 p-5 font-mono text-sm leading-7 text-slate-100 outline-none ring-cyan-300/30 focus:border-cyan-300/40 focus:ring-4" />
+                      <textarea value={draft.contentHtml} onChange={(event) => onUpdateDraft("contentHtml", event.target.value)} className="min-h-[62vh] w-full resize-y rounded-2xl border border-white/10 bg-slate-950/80 p-5 font-mono text-sm leading-7 text-slate-100 outline-none ring-[var(--cta)]/30 focus:border-[var(--cta)]/40 focus:ring-4" />
                     </Field>
                   </div>
                   <div className="space-y-4 rounded-[28px] border border-white/10 bg-slate-950/60 p-5 shadow-2xl">
-                    <Field label="Title"><input value={draft.title} onChange={(event) => onUpdateDraft("title", event.target.value)} className="h-11 w-full rounded-2xl border border-white/10 bg-white/[0.06] px-4 text-sm text-white outline-none focus:border-cyan-300/40" /></Field>
-                    <Field label="Slug"><input value={draft.slug} onChange={(event) => onUpdateDraft("slug", event.target.value)} className="h-11 w-full rounded-2xl border border-white/10 bg-white/[0.06] px-4 text-sm text-white outline-none focus:border-cyan-300/40" /></Field>
+                    <Field label="Title"><input value={draft.title} onChange={(event) => onUpdateDraft("title", event.target.value)} className="h-11 w-full rounded-2xl border border-white/10 bg-white/[0.06] px-4 text-sm text-white outline-none focus:border-[var(--cta)]/40" /></Field>
+                    <Field label="Slug"><input value={draft.slug} onChange={(event) => onUpdateDraft("slug", event.target.value)} className="h-11 w-full rounded-2xl border border-white/10 bg-white/[0.06] px-4 text-sm text-white outline-none focus:border-[var(--cta)]/40" /></Field>
                     <Field label="Status">
-                      <select value={draft.status} onChange={(event) => onUpdateDraft("status", event.target.value as ArticleStatus)} className="h-11 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 text-sm text-white outline-none focus:border-cyan-300/40">
+                      <select value={draft.status} onChange={(event) => onUpdateDraft("status", event.target.value as ArticleStatus)} className="h-11 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 text-sm text-white outline-none focus:border-[var(--cta)]/40">
                         <option value="draft">Draft</option>
                         <option value="completed">Completed</option>
                         <option value="published">Published</option>
@@ -656,8 +651,8 @@ function FocusArticleModal({
                         <option value="generating">Generating</option>
                       </select>
                     </Field>
-                    <Field label="Excerpt"><textarea value={draft.excerpt} onChange={(event) => onUpdateDraft("excerpt", event.target.value)} className="min-h-28 w-full rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm leading-6 text-white outline-none focus:border-cyan-300/40" /></Field>
-                    <Field label="Meta description"><textarea value={draft.metaDescription} onChange={(event) => onUpdateDraft("metaDescription", event.target.value)} className="min-h-24 w-full rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm leading-6 text-white outline-none focus:border-cyan-300/40" /></Field>
+                    <Field label="Excerpt"><textarea value={draft.excerpt} onChange={(event) => onUpdateDraft("excerpt", event.target.value)} className="min-h-28 w-full rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm leading-6 text-white outline-none focus:border-[var(--cta)]/40" /></Field>
+                    <Field label="Meta description"><textarea value={draft.metaDescription} onChange={(event) => onUpdateDraft("metaDescription", event.target.value)} className="min-h-24 w-full rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm leading-6 text-white outline-none focus:border-[var(--cta)]/40" /></Field>
                   </div>
                 </div>
               ) : (
@@ -894,8 +889,8 @@ export function ContentLibraryClient() {
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-92px)] overflow-hidden bg-[#0F172A]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_8%,rgba(34,211,238,0.14),transparent_32%),radial-gradient(circle_at_76%_14%,rgba(37,99,235,0.18),transparent_30%),linear-gradient(180deg,rgba(15,23,42,0.96),rgba(2,6,23,0.98))]" />
+    <div className="relative min-h-[calc(100vh-92px)] overflow-hidden bg-[var(--bg)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_8%,var(--cta),transparent_32%),radial-gradient(circle_at_76%_14%,var(--ai-accent),transparent_30%)] opacity-[0.06]" />
       <div className="relative z-10 grid gap-6 p-4 sm:p-6 xl:grid-cols-[430px_minmax(0,1fr)] xl:p-8">
         <ArticleLibraryPanel articles={articles} loading={loadingList} selectedId={selectedId} onOpen={openArticle} onSelect={setSelectedId} />
 

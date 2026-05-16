@@ -5,15 +5,15 @@ export default function DocsPage() {
   const { sections } = appService.getDocs();
 
   return (
-    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
-      <header className="flex items-center justify-between border-b border-[var(--border)] px-4 py-4 sm:px-8">
-        <h1 className="text-2xl font-semibold">ViralPro Docs</h1>
+    <main className="min-h-screen text-[var(--text)]">
+      <header className="mx-4 mt-4 flex items-center justify-between rounded-2xl border border-[var(--border)] vp-glass-panel px-5 py-4 sm:px-8">
+        <h1 className="text-2xl font-semibold">Help Center</h1>
         <Link href="/sign-in" className="text-sm text-[var(--text-muted)] hover:text-[var(--text)]">Back to App</Link>
       </header>
 
-      <div className="lg:flex">
-        <aside className="w-full border-b border-[var(--border)] bg-[var(--surface)] p-4 lg:h-[calc(100vh-73px)] lg:w-80 lg:border-b-0 lg:border-r lg:p-6">
-          <input aria-label="Search docs" placeholder="Search docs..." className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-sm" />
+      <div className="gap-4 p-4 lg:flex">
+        <aside className="vp-glass-panel w-full rounded-3xl p-4 lg:h-[calc(100vh-8rem)] lg:w-80 lg:p-6">
+          <input aria-label="Search docs" placeholder="Search docs..." className="vp-input w-full rounded-xl px-3 py-2 text-sm" />
           <div className="mt-5 space-y-4">
             {sections.map((section) => (
               <div key={section.title}>
@@ -28,12 +28,12 @@ export default function DocsPage() {
           </div>
         </aside>
 
-        <section className="flex-1 p-4 sm:p-8">
-          <h2 className="text-4xl font-semibold">ViralPro Documentation</h2>
-          <p className="mt-3 max-w-2xl text-[var(--text-muted)]">Guides for setup, generation workflows, and integrations.</p>
+        <section className="vp-glass-panel mt-4 flex-1 rounded-3xl p-6 sm:p-8 lg:mt-0">
+          <h2 className="text-4xl font-semibold tracking-tight">ViralPro Documentation</h2>
+          <p className="mt-3 max-w-2xl text-[var(--text-muted)]">Guides for setup, generation workflows, integrations, and support.</p>
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {sections.map((section) => (
-              <article key={section.title} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+              <article key={section.title} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)]/50 p-5 backdrop-blur-sm">
                 <h3 className="text-2xl font-semibold">{section.title}</h3>
                 <p className="mt-2 text-sm text-[var(--text-muted)]">{section.articles.length} articles</p>
               </article>

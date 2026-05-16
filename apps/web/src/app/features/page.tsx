@@ -89,7 +89,7 @@ export default function FeaturesPage() {
           <h3 className="text-3xl font-semibold">Ready to run ViralPro with your team?</h3>
           <p className="mt-3 text-white/80">Start free or request a guided demo for your workflow.</p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/sign-up"><Button type="button" className="bg-white !text-slate-900 hover:bg-slate-100 vp-shine">Start Free Trial</Button></Link>
+            <Link href="/sign-up"><Button type="button" className="bg-white !text-slate-900 hover:bg-slate-100">Start Free Trial</Button></Link>
             <Link href="/contact"><Button type="button" variant="secondary" className="border-white/30 bg-transparent text-white hover:bg-white/10">Get a Demo</Button></Link>
           </div>
         </div>

@@ -13,8 +13,11 @@ export default function HomePage() {
     <main className="bg-[var(--bg)] text-[var(--text)]">
       <MarketingNavbar />
 
-      <section className="relative overflow-hidden border-b border-[var(--border)]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(37,99,235,0.12),transparent_36%),radial-gradient(circle_at_85%_10%,rgba(34,211,238,0.12),transparent_30%)]" />
+      <section className="relative overflow-hidden border-b border-[var(--border)] bg-[var(--surface-muted)]">
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--cta)]/5 via-transparent to-[var(--ai-accent)]/5" />
+        <div className="pointer-events-none absolute left-[12%] top-24 h-48 w-48 rounded-full bg-[var(--cta)] opacity-10 blur-3xl" />
+        <div className="pointer-events-none absolute right-[18%] top-40 h-64 w-64 rounded-full bg-[var(--ai-accent)] opacity-10 blur-3xl" />
+        <div className="pointer-events-none absolute bottom-28 left-[44%] h-56 w-56 rounded-full bg-[var(--ai-accent-2)] opacity-5 blur-3xl" />
         <div className="relative mx-auto grid w-full max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
           <div className="vp-reveal">
             <InlineBadge>AI-Powered SEO & Content Automation</InlineBadge>
@@ -25,12 +28,12 @@ export default function HomePage() {
               ViralPro unifies keyword strategy, blog generation, and automated image workflows so your team publishes higher-quality SEO content at scale.
             </p>
             <div className="mt-8 flex flex-wrap gap-3 vp-reveal vp-delay-3">
-              <Link href="/sign-up"><Button type="button" className="h-12 px-6 text-sm vp-shine">Start Free Trial</Button></Link>
+              <Link href="/sign-up"><Button type="button" className="h-12 px-6 text-sm">Start Free Trial</Button></Link>
               <Link href="/features"><Button type="button" variant="secondary" className="h-12 px-6 text-sm">Explore Features</Button></Link>
             </div>
           </div>
 
-          <article className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)] vp-reveal vp-delay-2 vp-float">
+          <article className="relative rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-xl shadow-black/5 vp-reveal vp-delay-2">
             <Image
               src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=1600&q=80&auto=format&fit=crop"
               alt="ViralPro platform preview"
@@ -114,10 +117,10 @@ export default function HomePage() {
 
       <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--primary)] px-6 py-10 text-white sm:px-10 sm:py-12 vp-reveal">
-          <p className="text-sm font-semibold uppercase tracking-[0.12em] text-cyan-200">Start Building</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.12em] text-[var(--ai-accent-2)]">Start Building</p>
           <h3 className="mt-3 max-w-2xl text-3xl font-semibold leading-tight sm:text-4xl">Launch your AI SEO content pipeline today.</h3>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/sign-up"><Button type="button" className="bg-white !text-slate-900 hover:bg-slate-100 vp-shine">Start Free Trial</Button></Link>
+            <Link href="/sign-up"><Button type="button" className="bg-white !text-slate-900 hover:bg-slate-100">Start Free Trial</Button></Link>
             <Link href="/contact"><Button type="button" variant="secondary" className="border-white/30 bg-transparent text-white hover:bg-white/10">Talk to Sales</Button></Link>
           </div>
         </div>

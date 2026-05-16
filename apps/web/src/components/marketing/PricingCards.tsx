@@ -53,7 +53,7 @@ export function PricingCards() {
                   <li key={feature}>• {feature}</li>
                 ))}
               </ul>
-              <Button type="button" className="mt-6 w-full vp-shine" variant={tier.highlighted ? "primary" : "secondary"}>
+              <Button type="button" className="mt-6 w-full" variant={tier.highlighted ? "primary" : "secondary"}>
                 {tier.cta}
               </Button>
             </article>
