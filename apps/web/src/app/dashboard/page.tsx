@@ -150,24 +150,75 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="hidden relative h-[250px] overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface-muted)] lg:block">
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[var(--cta)]/10 to-[var(--ai-accent)]/10" />
+            <div className="hidden relative h-[250px] overflow-hidden rounded-3xl border border-[var(--border)] bg-[#080B11] lg:block">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,var(--cta-soft)_0%,transparent_60%)] opacity-40" />
+
+              {/* Motherboard Traces */}
+              <svg viewBox="0 0 400 250" className="absolute left-1/2 top-1/2 h-[250px] w-[400px] -translate-x-1/2 -translate-y-1/2 text-[var(--border-strong)]">
+                {/* Static traces */}
+                <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-50">
+                  <path d="M40 50 h 60 l 40 40 h 30" />
+                  <path d="M20 90 h 60 l 20 20 h 70" />
+                  <path d="M20 160 h 60 l 20 -20 h 70" />
+                  <path d="M40 200 h 60 l 40 -40 h 30" />
+                  
+                  <path d="M360 50 h -60 l -40 40 h -30" />
+                  <path d="M380 90 h -60 l -20 20 h -70" />
+                  <path d="M380 160 h -60 l -20 -20 h -70" />
+                  <path d="M360 200 h -60 l -40 -40 h -30" />
+                  
+                  <circle cx="40" cy="50" r="2" fill="currentColor" />
+                  <circle cx="20" cy="90" r="2" fill="currentColor" />
+                  <circle cx="20" cy="160" r="2" fill="currentColor" />
+                  <circle cx="40" cy="200" r="2" fill="currentColor" />
+                  <circle cx="360" cy="50" r="2" fill="currentColor" />
+                  <circle cx="380" cy="90" r="2" fill="currentColor" />
+                  <circle cx="380" cy="160" r="2" fill="currentColor" />
+                  <circle cx="360" cy="200" r="2" fill="currentColor" />
+                </g>
+
+                {/* Animated Data Streams */}
+                <g fill="none" stroke="var(--ai-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-90">
+                  <path d="M40 50 h 60 l 40 40 h 30" strokeDasharray="10 150" strokeDashoffset="150">
+                    <animate attributeName="stroke-dashoffset" values="150;-10" dur="2s" repeatCount="indefinite" />
+                  </path>
+                  <path d="M20 160 h 60 l 20 -20 h 70" strokeDasharray="15 150" strokeDashoffset="150">
+                    <animate attributeName="stroke-dashoffset" values="150;-15" dur="2.5s" repeatCount="indefinite" begin="1s" />
+                  </path>
+                  <path d="M360 50 h -60 l -40 40 h -30" strokeDasharray="10 150" strokeDashoffset="150">
+                    <animate attributeName="stroke-dashoffset" values="150;-10" dur="2.2s" repeatCount="indefinite" begin="0.5s" />
+                  </path>
+                  <path d="M380 160 h -60 l -20 -20 h -70" strokeDasharray="12 150" strokeDashoffset="150">
+                    <animate attributeName="stroke-dashoffset" values="150;-12" dur="1.8s" repeatCount="indefinite" begin="1.2s" />
+                  </path>
+                </g>
+              </svg>
+
+              {/* Central CPU */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="relative flex h-32 w-32 items-center justify-center">
-                  <div className="absolute inset-0 animate-spin rounded-full border-[1.5px] border-dashed border-[var(--cta)]/30" style={{ animationDuration: "12s" }} />
-                  <div className="absolute inset-3 animate-spin rounded-full border-[1.5px] border-dashed border-[var(--ai-accent)]/40" style={{ animationDuration: "16s", animationDirection: "reverse" }} />
-                  <div className="vp-idle-pulse flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-[var(--cta)] to-[var(--ai-accent)] text-white shadow-[0_0_30px_rgba(109,40,217,0.3)]">
-                    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9.5 8A2.5 2.5 0 0 1 12 5.5 2.5 2.5 0 0 1 14.5 8 2.5 2.5 0 0 1 17 10.5v3A2.5 2.5 0 0 1 14.5 16 2.5 2.5 0 0 1 12 18.5 2.5 2.5 0 0 1 9.5 16 2.5 2.5 0 0 1 7 13.5v-3A2.5 2.5 0 0 1 9.5 8z" />
-                      <path d="M10 11h4M10 14h4" />
+                <div className="relative">
+                  <div className="absolute inset-0 animate-ping rounded-xl bg-[var(--cta)] opacity-20" style={{ animationDuration: "3s" }} />
+                  <div className="vp-idle-pulse flex h-20 w-20 items-center justify-center rounded-xl border-2 border-[var(--cta)] bg-[#0C101A] shadow-[0_0_40px_rgba(109,40,217,0.4)]">
+                    <svg className="h-10 w-10 text-[var(--ai-accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
+                      <rect x="9" y="9" width="6" height="6" />
+                      <line x1="9" y1="1" x2="9" y2="4" />
+                      <line x1="15" y1="1" x2="15" y2="4" />
+                      <line x1="9" y1="20" x2="9" y2="23" />
+                      <line x1="15" y1="20" x2="15" y2="23" />
+                      <line x1="20" y1="9" x2="23" y2="9" />
+                      <line x1="20" y1="14" x2="23" y2="14" />
+                      <line x1="1" y1="9" x2="4" y2="9" />
+                      <line x1="1" y1="14" x2="4" y2="14" />
                     </svg>
                   </div>
                 </div>
               </div>
+
               <div className="absolute bottom-5 left-0 right-0 flex justify-center">
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface)]/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--text)] backdrop-blur-md shadow-sm">
                   <span className="vp-badge-pulse h-1.5 w-1.5 rounded-full bg-[var(--ai-accent)]" />
-                  Engine Active
+                  Processor Active
                 </span>
               </div>
             </div>
