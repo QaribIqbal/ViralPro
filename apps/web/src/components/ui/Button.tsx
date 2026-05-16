@@ -1,8 +1,12 @@
-import type { ButtonHTMLAttributes } from "react";
+"use client";
+
+import type { HTMLMotionProps } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { spring } from "@/lib/motion";
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "destructive";
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+type ButtonProps = HTMLMotionProps<"button"> & {
   variant?: ButtonVariant;
 };
 
@@ -18,9 +22,15 @@ const byVariant: Record<ButtonVariant, string> = {
 };
 
 export function Button({ variant = "primary", className = "", ...props }: ButtonProps) {
+  const reduceMotion = useReducedMotion();
+
   return (
-    <button
+    <motion.button
+      whileHover={reduceMotion || props.disabled ? undefined : { y: -1 }}
+      whileTap={reduceMotion || props.disabled ? undefined : { scale: 0.975, y: 0 }}
+      transition={spring}
       className={`inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${byVariant[variant]} ${className}`}
+      style={{ willChange: reduceMotion ? undefined : "transform" }}
       {...props}
     />
   );

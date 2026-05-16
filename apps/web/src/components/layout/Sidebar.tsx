@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { PoweredByAiBadge } from "@/components/ui/AiVisuals";
 import type { NavItem } from "@/server/domain/types";
 
 type SidebarIconName =
@@ -87,9 +89,12 @@ export function Sidebar() {
   }, []);
 
   return (
-    <aside className="w-full border-b border-[var(--border)] bg-[var(--surface)] p-4 lg:h-screen lg:w-64 lg:border-b-0 lg:border-r lg:p-6">
+    <aside className="relative z-20 w-full border-b border-[var(--border)] bg-[var(--surface)]/86 p-4 shadow-[16px_0_60px_rgba(15,23,42,0.04)] backdrop-blur-xl lg:h-screen lg:w-64 lg:border-b-0 lg:border-r lg:p-6">
       <div className="mb-6 flex items-center gap-3">
-        <div className="h-10 w-10 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+        <motion.div
+          className="h-10 w-10 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-[0_0_28px_rgba(34,211,238,0.12)]"
+          whileHover={{ scale: 1.035, rotate: -1 }}
+        >
           <Image
             src="/viralpro-logo.png"
             alt="ViralPro logo"
@@ -98,12 +103,13 @@ export function Sidebar() {
             className="h-full w-full object-cover"
             priority
           />
-        </div>
+        </motion.div>
         <div>
           <p className="text-lg font-semibold text-[var(--text)]">ViralPro</p>
           <p className="text-xs text-[var(--text-muted)]">Content OS</p>
         </div>
       </div>
+      <PoweredByAiBadge className="mb-4 hidden lg:inline-flex">AI automation engine</PoweredByAiBadge>
       <nav className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-1">
         {items.map((item) => {
           const active = pathname === item.href;
@@ -111,17 +117,24 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm transition ${
+              className={`relative flex items-center gap-2 overflow-hidden rounded-xl px-3 py-2 text-sm transition ${
                 active
-                  ? "bg-[var(--cta)] text-white"
+                  ? "text-white"
                   : "text-[var(--text-muted)] hover:bg-[var(--surface-muted)]"
               }`}
             >
+              {active ? (
+                <motion.span
+                  layoutId="sidebar-active"
+                  className="absolute inset-0 rounded-xl bg-[var(--cta)] shadow-[0_10px_28px_rgba(37,99,235,0.24)]"
+                  transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                />
+              ) : null}
               <SidebarIcon
                 name={iconByHref[item.href] ?? "docs"}
-                className="h-4 w-4 shrink-0"
+                className="relative h-4 w-4 shrink-0"
               />
-              {item.label}
+              <span className="relative">{item.label}</span>
             </Link>
           );
         })}

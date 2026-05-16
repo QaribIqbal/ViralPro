@@ -1,11 +1,13 @@
 import type { PropsWithChildren } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { NeuralBackdrop } from "@/components/ui/AiVisuals";
 
 export function AppShell({ children }: PropsWithChildren) {
   return (
-    <div className="min-h-screen bg-[var(--bg)] lg:flex">
+    <div className="relative min-h-screen overflow-hidden bg-[var(--bg)] lg:flex">
+      <NeuralBackdrop />
       <Sidebar />
-      <div className="flex-1">{children}</div>
+      <div className="relative z-10 flex-1">{children}</div>
     </div>
   );
 }

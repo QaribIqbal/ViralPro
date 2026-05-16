@@ -2,9 +2,13 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { AiScanLine, AiStatus, PoweredByAiBadge } from "@/components/ui/AiVisuals";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
+import { Stagger, StaggerItem } from "@/components/ui/Motion";
 import type { ImageItem } from "@/server/domain/types";
 import { apiRequest, isUnauthorizedApiError } from "@/lib/api-client";
 
@@ -115,14 +119,22 @@ export function ImageStudio() {
   const [libraryImages, setLibraryImages] = useState<GeneratedImage[]>([]);
   const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
   const [selectedImage, setSelectedImage] = useState<GeneratedImage | null>(null);
+  const [portalReady, setPortalReady] = useState(false);
+
+  useEffect(() => {
+    setPortalReady(true);
+    return () => setPortalReady(false);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
 
-    // Keep first client render consistent with server render, then hydrate history.
-    const history = dedupeImagesById(loadGeneratedHistory()).slice(0, MAX_HISTORY_ITEMS);
-    setGeneratedImages(history);
-    saveGeneratedHistory(history);
+    const historyTimeout = window.setTimeout(() => {
+      // Keep first client render consistent with server render, then hydrate history.
+      const history = dedupeImagesById(loadGeneratedHistory()).slice(0, MAX_HISTORY_ITEMS);
+      setGeneratedImages(history);
+      saveGeneratedHistory(history);
+    }, 0);
 
     void (async () => {
       try {
@@ -156,6 +168,7 @@ export function ImageStudio() {
 
     return () => {
       mounted = false;
+      window.clearTimeout(historyTimeout);
     };
   }, []);
 
@@ -208,12 +221,20 @@ export function ImageStudio() {
   };
 
   return (
-    <div className="space-y-6 p-4 sm:p-6">
-      <Card className="p-5">
-        <h2 className="text-lg font-semibold text-[var(--text)]">AI Image Studio</h2>
-        <p className="mt-1 text-sm text-[var(--text-muted)]">
-          Trigger n8n workflow for Gemini image generation.
-        </p>
+    <Stagger className="space-y-6 p-4 sm:p-6">
+      <StaggerItem>
+      <Card className="relative overflow-hidden p-5 vp-ai-border">
+        <AiScanLine active={loading} />
+        <div className="relative flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <PoweredByAiBadge>Powered by AI image generation</PoweredByAiBadge>
+            <h2 className="mt-3 text-lg font-semibold text-[var(--text)]">AI Image Studio</h2>
+            <p className="mt-1 text-sm text-[var(--text-muted)]">
+              Trigger n8n workflow for Gemini image generation with premium creative controls.
+            </p>
+          </div>
+          <AiStatus text={loading ? "Generating pixels..." : "Prompt engine online"} />
+        </div>
 
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div className="md:col-span-2">
@@ -225,7 +246,7 @@ export function ImageStudio() {
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Modern workspace desk setup with natural lighting, editorial style"
-              className="min-h-[110px] w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)]"
+              className="vp-focus-glow min-h-[110px] w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)]"
             />
           </div>
 
@@ -274,13 +295,16 @@ export function ImageStudio() {
 
         {error ? <p className="mt-3 text-sm text-rose-500">{error}</p> : null}
 
-        <div className="mt-4">
-          <Button type="button" onClick={handleGenerateImage} disabled={loading || !prompt.trim()}>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <Button type="button" onClick={handleGenerateImage} disabled={loading || !prompt.trim()} className="shadow-[0_16px_44px_-22px_var(--cta)]">
             {loading ? "Generating Image..." : "Generate Image"}
           </Button>
+          {loading ? <AiStatus text="AI is scanning composition..." /> : null}
         </div>
       </Card>
+      </StaggerItem>
 
+      <StaggerItem>
       <Card className="p-5">
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-base font-semibold text-[var(--text)]">Generated History</h3>
@@ -301,18 +325,29 @@ export function ImageStudio() {
         {generatedImages.length === 0 ? (
           <p className="text-sm text-[var(--text-muted)]">No generated images yet.</p>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" layout>
             {generatedImages.map((image, index) => (
-              <div key={imageRenderKey(image, index)} className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
+              <motion.div
+                key={imageRenderKey(image, index)}
+                className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-sm"
+                layout
+                initial={{ opacity: 0, y: 16, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.32 }}
+                whileHover={{ y: -4 }}
+              >
                 <button type="button" onClick={() => setSelectedImage(image)} className="block w-full text-left">
-                  <Image
-                    src={image.url}
-                    alt={image.title}
-                    width={1024}
-                    height={1024}
-                    unoptimized={image.url.startsWith("data:") || image.url.startsWith("blob:")}
-                    className="h-52 w-full object-cover"
-                  />
+                  <div className="relative">
+                    <Image
+                      src={image.url}
+                      alt={image.title}
+                      width={1024}
+                      height={1024}
+                      unoptimized={image.url.startsWith("data:") || image.url.startsWith("blob:")}
+                      className="h-52 w-full object-cover"
+                    />
+                    <PoweredByAiBadge className="absolute left-3 top-3 bg-[var(--surface)]/80 backdrop-blur">AI generated</PoweredByAiBadge>
+                  </div>
                 </button>
                 <div className="space-y-2 p-3">
                   <p className="text-sm font-medium text-[var(--text)]">{image.title}</p>
@@ -329,43 +364,68 @@ export function ImageStudio() {
                     </Button>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </Card>
+      </StaggerItem>
 
+      <StaggerItem>
       <Card className="p-5">
         <h3 className="mb-3 text-base font-semibold text-[var(--text)]">Image Library</h3>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {allImages.map((image, index) => (
-            <button
+            <motion.button
               key={imageRenderKey(image, index)}
               type="button"
               onClick={() => setSelectedImage(image)}
               className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] text-left"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -4 }}
             >
-              <Image
-                src={image.url}
-                alt={image.title}
-                width={1024}
-                height={1024}
-                unoptimized={image.url.startsWith("data:") || image.url.startsWith("blob:")}
-                className="h-52 w-full object-cover"
-              />
+              <div className="relative">
+                <Image
+                  src={image.url}
+                  alt={image.title}
+                  width={1024}
+                  height={1024}
+                  unoptimized={image.url.startsWith("data:") || image.url.startsWith("blob:")}
+                  className="h-52 w-full object-cover"
+                />
+                <PoweredByAiBadge className="absolute left-3 top-3 bg-[var(--surface)]/80 backdrop-blur">AI generated</PoweredByAiBadge>
+              </div>
               <div className="space-y-1 p-3">
                 <p className="text-sm font-medium text-[var(--text)]">{image.title}</p>
                 <p className="line-clamp-2 text-xs text-[var(--text-muted)]">{image.prompt}</p>
                 <p className="text-[11px] text-[var(--cta)]">{image.model}</p>
               </div>
-            </button>
+            </motion.button>
           ))}
         </div>
       </Card>
+      </StaggerItem>
 
+      {portalReady
+        ? createPortal(
+      <AnimatePresence>
       {selectedImage ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={() => setSelectedImage(null)}>
-          <div className="max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-2xl bg-[var(--surface)]" onClick={(e) => e.stopPropagation()}>
+        <motion.div
+          className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+          onClick={() => setSelectedImage(null)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-2xl bg-[var(--surface)] shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0, scale: 0.96, y: 18 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: 12 }}
+            transition={{ type: "spring", stiffness: 380, damping: 34 }}
+          >
             <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
               <div>
                 <p className="text-sm font-semibold text-[var(--text)]">{selectedImage.title}</p>
@@ -391,11 +451,15 @@ export function ImageStudio() {
               />
             </div>
             <div className="px-4 py-3">
+              <PoweredByAiBadge className="mb-2">AI generated</PoweredByAiBadge>
               <p className="text-sm text-[var(--text-muted)]">{selectedImage.prompt}</p>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       ) : null}
-    </div>
+      </AnimatePresence>
+        , document.body)
+        : null}
+    </Stagger>
   );
 }

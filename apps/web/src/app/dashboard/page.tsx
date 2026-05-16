@@ -3,7 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Topbar } from "@/components/layout/Topbar";
+import { PoweredByAiBadge } from "@/components/ui/AiVisuals";
 import { Card } from "@/components/ui/Card";
+import { Stagger, StaggerItem } from "@/components/ui/Motion";
 import { ApiClientError, apiRequest } from "@/lib/api-client";
 
 type UsageResponse = {
@@ -111,28 +113,41 @@ export default function DashboardPage() {
   return (
     <AppShell>
       <Topbar title="Dashboard" subtitle="Usage and library overview" />
-      <div className="space-y-4 p-4 sm:p-6">
+      <div className="space-y-5 p-4 sm:p-6">
         {error ? <p className="text-sm text-rose-500">{error}</p> : null}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {cards.map((card) => (
-            <Card
-              key={card.id}
-              className={`border bg-gradient-to-br ${card.tone} p-5 shadow-sm`}
-            >
-              <p className="text-sm text-[var(--text-muted)]">{card.label}</p>
-              <p className="mt-2 text-3xl font-semibold text-[var(--text)]">{card.value}</p>
-              <p className="mt-1 text-xs text-[var(--text-muted)]">{card.sub}</p>
-              {typeof card.progress === "number" ? (
-                <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-black/10">
-                  <div
-                    className="h-full rounded-full bg-[var(--primary)] transition-all"
-                    style={{ width: `${card.progress}%` }}
-                  />
-                </div>
-              ) : null}
-            </Card>
-          ))}
+        <div className="relative overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface)]/86 p-5 shadow-[0_20px_70px_-55px_rgba(15,23,42,0.7)] backdrop-blur">
+          <div className="pointer-events-none absolute right-8 top-4 h-28 w-28 rounded-full bg-[var(--ai-accent)]/15 blur-3xl" />
+          <div className="relative flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <PoweredByAiBadge>Powered by AI insights</PoweredByAiBadge>
+              <h2 className="mt-3 text-2xl font-semibold text-[var(--text)]">Automation command center</h2>
+              <p className="mt-1 max-w-2xl text-sm text-[var(--text-muted)]">
+                Usage, production output, and content library health update as ViralPro generates assets in the background.
+              </p>
+            </div>
+          </div>
         </div>
+
+        <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {cards.map((card) => (
+            <StaggerItem key={card.id}>
+              <Card className={`relative overflow-hidden border bg-gradient-to-br ${card.tone} p-5 shadow-sm`}>
+                <div className="absolute right-4 top-4 h-14 w-14 rounded-full bg-white/18 blur-2xl" />
+                <p className="text-sm text-[var(--text-muted)]">{card.label}</p>
+                <p className="mt-2 text-3xl font-semibold text-[var(--text)]">{card.value}</p>
+                <p className="mt-1 text-xs text-[var(--text-muted)]">{card.sub}</p>
+                {typeof card.progress === "number" ? (
+                  <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-black/10">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-[var(--cta)] to-[var(--ai-accent)] transition-all duration-700"
+                      style={{ width: `${card.progress}%` }}
+                    />
+                  </div>
+                ) : null}
+              </Card>
+            </StaggerItem>
+          ))}
+        </Stagger>
       </div>
     </AppShell>
   );

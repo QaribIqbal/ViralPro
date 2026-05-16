@@ -1,9 +1,12 @@
 "use client";
 
 import { type ReactNode, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { AiScanLine, AiStatus, PoweredByAiBadge } from "@/components/ui/AiVisuals";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
+import { Stagger, StaggerItem } from "@/components/ui/Motion";
 import { OutputPanel } from "@/components/viralpro/OutputPanel";
 import { apiRequest } from "@/lib/api-client";
 import type { Article, GeneratedImage } from "@/server/domain/types";
@@ -154,10 +157,11 @@ function Toggle({ checked, onChange, ariaLabel }: { checked: boolean; onChange: 
           : "border-[var(--border)] bg-[var(--surface-muted)]"
       }`}
     >
-      <span
-        className={`inline-block h-7 w-7 rounded-full bg-[var(--primary)] transition ${
-          checked ? "translate-x-9" : "translate-x-1"
-        }`}
+      <motion.span
+        layout
+        className="inline-block h-7 w-7 rounded-full bg-[var(--primary)] shadow-[0_8px_18px_rgba(15,23,42,0.18)]"
+        animate={{ x: checked ? 36 : 4 }}
+        transition={{ type: "spring", stiffness: 480, damping: 32 }}
       />
     </button>
   );
@@ -277,9 +281,24 @@ export function GenerateArticleStudio() {
   };
 
   return (
-    <div className="space-y-5 p-4 sm:p-6">
+    <Stagger className="space-y-5 p-4 sm:p-6">
+      <StaggerItem>
+        <div className="relative overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface)]/88 p-5 backdrop-blur vp-ai-border">
+          <AiScanLine active={loading} />
+          <div className="relative flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <PoweredByAiBadge>Powered by AI writing engine</PoweredByAiBadge>
+              <h2 className="mt-3 text-2xl font-semibold text-[var(--text)]">Generate investor-grade content workflows</h2>
+              <p className="mt-1 max-w-2xl text-sm text-[var(--text-muted)]">
+                ViralPro analyzes intent, SEO structure, voice, and image needs before building the draft.
+              </p>
+            </div>
+            <AiStatus text={loading ? "AI is analyzing..." : "Ready to generate"} />
+          </div>
+        </div>
+      </StaggerItem>
       {/* Usage Stats */}
-      <div className="grid gap-4 sm:grid-cols-2">
+      <StaggerItem className="grid gap-4 sm:grid-cols-2">
         <div className="flex items-center gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--cta)]/10 text-[var(--cta)]">
             <Icon name="article" className="h-5 w-5" />
@@ -298,10 +317,10 @@ export function GenerateArticleStudio() {
             <p className="text-xl font-bold text-[var(--text)]">680 <span className="text-sm font-normal text-[var(--text-muted)]">remaining</span></p>
           </div>
         </div>
-      </div>
+      </StaggerItem>
 
       {/* Main Form Grid */}
-      <div className="grid gap-5 xl:grid-cols-[1fr_1fr]">
+      <StaggerItem className="grid gap-5 xl:grid-cols-[1fr_1fr]">
         {/* Left Column: Content Brief */}
         <Card className="rounded-2xl p-5">
           <SectionHeader icon={<Icon name="edit" className="h-5 w-5" />} title="Content Brief" subtitle="Define your article topic and core settings" />
@@ -357,8 +376,15 @@ export function GenerateArticleStudio() {
                 <span className="inline-flex items-center gap-2"><Icon name="outline" className="h-4 w-4" /> Custom Outline <span className="text-xs font-normal text-[var(--text-muted)]">(Optional)</span></span>
                 <span className={`text-[var(--text-muted)] transition-transform duration-200 ${showOutline ? "rotate-180" : ""}`}>▾</span>
               </button>
+              <AnimatePresence initial={false}>
               {showOutline ? (
-                <div className="border-t border-[var(--border)] p-4">
+                <motion.div
+                  className="border-t border-[var(--border)] p-4"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.24 }}
+                >
                   <textarea
                     aria-label="Custom Outline"
                     value={form.customOutline}
@@ -366,8 +392,9 @@ export function GenerateArticleStudio() {
                     placeholder="H2: Introduction&#10;H2: Main section&#10;H2: Conclusion"
                     className="min-h-[100px] w-full rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--cta)] focus:outline-none focus:ring-2 focus:ring-[var(--cta)]/30"
                   />
-                </div>
+                </motion.div>
               ) : null}
+              </AnimatePresence>
             </div>
           </div>
         </Card>
@@ -468,9 +495,10 @@ export function GenerateArticleStudio() {
             </div>
           </div>
         </Card>
-      </div>
+      </StaggerItem>
 
       {/* Content Intelligence */}
+      <StaggerItem>
       <Card className="rounded-2xl p-5">
         <SectionHeader icon={<Icon name="brain" className="h-5 w-5" />} title="Content Intelligence" subtitle="Enhance with brand voice, knowledge base & competitor insights" />
         <div className="space-y-3">
@@ -489,8 +517,10 @@ export function GenerateArticleStudio() {
           />
         </div>
       </Card>
+      </StaggerItem>
 
       {/* Article Elements */}
+      <StaggerItem>
       <Card className="rounded-2xl p-5">
         <SectionHeader icon={<Icon name="blocks" className="h-5 w-5" />} title="Article Elements" subtitle="Select which elements to include in your article" />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -515,9 +545,11 @@ export function GenerateArticleStudio() {
           <ToggleRow label="Internal Links" description="Link to your content" checked={form.internalLinks} onChange={(next) => updateField("internalLinks", next)} />
         </div>
       </Card>
+      </StaggerItem>
 
       {/* Image Settings */}
-      <Card className="rounded-2xl p-5">
+      <StaggerItem>
+      <Card className="rounded-2xl p-5 vp-ai-border">
         <SectionHeader icon={<Icon name="image" className="h-5 w-5" />} title="Image Settings" subtitle="Configure automatic image generation" />
 
         <div className="space-y-3">
@@ -528,8 +560,15 @@ export function GenerateArticleStudio() {
             onChange={(next) => updateField("generateContentImages", next)}
           />
 
+          <AnimatePresence initial={false}>
           {form.generateContentImages ? (
-            <div className="ml-2 space-y-3 border-l-2 border-[var(--cta)]/20 pl-4">
+            <motion.div
+              className="ml-2 space-y-3 border-l-2 border-[var(--cta)]/20 pl-4"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22 }}
+            >
               <label className="flex items-center gap-3 text-sm text-[var(--text)]">
                 <input
                   type="checkbox"
@@ -559,8 +598,9 @@ export function GenerateArticleStudio() {
                   <span>5</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ) : null}
+          </AnimatePresence>
 
           <div className="flex items-center gap-2 rounded-xl bg-[var(--cta)]/5 px-4 py-2.5 text-xs text-[var(--text-muted)]">
             <span className="text-[var(--cta)]"><Icon name="bulb" className="h-4 w-4" /></span>
@@ -578,8 +618,15 @@ export function GenerateArticleStudio() {
             <span className={`text-[var(--text-muted)] transition-transform duration-200 ${showAdvancedImageSettings ? "rotate-180" : ""}`}>▾</span>
           </button>
 
+          <AnimatePresence initial={false}>
           {showAdvancedImageSettings ? (
-            <div className="grid gap-4 border-t border-[var(--border)] p-4 sm:grid-cols-2">
+            <motion.div
+              className="grid gap-4 border-t border-[var(--border)] p-4 sm:grid-cols-2"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.24 }}
+            >
               <div>
                 <FieldLabel htmlFor="image-style">Image Style</FieldLabel>
                 <select
@@ -608,14 +655,18 @@ export function GenerateArticleStudio() {
                   <option value="9:16">9:16</option>
                 </select>
               </div>
-            </div>
+            </motion.div>
           ) : null}
+          </AnimatePresence>
         </div>
       </Card>
+      </StaggerItem>
 
       {/* Generate Action */}
-      <Card className="rounded-2xl p-5">
-        <Button type="button" onClick={handleGenerate} disabled={loading} className="h-14 w-full text-base">
+      <StaggerItem>
+      <Card className="relative overflow-hidden rounded-2xl p-5">
+        <AiScanLine active={loading} />
+        <Button type="button" onClick={handleGenerate} disabled={loading} className="h-14 w-full text-base shadow-[0_16px_44px_-22px_var(--cta)]">
           <span className="inline-flex items-center gap-2">
             <Icon name="rocket" className="h-4 w-4" />
             {loading ? "Generating SEO Content..." : "Generate SEO Content"}
@@ -634,8 +685,11 @@ export function GenerateArticleStudio() {
 
         {error ? <p className="mt-4 text-sm text-rose-500">{error}</p> : null}
       </Card>
+      </StaggerItem>
 
+      <StaggerItem>
       <OutputPanel loading={loading} output={output} htmlDoc={outputHtml} />
-    </div>
+      </StaggerItem>
+    </Stagger>
   );
 }
