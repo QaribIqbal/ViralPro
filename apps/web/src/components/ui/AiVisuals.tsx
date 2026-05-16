@@ -6,11 +6,11 @@ export function PoweredByAiBadge({
 }: PropsWithChildren<{ className?: string }>) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full bg-[var(--ai-accent)] px-2.5 py-0.5 text-[11px] font-bold tracking-wide text-white dark:text-[#070A12] shadow-sm ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full bg-[var(--ai-accent)] px-2.5 py-0.5 text-[11px] font-bold tracking-wide text-[var(--ai-accent-foreground)] shadow-sm ${className}`}
     >
       <span className="relative flex h-1.5 w-1.5">
-        <span className="absolute inline-flex h-full w-full rounded-full bg-white/40 dark:bg-black/40 vp-badge-pulse opacity-60"></span>
-        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white dark:bg-black/80"></span>
+        <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--ai-accent-foreground)]/40 vp-badge-pulse opacity-60"></span>
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--ai-accent-foreground)]"></span>
       </span>
       {children}
     </span>

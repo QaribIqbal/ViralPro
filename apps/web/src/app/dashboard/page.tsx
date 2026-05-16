@@ -137,7 +137,7 @@ export default function DashboardPage() {
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
                   href="/generate"
-                  className="inline-flex h-12 items-center rounded-full bg-[var(--cta)] px-7 text-base font-semibold text-white shadow-sm transition hover:bg-[var(--cta-hover)] active:scale-[0.97]"
+                  className="inline-flex h-12 items-center rounded-full bg-[var(--cta)] px-7 text-base font-semibold text-[var(--cta-foreground)] shadow-sm transition hover:bg-[var(--cta-hover)] active:scale-[0.97]"
                 >
                   Generate New Article
                 </Link>
