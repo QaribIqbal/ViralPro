@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef } from "react";
@@ -148,7 +147,7 @@ export default function HomePage() {
             transition={{ duration: 1 }}
             className="text-4xl font-light leading-[1.3] tracking-tight text-white/80 sm:text-5xl lg:text-6xl"
           >
-            "It’s not just faster drafting. It’s a completely new operational model for content velocity."
+            &quot;It&apos;s not just faster drafting. It&apos;s a completely new operational model for content velocity.&quot;
           </motion.h2>
         </div>
       </section>

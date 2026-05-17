@@ -479,9 +479,15 @@ export function callBulkGenerationWorkflow(
     },
   };
 
-  const webhookUrl =
-    env.N8N_BULK_GENERATION_WEBHOOK_URL?.trim() ||
-    "http://local.pegasus:5678/webhook-test/5641d6aa-66f7-4bc1-9be3-4bb462f84794";
+  const bulkWebhookFromEnv = env.N8N_BULK_GENERATION_WEBHOOK_URL?.trim();
+  const webhookUrl = (() => {
+    if (bulkWebhookFromEnv) return bulkWebhookFromEnv;
+
+    // Keep bulk generation on the exact same n8n base URL as article generation.
+    const articleWebhook = requireBinding(env, "N8N_ARTICLE_GENERATION_WEBHOOK_URL");
+    const articleWebhookUrl = parseWebhookUrl(articleWebhook);
+    return `${articleWebhookUrl.origin}/webhook-test/11c1ce1b-04ff-436b-8055-1be0c4e951f9`;
+  })();
 
   return postJsonToWebhook({
     env,

@@ -49,6 +49,93 @@ type ArticleDraft = {
   status: ArticleStatus;
 };
 
+const TRANSPARENT_PIXEL_DATA_URI =
+  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+const failedArticleImageSources = new Set<string>();
+
+function isInvalidImageUrl(url: string): boolean {
+  if (!url) return true;
+  const trimmed = url.trim().toLowerCase();
+  if (
+    trimmed === "" ||
+    trimmed === "null" ||
+    trimmed === "undefined" ||
+    trimmed === "[object object]" ||
+    trimmed === "[object]" ||
+    trimmed === "placeholder" ||
+    trimmed === "/" ||
+    trimmed === "#" ||
+    trimmed.endsWith("/null") ||
+    trimmed.endsWith("/undefined") ||
+    trimmed.includes("://null") ||
+    trimmed.includes("://undefined")
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function decodeHtmlEntities(value: string) {
+  return value
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">");
+}
+
+function plainTextFromHtml(value: string) {
+  return decodeHtmlEntities(value.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
+}
+
+function firstMatchGroup(input: string, pattern: RegExp) {
+  const match = input.match(pattern);
+  return match?.[1] ? plainTextFromHtml(match[1]) : "";
+}
+
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 120);
+}
+
+function deriveFieldsFromHtml(contentHtml: string) {
+  if (!contentHtml.trim()) {
+    return {
+      title: "",
+      excerpt: "",
+      metaTitle: "",
+      metaDescription: "",
+    };
+  }
+
+  const title = firstMatchGroup(contentHtml, /<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
+  const intro = firstMatchGroup(
+    contentHtml,
+    /<section\b[^>]*class=["'][^"']*\bintro\b[^"']*["'][^>]*>[\s\S]*?<p\b[^>]*>([\s\S]*?)<\/p>/i
+  );
+  const firstParagraph = firstMatchGroup(contentHtml, /<p\b[^>]*>([\s\S]*?)<\/p>/i);
+  const metaTitle = firstMatchGroup(
+    contentHtml,
+    /<strong>\s*Meta\s*Title:\s*<\/strong>\s*([\s\S]*?)<\/p>/i
+  );
+  const metaDescription = firstMatchGroup(
+    contentHtml,
+    /<strong>\s*Meta\s*Description:\s*<\/strong>\s*([\s\S]*?)<\/p>/i
+  );
+
+  return {
+    title,
+    excerpt: intro || firstParagraph,
+    metaTitle,
+    metaDescription,
+  };
+}
+
 type IconName =
   | "arrow-left"
   | "check"
@@ -113,12 +200,14 @@ function Icon({ name, className = "h-4 w-4" }: { name: IconName; className?: str
 }
 
 function toDraft(article: ArticleDetail): ArticleDraft {
+  const derived = deriveFieldsFromHtml(article.content_html ?? "");
+  const nextTitle = article.title ?? derived.title ?? "";
   return {
-    title: article.title ?? "",
-    excerpt: article.excerpt ?? "",
-    metaTitle: article.meta_title ?? "",
-    metaDescription: article.meta_description ?? "",
-    slug: article.slug ?? "",
+    title: nextTitle,
+    excerpt: article.excerpt ?? derived.excerpt ?? "",
+    metaTitle: article.meta_title ?? derived.metaTitle ?? nextTitle,
+    metaDescription: article.meta_description ?? derived.metaDescription ?? "",
+    slug: article.slug ?? slugify(nextTitle),
     contentMarkdown: article.content_markdown ?? "",
     contentHtml: article.content_html ?? "",
     status: article.status,
@@ -180,6 +269,72 @@ function readerBodyHtml(article: ArticleDetail | null, draft: ArticleDraft | nul
   if (!article || !draft || !draft.contentHtml) return "";
   if (typeof window === "undefined" || !("DOMParser" in window)) return draft.contentHtml;
   const parsed = new DOMParser().parseFromString(draft.contentHtml, "text/html");
+  const images = Array.from(parsed.body.querySelectorAll("img"));
+
+  const resolveImageRatio = (img: HTMLImageElement) => {
+    const widthAttr = Number(img.getAttribute("width") || 0);
+    const heightAttr = Number(img.getAttribute("height") || 0);
+    if (widthAttr > 0 && heightAttr > 0) return `${widthAttr} / ${heightAttr}`;
+    return "16 / 9";
+  };
+
+  images.forEach((node) => {
+    const img = node as HTMLImageElement;
+    const src = img.getAttribute("src") || "";
+    const absoluteSrc = img.src || "";
+
+    const hasFailed =
+      isInvalidImageUrl(src) ||
+      isInvalidImageUrl(absoluteSrc) ||
+      (src && failedArticleImageSources.has(src)) ||
+      (absoluteSrc && failedArticleImageSources.has(absoluteSrc)) ||
+      failedArticleImageSources.has(src.trim()) ||
+      failedArticleImageSources.has(absoluteSrc.trim());
+
+    // Always ensure img is associated with .article-image-shell
+    let shell = img.parentElement;
+    if (shell?.tagName === "PICTURE") {
+      shell.classList.add("article-image-shell");
+      shell.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+    } else if (!shell || !shell.classList.contains("article-image-shell")) {
+      const wrapper = img.ownerDocument.createElement("span");
+      wrapper.className = "article-image-shell";
+      wrapper.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+      img.parentNode?.insertBefore(wrapper, img);
+      wrapper.appendChild(img);
+      shell = wrapper;
+    }
+
+    if (hasFailed) {
+      img.dataset.imageError = "true";
+      img.dataset.imageErrorLocked = "true";
+      img.dataset.originalSrc = src;
+      img.classList.add("article-image-broken");
+      img.removeAttribute("srcset");
+      img.removeAttribute("sizes");
+      img.setAttribute("src", TRANSPARENT_PIXEL_DATA_URI);
+
+      shell?.setAttribute("data-image-error", "true");
+      shell?.classList.add("article-image-shell--broken");
+      shell?.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+      const picture = img.closest("picture");
+      if (picture) {
+        picture.querySelectorAll("source").forEach((source) => {
+          source.removeAttribute("srcset");
+          source.removeAttribute("sizes");
+        });
+      }
+
+      if (shell && !shell.querySelector(".article-image-fallback")) {
+        const fallback = img.ownerDocument.createElement("span");
+        fallback.className = "article-image-fallback";
+        fallback.setAttribute("role", "note");
+        fallback.setAttribute("aria-live", "polite");
+        fallback.textContent = "Image is invalid";
+        shell.appendChild(fallback);
+      }
+    }
+  });
   const body = parsed.body.innerHTML.trim();
   const html = body || draft.contentHtml;
   return parsed.body.querySelector("h1, h2") ? html : `<h1>${escapeHtml(titleFor(article, draft))}</h1>${html}`;
@@ -194,34 +349,195 @@ function outlineFromHtml(html: string) {
     .filter((item) => item.text);
 }
 
+function enhanceKeyTakeawaysPreview(root: HTMLElement | null) {
+  if (!root) return;
+
+  const headings = Array.from(root.querySelectorAll("h2, h3, h4"));
+
+  headings.forEach((heading) => {
+    const title = (heading.textContent ?? "")
+      .replace(/\s+/g, " ")
+      .replace(/[:#]+$/g, "")
+      .trim()
+      .toLowerCase();
+
+    if (
+      title !== "key takeaways" ||
+      heading.closest(".article-key-takeaways-card") ||
+      heading.closest("aside.key-takeaways")
+    ) {
+      return;
+    }
+
+    const parent = heading.parentNode;
+    if (!parent) return;
+
+    const card = document.createElement("section");
+    card.className = "article-key-takeaways-card";
+    card.setAttribute("aria-label", "Key Takeaways");
+    parent.insertBefore(card, heading);
+
+    const headingLevel = Number(heading.tagName.slice(1));
+    let current: ChildNode | null = heading;
+
+    while (current) {
+      const nextNode: ChildNode | null = current.nextSibling;
+
+      if (
+        current !== heading &&
+        current instanceof HTMLElement &&
+        /^H[1-6]$/.test(current.tagName) &&
+        Number(current.tagName.slice(1)) <= headingLevel
+      ) {
+        break;
+      }
+
+      card.appendChild(current);
+      current = nextNode;
+    }
+  });
+}
+
 function enhanceArticleImageFallback(root: HTMLElement | null) {
   if (!root) return;
+
+  const resolveImageRatio = (img: HTMLImageElement) => {
+    const widthAttr = Number(img.getAttribute("width") || 0);
+    const heightAttr = Number(img.getAttribute("height") || 0);
+    if (widthAttr > 0 && heightAttr > 0) return `${widthAttr} / ${heightAttr}`;
+    if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+      return `${img.naturalWidth} / ${img.naturalHeight}`;
+    }
+    return "16 / 9";
+  };
+
+  const ensureImageShell = (img: HTMLImageElement) => {
+    if (img.parentElement?.classList.contains("article-image-shell")) {
+      return img.parentElement as HTMLElement;
+    }
+    if (img.parentElement?.tagName === "PICTURE") {
+      const picture = img.parentElement as HTMLElement;
+      picture.classList.add("article-image-shell");
+      picture.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+      return picture;
+    }
+    const parent = img.parentNode;
+    if (!parent) return null;
+    const shell = document.createElement("span");
+    shell.className = "article-image-shell";
+    shell.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+    parent.insertBefore(shell, img);
+    shell.appendChild(img);
+    return shell;
+  };
+
+  const lockImageAsFallback = (img: HTMLImageElement, source?: string) => {
+    const shell = ensureImageShell(img);
+    if (source && source !== TRANSPARENT_PIXEL_DATA_URI) {
+      failedArticleImageSources.add(source);
+      const attrSrc = img.getAttribute("src");
+      if (attrSrc && attrSrc !== TRANSPARENT_PIXEL_DATA_URI) {
+        failedArticleImageSources.add(attrSrc);
+      }
+      img.dataset.originalSrc = source;
+    }
+    if (shell) {
+      shell.dataset.imageError = "true";
+      shell.classList.add("article-image-shell--broken");
+      shell.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+      if (!shell.querySelector(".article-image-fallback")) {
+        const fallback = document.createElement("span");
+        fallback.className = "article-image-fallback";
+        fallback.setAttribute("role", "note");
+        fallback.setAttribute("aria-live", "polite");
+        fallback.textContent = "Image is invalid";
+        shell.appendChild(fallback);
+      }
+    }
+    img.dataset.imageError = "true";
+    img.dataset.imageErrorLocked = "true";
+    img.classList.add("article-image-broken");
+    img.removeAttribute("srcset");
+    img.removeAttribute("sizes");
+    const picture = img.closest("picture");
+    if (picture) {
+      picture.querySelectorAll("source").forEach((source) => {
+        source.removeAttribute("srcset");
+        source.removeAttribute("sizes");
+      });
+    }
+    if (img.getAttribute("src") !== TRANSPARENT_PIXEL_DATA_URI) {
+      img.setAttribute("src", TRANSPARENT_PIXEL_DATA_URI);
+    }
+  };
 
   const images = Array.from(root.querySelectorAll("img"));
   images.forEach((image) => {
     const img = image as HTMLImageElement;
+    const shell = ensureImageShell(img);
+    if (!shell) return;
+    const currentSource =
+      img.dataset.originalSrc ||
+      img.currentSrc ||
+      img.getAttribute("src") ||
+      "";
 
     if (!img.dataset.fallbackBound) {
-      const fallback = document.createElement("span");
-      fallback.className = "article-image-fallback";
-      fallback.setAttribute("role", "note");
-      fallback.setAttribute("aria-live", "polite");
-      fallback.textContent = "Image unavailable";
-      img.insertAdjacentElement("afterend", fallback);
+      if (!shell.querySelector(".article-image-fallback")) {
+        const fallback = document.createElement("span");
+        fallback.className = "article-image-fallback";
+        fallback.setAttribute("role", "note");
+        fallback.setAttribute("aria-live", "polite");
+        fallback.textContent = "Image is invalid";
+        shell.appendChild(fallback);
+      }
 
       img.addEventListener("error", () => {
-        img.dataset.imageError = "true";
+        const failedSourceCandidate =
+          img.dataset.originalSrc ||
+          img.currentSrc ||
+          img.getAttribute("src") ||
+          currentSource ||
+          literalSrc ||
+          absoluteSrc;
+        lockImageAsFallback(img, failedSourceCandidate || undefined);
       });
 
       img.addEventListener("load", () => {
+        if (img.dataset.imageErrorLocked === "true") return;
+        if (img.currentSrc === TRANSPARENT_PIXEL_DATA_URI || img.getAttribute("src") === TRANSPARENT_PIXEL_DATA_URI) return;
         img.dataset.imageError = "false";
+        img.classList.remove("article-image-broken");
+        const imgShell = ensureImageShell(img);
+        if (imgShell) {
+          delete imgShell.dataset.imageError;
+          imgShell.classList.remove("article-image-shell--broken");
+          imgShell.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+        }
       });
 
       img.dataset.fallbackBound = "true";
     }
 
+    const literalSrc = img.getAttribute("src") || "";
+    const absoluteSrc = img.src || "";
+    const hasFailed =
+      img.dataset.imageErrorLocked === "true" ||
+      shell.classList.contains("article-image-shell--broken") ||
+      isInvalidImageUrl(currentSource) ||
+      isInvalidImageUrl(literalSrc) ||
+      isInvalidImageUrl(absoluteSrc) ||
+      (currentSource && failedArticleImageSources.has(currentSource) && currentSource !== TRANSPARENT_PIXEL_DATA_URI) ||
+      (literalSrc && failedArticleImageSources.has(literalSrc) && literalSrc !== TRANSPARENT_PIXEL_DATA_URI) ||
+      (absoluteSrc && failedArticleImageSources.has(absoluteSrc) && absoluteSrc !== TRANSPARENT_PIXEL_DATA_URI);
+
+    if (hasFailed) {
+      lockImageAsFallback(img, currentSource || literalSrc || absoluteSrc);
+      return;
+    }
+
     if (img.complete && img.naturalWidth === 0) {
-      img.dataset.imageError = "true";
+      lockImageAsFallback(img, currentSource);
     }
   });
 }
@@ -541,6 +857,7 @@ function FocusArticleModal({
   useEffect(() => {
     if (!open || editMode) return;
     enhanceArticleImageFallback(readerRef.current);
+    enhanceKeyTakeawaysPreview(readerRef.current);
   }, [open, editMode, readerHtml]);
 
   const modal = (
@@ -776,9 +1093,17 @@ export function ContentLibraryClient() {
   useEffect(() => {
     const hasGenerating = articles.some((article) => article.status === "generating" || article.status === "queued");
     if (!hasGenerating) return;
+
+    const selectedSummary = selectedId
+      ? articles.find((article) => article.id === selectedId) ?? null
+      : null;
+    const shouldRefreshSelected =
+      selectedSummary?.status === "generating" ||
+      selectedSummary?.status === "queued";
+
     const interval = window.setInterval(() => {
       void loadArticles();
-      if (selectedId) void loadArticle(selectedId);
+      if (selectedId && shouldRefreshSelected) void loadArticle(selectedId);
     }, 5000);
     return () => window.clearInterval(interval);
   }, [articles, loadArticle, loadArticles, selectedId]);

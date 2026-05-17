@@ -6,6 +6,7 @@ import {
   generateArticle,
   getArticleById,
   listArticles,
+  saveGeneratedArticleCallback,
   updateArticle,
 } from "../services/articles.service";
 import { callBulkGenerationWorkflow } from "../services/n8n.service";
@@ -17,8 +18,39 @@ import {
 import { bulkGenerateSchema } from "../validation/bulk.schema";
 import { AppError } from "../utils/errors";
 import { successResponse } from "../utils/response";
+import { z } from "zod";
 
 export const articleRoutes = new Hono<AppBindings>();
+
+const saveGeneratedSchema = z.object({
+  requestId: z.string().optional(),
+  userId: z.string().min(1),
+  topic: z.string().min(1),
+  targetKeyword: z.string().optional(),
+  contentHtml: z.string().min(1),
+  metaTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
+  tags: z.string().optional(),
+  wordCount: z.coerce.number().int().positive().optional(),
+  model: z.string().optional(),
+  batchId: z.string().optional(),
+  batchName: z.string().optional(),
+  articleIndex: z.coerce.number().int().positive().optional(),
+  status: z.enum(["completed", "failed"]).optional(),
+});
+
+articleRoutes.post("/save-generated", async (c) => {
+  let body: unknown;
+  try {
+    body = await c.req.json();
+  } catch (err) {
+    throw new AppError(400, "BAD_REQUEST", "Invalid JSON request body.");
+  }
+  const input = saveGeneratedSchema.parse(body);
+  const article = await saveGeneratedArticleCallback(c.env, input);
+
+  return successResponse(c, { saved: true, articleId: article.id });
+});
 
 articleRoutes.use("*", authMiddleware);
 

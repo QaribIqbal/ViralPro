@@ -6,6 +6,33 @@ import { AiStatus, OutputBadge } from "@/components/ui/AiVisuals";
 import { Card } from "@/components/ui/Card";
 import { LoadingState } from "@/components/ui/LoadingState";
 
+const TRANSPARENT_PIXEL_DATA_URI =
+  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+
+const failedArticleImageSources = new Set<string>();
+
+function isInvalidImageUrl(url: string): boolean {
+  if (!url) return true;
+  const trimmed = url.trim().toLowerCase();
+  if (
+    trimmed === "" ||
+    trimmed === "null" ||
+    trimmed === "undefined" ||
+    trimmed === "[object object]" ||
+    trimmed === "[object]" ||
+    trimmed === "placeholder" ||
+    trimmed === "/" ||
+    trimmed === "#" ||
+    trimmed.endsWith("/null") ||
+    trimmed.endsWith("/undefined") ||
+    trimmed.includes("://null") ||
+    trimmed.includes("://undefined")
+  ) {
+    return true;
+  }
+  return false;
+}
+
 function normalizeArticleHtml(rawHtml: string): string {
   let html = rawHtml.trim();
 
@@ -39,7 +66,84 @@ function normalizeArticleHtml(rawHtml: string): string {
     html = articleMatch[1];
   }
 
-  return html.trim();
+  if (typeof window === "undefined" || !("DOMParser" in window)) {
+    return html.trim();
+  }
+
+  try {
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    const images = Array.from(parsed.body.querySelectorAll("img"));
+
+    const resolveImageRatio = (img: HTMLImageElement) => {
+      const widthAttr = Number(img.getAttribute("width") || 0);
+      const heightAttr = Number(img.getAttribute("height") || 0);
+      if (widthAttr > 0 && heightAttr > 0) return `${widthAttr} / ${heightAttr}`;
+      return "16 / 9";
+    };
+
+    images.forEach((node) => {
+      const img = node as HTMLImageElement;
+      const src = img.getAttribute("src") || "";
+      const absoluteSrc = img.src || "";
+
+      const hasFailed =
+        isInvalidImageUrl(src) ||
+        isInvalidImageUrl(absoluteSrc) ||
+        (src && failedArticleImageSources.has(src)) ||
+        (absoluteSrc && failedArticleImageSources.has(absoluteSrc)) ||
+        failedArticleImageSources.has(src.trim()) ||
+        failedArticleImageSources.has(absoluteSrc.trim());
+
+      // Always ensure img is associated with .article-image-shell
+      let shell = img.parentElement;
+      if (shell?.tagName === "PICTURE") {
+        shell.classList.add("article-image-shell");
+        shell.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+      } else if (!shell || !shell.classList.contains("article-image-shell")) {
+        const wrapper = img.ownerDocument.createElement("span");
+        wrapper.className = "article-image-shell";
+        wrapper.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+        img.parentNode?.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+        shell = wrapper;
+      }
+
+      if (hasFailed) {
+        img.dataset.imageError = "true";
+        img.dataset.imageErrorLocked = "true";
+        img.dataset.originalSrc = src;
+        img.classList.add("article-image-broken");
+        img.removeAttribute("srcset");
+        img.removeAttribute("sizes");
+        img.setAttribute("src", TRANSPARENT_PIXEL_DATA_URI);
+
+        shell?.setAttribute("data-image-error", "true");
+        shell?.classList.add("article-image-shell--broken");
+        shell?.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+        const picture = img.closest("picture");
+        if (picture) {
+          picture.querySelectorAll("source").forEach((source) => {
+            source.removeAttribute("srcset");
+            source.removeAttribute("sizes");
+          });
+        }
+
+        if (shell && !shell.querySelector(".article-image-fallback")) {
+          const fallback = img.ownerDocument.createElement("span");
+          fallback.className = "article-image-fallback";
+          fallback.setAttribute("role", "note");
+          fallback.setAttribute("aria-live", "polite");
+          fallback.textContent = "Image is invalid";
+          shell.appendChild(fallback);
+        }
+      }
+    });
+
+    return parsed.body.innerHTML.trim();
+  } catch (e) {
+    console.error("DOM parsing failed in normalizeArticleHtml", e);
+    return html.trim();
+  }
 }
 
 function enhanceKeyTakeawaysPreview(root: HTMLElement | null) {
@@ -54,7 +158,11 @@ function enhanceKeyTakeawaysPreview(root: HTMLElement | null) {
       .trim()
       .toLowerCase();
 
-    if (title !== "key takeaways" || heading.closest(".article-key-takeaways-card")) {
+    if (
+      title !== "key takeaways" ||
+      heading.closest(".article-key-takeaways-card") ||
+      heading.closest("aside.key-takeaways")
+    ) {
       return;
     }
 
@@ -90,35 +198,143 @@ function enhanceKeyTakeawaysPreview(root: HTMLElement | null) {
 function enhanceArticleImageFallback(root: HTMLElement | null) {
   if (!root) return;
 
+  const resolveImageRatio = (img: HTMLImageElement) => {
+    const widthAttr = Number(img.getAttribute("width") || 0);
+    const heightAttr = Number(img.getAttribute("height") || 0);
+    if (widthAttr > 0 && heightAttr > 0) return `${widthAttr} / ${heightAttr}`;
+    if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+      return `${img.naturalWidth} / ${img.naturalHeight}`;
+    }
+    return "16 / 9";
+  };
+
+  const ensureImageShell = (img: HTMLImageElement) => {
+    if (img.parentElement?.classList.contains("article-image-shell")) {
+      return img.parentElement as HTMLElement;
+    }
+    if (img.parentElement?.tagName === "PICTURE") {
+      const picture = img.parentElement as HTMLElement;
+      picture.classList.add("article-image-shell");
+      picture.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+      return picture;
+    }
+    const parent = img.parentNode;
+    if (!parent) return null;
+    const shell = document.createElement("span");
+    shell.className = "article-image-shell";
+    shell.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+    parent.insertBefore(shell, img);
+    shell.appendChild(img);
+    return shell;
+  };
+
+  const lockImageAsFallback = (img: HTMLImageElement, source?: string) => {
+    const shell = ensureImageShell(img);
+    if (source && source !== TRANSPARENT_PIXEL_DATA_URI) {
+      failedArticleImageSources.add(source);
+      const attrSrc = img.getAttribute("src");
+      if (attrSrc && attrSrc !== TRANSPARENT_PIXEL_DATA_URI) {
+        failedArticleImageSources.add(attrSrc);
+      }
+      img.dataset.originalSrc = source;
+    }
+    if (shell) {
+      shell.dataset.imageError = "true";
+      shell.classList.add("article-image-shell--broken");
+      shell.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+      if (!shell.querySelector(".article-image-fallback")) {
+        const fallback = document.createElement("span");
+        fallback.className = "article-image-fallback";
+        fallback.setAttribute("role", "note");
+        fallback.setAttribute("aria-live", "polite");
+        fallback.textContent = "Image is invalid";
+        shell.appendChild(fallback);
+      }
+    }
+    img.dataset.imageError = "true";
+    img.dataset.imageErrorLocked = "true";
+    img.classList.add("article-image-broken");
+    img.removeAttribute("srcset");
+    img.removeAttribute("sizes");
+    const picture = img.closest("picture");
+    if (picture) {
+      picture.querySelectorAll("source").forEach((source) => {
+        source.removeAttribute("srcset");
+        source.removeAttribute("sizes");
+      });
+    }
+    if (img.getAttribute("src") !== TRANSPARENT_PIXEL_DATA_URI) {
+      img.setAttribute("src", TRANSPARENT_PIXEL_DATA_URI);
+    }
+  };
+
   const images = Array.from(root.querySelectorAll("img"));
+  images.forEach((image) => {
+    const img = image as HTMLImageElement;
+    const shell = ensureImageShell(img);
+    if (!shell) return;
+    const currentSource =
+      img.dataset.originalSrc ||
+      img.currentSrc ||
+      img.getAttribute("src") ||
+      "";
 
-  images.forEach((img) => {
-    const element = img as HTMLImageElement;
+    if (!img.dataset.fallbackBound) {
+      if (!shell.querySelector(".article-image-fallback")) {
+        const fallback = document.createElement("span");
+        fallback.className = "article-image-fallback";
+        fallback.setAttribute("role", "note");
+        fallback.setAttribute("aria-live", "polite");
+        fallback.textContent = "Image is invalid";
+        shell.appendChild(fallback);
+      }
 
-    if (!element.dataset.fallbackBound) {
-      const fallback = document.createElement("span");
-      fallback.className = "article-image-fallback";
-      fallback.setAttribute("role", "note");
-      fallback.setAttribute("aria-live", "polite");
-      fallback.textContent = "Preview unavailable";
-      element.insertAdjacentElement("afterend", fallback);
+      img.addEventListener("error", () => {
+        const failedSourceCandidate =
+          img.dataset.originalSrc ||
+          img.currentSrc ||
+          img.getAttribute("src") ||
+          currentSource ||
+          literalSrc ||
+          absoluteSrc;
+        lockImageAsFallback(img, failedSourceCandidate || undefined);
+      });
 
-      const onError = () => {
-        element.dataset.imageError = "true";
-      };
+      img.addEventListener("load", () => {
+        if (img.dataset.imageErrorLocked === "true") return;
+        if (img.currentSrc === TRANSPARENT_PIXEL_DATA_URI || img.getAttribute("src") === TRANSPARENT_PIXEL_DATA_URI) return;
+        img.dataset.imageError = "false";
+        img.classList.remove("article-image-broken");
+        const imgShell = ensureImageShell(img);
+        if (imgShell) {
+          delete imgShell.dataset.imageError;
+          imgShell.classList.remove("article-image-shell--broken");
+          imgShell.style.setProperty("--article-image-ratio", resolveImageRatio(img));
+        }
+      });
 
-      const onLoad = () => {
-        element.dataset.imageError = "false";
-      };
-
-      element.addEventListener("error", onError);
-      element.addEventListener("load", onLoad);
-      element.dataset.fallbackBound = "true";
-      element.dataset.fallbackErrorHandler = "true";
+      img.dataset.fallbackBound = "true";
     }
 
-    if (element.complete && element.naturalWidth === 0) {
-      element.dataset.imageError = "true";
+    const literalSrc = img.getAttribute("src") || "";
+    const absoluteSrc = img.src || "";
+    const hasFailed =
+      img.dataset.imageErrorLocked === "true" ||
+      shell.classList.contains("article-image-shell--broken") ||
+      isInvalidImageUrl(currentSource) ||
+      isInvalidImageUrl(literalSrc) ||
+      isInvalidImageUrl(absoluteSrc) ||
+      (currentSource && failedArticleImageSources.has(currentSource) && currentSource !== TRANSPARENT_PIXEL_DATA_URI) ||
+      (literalSrc && failedArticleImageSources.has(literalSrc) && literalSrc !== TRANSPARENT_PIXEL_DATA_URI) ||
+      (absoluteSrc && failedArticleImageSources.has(absoluteSrc) && absoluteSrc !== TRANSPARENT_PIXEL_DATA_URI);
+
+    if (hasFailed) {
+      lockImageAsFallback(img, currentSource || literalSrc || absoluteSrc);
+      return;
+    }
+
+    if (img.complete && img.naturalWidth === 0) {
+      lockImageAsFallback(img, currentSource);
     }
   });
 }
@@ -191,29 +407,29 @@ export function OutputPanel({
         {loading ? <LoadingState /> : null}
 
         <AnimatePresence mode="wait">
-        {!loading && normalizedHtml ? (
-          <motion.article
-            key="html"
-            ref={articleRef}
-            className="article-content vp-article-doc"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3, ease: [0.2, 0, 0, 1] }}
-          >
-            <div dangerouslySetInnerHTML={{ __html: normalizedHtml }} />
-          </motion.article>
-        ) : null}
+          {!loading && normalizedHtml ? (
+            <motion.article
+              key="html"
+              ref={articleRef}
+              className="article-content vp-article-doc"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3, ease: [0.2, 0, 0, 1] }}
+            >
+              <div dangerouslySetInnerHTML={{ __html: normalizedHtml }} />
+            </motion.article>
+          ) : null}
 
-        {!loading && !normalizedHtml ? (
-          isJson ? (
-            <motion.pre key="json" className="m-4 max-h-[600px] overflow-auto whitespace-pre-wrap break-words rounded-lg bg-[var(--bg)] p-4 text-xs text-[var(--text-muted)]" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-              <code>{output}</code>
-            </motion.pre>
-          ) : (
-            <motion.p key="text" className="px-5 py-4 whitespace-pre-line text-sm text-[var(--text-muted)]" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>{output}</motion.p>
-          )
-        ) : null}
+          {!loading && !normalizedHtml ? (
+            isJson ? (
+              <motion.pre key="json" className="m-4 max-h-[600px] overflow-auto whitespace-pre-wrap break-words rounded-lg bg-[var(--bg)] p-4 text-xs text-[var(--text-muted)]" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+                <code>{output}</code>
+              </motion.pre>
+            ) : (
+              <motion.p key="text" className="px-5 py-4 whitespace-pre-line text-sm text-[var(--text-muted)]" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>{output}</motion.p>
+            )
+          ) : null}
         </AnimatePresence>
       </div>
     </Card>

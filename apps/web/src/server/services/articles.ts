@@ -31,6 +31,72 @@ type ArticleSummary = Pick<
   > | null;
 };
 
+function decodeHtmlEntities(value: string) {
+  return value
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">");
+}
+
+function plainTextFromHtml(value: string) {
+  return decodeHtmlEntities(value.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
+}
+
+function firstMatchGroup(input: string, pattern: RegExp) {
+  const match = input.match(pattern);
+  return match?.[1] ? plainTextFromHtml(match[1]) : "";
+}
+
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 120);
+}
+
+function countWordsFromHtml(value: string) {
+  if (!value.trim()) return 0;
+  return plainTextFromHtml(value).split(/\s+/).filter(Boolean).length;
+}
+
+function deriveFieldsFromHtml(contentHtml: string) {
+  if (!contentHtml.trim()) {
+    return {
+      title: "",
+      excerpt: "",
+      metaTitle: "",
+      metaDescription: "",
+    };
+  }
+
+  const title = firstMatchGroup(contentHtml, /<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
+  const intro = firstMatchGroup(
+    contentHtml,
+    /<section\b[^>]*class=["'][^"']*\bintro\b[^"']*["'][^>]*>[\s\S]*?<p\b[^>]*>([\s\S]*?)<\/p>/i
+  );
+  const firstParagraph = firstMatchGroup(contentHtml, /<p\b[^>]*>([\s\S]*?)<\/p>/i);
+  const metaTitle = firstMatchGroup(
+    contentHtml,
+    /<strong>\s*Meta\s*Title:\s*<\/strong>\s*([\s\S]*?)<\/p>/i
+  );
+  const metaDescription = firstMatchGroup(
+    contentHtml,
+    /<strong>\s*Meta\s*Description:\s*<\/strong>\s*([\s\S]*?)<\/p>/i
+  );
+
+  return {
+    title,
+    excerpt: intro || firstParagraph,
+    metaTitle,
+    metaDescription,
+  };
+}
+
 async function assertTemplateOwnership(userId: string, templateId?: string) {
   if (!templateId) return;
 
@@ -123,18 +189,30 @@ export async function generateArticleForUser(
         imageAspectRatio: configuration.imageAspectRatio,
       },
     });
+    const contentHtml = result.contentHtml ?? "";
+    const derived = deriveFieldsFromHtml(contentHtml);
+    const resolvedTitle = result.title ?? derived.title ?? contentBrief.topic;
+    const resolvedExcerpt = result.excerpt ?? derived.excerpt ?? null;
+    const resolvedMetaTitle =
+      result.metaTitle ?? derived.metaTitle ?? resolvedTitle ?? null;
+    const resolvedMetaDescription =
+      result.metaDescription ?? derived.metaDescription ?? null;
+    const resolvedSlug = result.slug ?? slugify(resolvedTitle);
+    const resolvedWordCount =
+      result.wordCount ??
+      (contentHtml ? countWordsFromHtml(contentHtml) : null);
 
     const { data: completed, error: updateError } = await supabase
       .from("articles")
       .update({
-        title: result.title ?? null,
-        content_html: result.contentHtml ?? null,
+        title: resolvedTitle ?? null,
+        content_html: contentHtml || null,
         content_markdown: result.contentMarkdown ?? null,
-        excerpt: result.excerpt ?? null,
-        meta_title: result.metaTitle ?? null,
-        meta_description: result.metaDescription ?? null,
-        slug: result.slug ?? null,
-        word_count: result.wordCount ?? null,
+        excerpt: resolvedExcerpt,
+        meta_title: resolvedMetaTitle,
+        meta_description: resolvedMetaDescription,
+        slug: resolvedSlug || null,
+        word_count: resolvedWordCount,
         seo_score: result.seoScore ?? null,
         references: result.references ?? [],
         status: "completed",
@@ -160,12 +238,12 @@ export async function generateArticleForUser(
           userId,
           {
             prompt:
-              result.imagePrompt ??
-              `Professional SEO blog image for: ${result.title ?? contentBrief.topic}`,
+            result.imagePrompt ??
+            `Professional SEO blog image for: ${resolvedTitle ?? contentBrief.topic}`,
             articleId: article.id,
             aspectRatio: "16:9",
             style: "professional SaaS blog image",
-            altText: result.title ?? contentBrief.topic,
+            altText: resolvedTitle ?? contentBrief.topic,
           },
           { skipLimitCheck: false }
         );

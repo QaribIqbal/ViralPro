@@ -3,7 +3,6 @@
 import { type ReactNode, useState, type CSSProperties } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AiScanLine, AiStatus, ProBadge } from "@/components/ui/AiVisuals";
-import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Stagger, StaggerItem } from "@/components/ui/Motion";
@@ -157,7 +156,15 @@ export function GenerateArticleStudio() {
       let normalized = data.trim();
       const fenceMatch = normalized.match(/^```(?:html|htm)?\s*\n([\s\S]*?)```\s*$/);
       if (fenceMatch) normalized = fenceMatch[1].trim();
-      if (normalized.startsWith("<!DOCTYPE") || normalized.startsWith("<html") || normalized.includes("<!DOCTYPE html")) return normalized;
+      if (
+        normalized.startsWith("<!DOCTYPE") ||
+        normalized.startsWith("<html") ||
+        normalized.startsWith("<article") ||
+        normalized.includes("<!DOCTYPE html") ||
+        /<[a-z][\w:-]*[^>]*>/i.test(normalized)
+      ) {
+        return normalized;
+      }
       return null;
     }
     if (Array.isArray(data)) {
@@ -168,7 +175,7 @@ export function GenerateArticleStudio() {
     }
     if (typeof data === "object" && data !== null) {
       const record = data as Record<string, unknown>;
-      const priorityKeys = ["output", "articleHtml", "html", "contentHtml", "content"];
+      const priorityKeys = ["content_html", "output", "articleHtml", "html", "contentHtml", "content", "data"];
       for (const key of priorityKeys) {
         if (key in record) {
           const nested = extractHtmlDocument(record[key]);
@@ -228,8 +235,7 @@ export function GenerateArticleStudio() {
         method: "POST",
         body: JSON.stringify(payload),
       });
-      const resultRecord = typeof result === "object" && result !== null ? result as Record<string, unknown> : null;
-      const html = extractHtmlDocument(resultRecord?.content_html ?? result);
+      const html = extractHtmlDocument(result);
       if (html) {
         setOutputHtml(html);
         setOutput("Article generated and saved to your library.");

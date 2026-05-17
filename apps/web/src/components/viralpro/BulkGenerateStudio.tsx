@@ -844,10 +844,10 @@ export function BulkGenerateStudio() {
             animate="visible"
             exit="exit"
           >
-            <motion.div className="absolute inset-0 bg-black/55" onClick={closeTopicEditor} />
+            <motion.div className="absolute inset-0 bg-black/72" onClick={closeTopicEditor} />
             <motion.div
               variants={modalPanel}
-              className="relative z-10 max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl border border-[var(--border)] bg-[var(--surface)]/95 p-6 shadow-2xl backdrop-blur-xl sm:p-8"
+              className="relative z-10 max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl border border-[var(--border-strong)] bg-[var(--bg)] p-6 shadow-2xl sm:p-8"
             >
               <SectionHeader
                 icon={<Icon name="edit" />}
