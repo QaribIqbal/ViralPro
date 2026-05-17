@@ -1,6 +1,7 @@
 "use client";
 
-import { type ChangeEvent, type CSSProperties, type ReactNode, useMemo, useState } from "react";
+import { type ChangeEvent, type CSSProperties, type ReactNode, useMemo, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { AiScanLine, AiStatus, ProBadge } from "@/components/ui/AiVisuals";
 import { Button } from "@/components/ui/Button";
@@ -345,6 +346,22 @@ export function BulkGenerateStudio() {
   const [submittingBulk, setSubmittingBulk] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (activeTopicId) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [activeTopicId]);
 
   const activeTopic = useMemo(
     () => state.topics.find((topic) => topic.id === activeTopicId) ?? null,
@@ -835,135 +852,180 @@ export function BulkGenerateStudio() {
         </AnimatePresence>
       </Stagger>
 
-      <AnimatePresence>
-        {activeTopic && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            variants={modalBackdrop}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
-            <motion.div className="absolute inset-0 bg-black/72" onClick={closeTopicEditor} />
+      {mounted && typeof window !== "undefined" && createPortal(
+        <AnimatePresence>
+          {activeTopic && (
             <motion.div
-              variants={modalPanel}
-              className="relative z-10 max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl border border-[var(--border-strong)] bg-[var(--bg)] p-6 shadow-2xl sm:p-8"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={{
+                hidden: { y: "100%", opacity: 0.95 },
+                visible: { y: 0, opacity: 1, transition: { type: "spring", damping: 30, stiffness: 260 } },
+                exit: { y: "100%", opacity: 0.95, transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] } }
+              }}
+              className="fixed inset-0 z-[100] w-screen h-screen bg-[var(--bg)]/40 backdrop-blur-xl flex flex-col text-[var(--text)] overflow-hidden"
             >
-              <SectionHeader
-                icon={<Icon name="edit" />}
-                title="Topic Override Editor"
-                subtitle="Adjust this single article while keeping all other items on global defaults."
-              />
-
-              <div className="space-y-5">
-                <div>
-                  <FieldLabel htmlFor="override-topic-title">Topic Title</FieldLabel>
-                  <Input
-                    id="override-topic-title"
-                    value={draftTopicName}
-                    onChange={(event) => setDraftTopicName(event.target.value)}
-                    className="!h-12 !rounded-xl"
+              {/* Centered content envelope */}
+              <div className="mx-auto w-full max-w-5xl flex-1 flex flex-col min-h-0 p-6 sm:p-10 md:p-12 pb-0 sm:pb-0 md:pb-0">
+                
+                {/* Header Row */}
+                <div className="mb-6 flex items-start justify-between gap-6 border-b border-[var(--border)] pb-6 shrink-0">
+                  <SectionHeader
+                    icon={<Icon name="edit" />}
+                    title={`Customize: ${draftTopicName}`}
+                    subtitle="Configure unique generation, tone, word count, and intelligence overrides for this topic."
                   />
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={closeTopicEditor}
+                    className="rounded-full p-2 text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-muted)] hover:text-[var(--text)] shrink-0"
+                  >
+                    <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </motion.button>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                  <RangeField
-                    label="Word Count"
-                    min={500}
-                    max={5000}
-                    step={100}
-                    value={draftOverrides.wordCount ?? globalSettings.wordCount}
-                    unit="words"
-                    onChange={(value) => updateOverride("wordCount", value)}
-                  />
-                  <div>
-                    <FieldLabel htmlFor="override-tone">Tone</FieldLabel>
-                    <SelectField
-                      id="override-tone"
-                      value={draftOverrides.tone ?? globalSettings.tone}
-                      onChange={(value) => updateOverride("tone", value)}
-                    >
-                      <option value="professional">Professional</option>
-                      <option value="conversational">Conversational</option>
-                      <option value="authoritative">Authoritative</option>
-                      <option value="friendly">Friendly</option>
-                    </SelectField>
+                {/* Main scrollable form area */}
+                <div className="flex-1 overflow-y-auto space-y-8 pr-2 pb-10 min-h-0">
+                  
+                  {/* Section 1: Core details */}
+                  <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)]/30 backdrop-blur-md p-6 sm:p-8 space-y-6">
+                    <h3 className="text-lg font-bold tracking-tight">Core Article Details</h3>
+                    <div>
+                      <FieldLabel htmlFor="override-topic-title">Topic Title / Target Prompt</FieldLabel>
+                      <Input
+                        id="override-topic-title"
+                        value={draftTopicName}
+                        onChange={(event) => setDraftTopicName(event.target.value)}
+                        className="!h-13 !rounded-xl !text-base bg-[var(--surface-muted)]"
+                      />
+                    </div>
+
+                    <div className="grid gap-6 md:grid-cols-2">
+                      <RangeField
+                        label="Word Count"
+                        min={500}
+                        max={5000}
+                        step={100}
+                        value={draftOverrides.wordCount ?? globalSettings.wordCount}
+                        unit="words"
+                        onChange={(value) => updateOverride("wordCount", value)}
+                      />
+                      
+                      <div className="grid gap-4 grid-cols-2">
+                        <div>
+                          <FieldLabel htmlFor="override-tone">Tone</FieldLabel>
+                          <SelectField
+                            id="override-tone"
+                            value={draftOverrides.tone ?? globalSettings.tone}
+                            onChange={(value) => updateOverride("tone", value)}
+                          >
+                            <option value="professional">Professional</option>
+                            <option value="conversational">Conversational</option>
+                            <option value="authoritative">Authoritative</option>
+                            <option value="friendly">Friendly</option>
+                          </SelectField>
+                        </div>
+                        <div>
+                          <FieldLabel htmlFor="override-article-type">Article Type</FieldLabel>
+                          <SelectField
+                            id="override-article-type"
+                            value={draftOverrides.articleType ?? globalSettings.articleType}
+                            onChange={(value) => updateOverride("articleType", value)}
+                          >
+                            <option value="informational">Informational</option>
+                            <option value="how-to">How-to Guide</option>
+                            <option value="listicle">Listicle</option>
+                            <option value="comparison">Comparison</option>
+                          </SelectField>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <FieldLabel htmlFor="override-article-type">Article Type</FieldLabel>
-                    <SelectField
-                      id="override-article-type"
-                      value={draftOverrides.articleType ?? globalSettings.articleType}
-                      onChange={(value) => updateOverride("articleType", value)}
-                    >
-                      <option value="informational">Informational</option>
-                      <option value="how-to">How-to Guide</option>
-                      <option value="listicle">Listicle</option>
-                      <option value="comparison">Comparison</option>
-                    </SelectField>
+
+                  {/* Section 2: Instructions */}
+                  <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)]/30 backdrop-blur-md p-6 sm:p-8 space-y-4">
+                    <h3 className="text-lg font-bold tracking-tight">Special Instructions</h3>
+                    <div>
+                      <FieldLabel htmlFor="override-context">Context Override</FieldLabel>
+                      <TextareaField
+                        id="override-context"
+                        value={draftOverrides.additionalContext ?? globalSettings.additionalContext}
+                        onChange={(value) => updateOverride("additionalContext", value)}
+                        className="min-h-[140px] !text-base bg-[var(--surface-muted)]"
+                        placeholder="Add specific instructions, research links, or instructions just for this topic."
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <FieldLabel htmlFor="override-readability">Readability Level</FieldLabel>
-                    <SelectField
-                      id="override-readability"
-                      value={draftOverrides.readabilityLevel ?? globalSettings.readabilityLevel}
-                      onChange={(value) => updateOverride("readabilityLevel", value)}
-                    >
-                      <option value="default-7th">Default - 7th Grade</option>
-                      <option value="simple">Simple</option>
-                      <option value="professional">Professional</option>
-                      <option value="expert">Expert</option>
-                    </SelectField>
+
+                  {/* Section 3: Toggles */}
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)]/30 backdrop-blur-md p-6 sm:p-8 space-y-6">
+                      <h3 className="text-lg font-bold tracking-tight">Structural & Readability Overrides</h3>
+                      <div className="space-y-4">
+                        <ToggleRow
+                          label="Live Web Research"
+                          description="Conduct deep search engine research for this specific topic before writing."
+                          checked={draftOverrides.liveWebResearch ?? globalSettings.liveWebResearch}
+                          onChange={(value) => updateOverride("liveWebResearch", value)}
+                        />
+                        <ToggleRow
+                          label="First Person Writing Perspective"
+                          description="Draft the article using 'I/we' perspective."
+                          checked={draftOverrides.firstPerson ?? globalSettings.firstPerson}
+                          onChange={(value) => updateOverride("firstPerson", value)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)]/30 backdrop-blur-md p-6 sm:p-8 space-y-6">
+                      <h3 className="text-lg font-bold tracking-tight">Advanced Directives</h3>
+                      <div className="space-y-4">
+                        <ToggleRow
+                          label="Hook Intro"
+                          description="Generate a highly engaging, custom narrative opening hook."
+                          checked={draftOverrides.hook ?? globalSettings.hook}
+                          onChange={(value) => updateOverride("hook", value)}
+                        />
+                        <ToggleRow
+                          label="GEO Optimization"
+                          description="Optimize HTML schema, structure, and terms for AI semantic search engines."
+                          checked={draftOverrides.geoOptimization ?? globalSettings.geoOptimization}
+                          onChange={(value) => updateOverride("geoOptimization", value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Bottom Action Footer */}
+                <div className="border-t border-[var(--border)] py-4 shrink-0 mt-auto bg-[var(--bg)]/40 backdrop-blur-xl">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="text-xs text-[var(--text-muted)] font-medium hidden sm:block">
+                      Editing single topic customizations. Rest of the batch remains on global settings.
+                    </div>
+                    <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+                      <Button type="button" variant="secondary" onClick={closeTopicEditor} className="!h-12 !rounded-xl !px-6 !text-sm">
+                        Cancel
+                      </Button>
+                      <Button type="button" onClick={saveTopicCustomizations} className="!h-12 !rounded-xl !px-8 !text-sm shadow-lg shadow-[var(--cta)]/25">
+                        Save Customizations
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <FieldLabel htmlFor="override-context">Custom Instructions</FieldLabel>
-                  <TextareaField
-                    id="override-context"
-                    value={draftOverrides.additionalContext ?? globalSettings.additionalContext}
-                    onChange={(value) => updateOverride("additionalContext", value)}
-                    className="min-h-[120px]"
-                    placeholder="Add specific instructions just for this topic."
-                  />
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2">
-                  <ToggleRow
-                    label="Live Web Research"
-                    checked={draftOverrides.liveWebResearch ?? globalSettings.liveWebResearch}
-                    onChange={(value) => updateOverride("liveWebResearch", value)}
-                  />
-                  <ToggleRow
-                    label="First Person"
-                    checked={draftOverrides.firstPerson ?? globalSettings.firstPerson}
-                    onChange={(value) => updateOverride("firstPerson", value)}
-                  />
-                  <ToggleRow
-                    label="Hook Intro"
-                    checked={draftOverrides.hook ?? globalSettings.hook}
-                    onChange={(value) => updateOverride("hook", value)}
-                  />
-                  <ToggleRow
-                    label="GEO Optimization"
-                    checked={draftOverrides.geoOptimization ?? globalSettings.geoOptimization}
-                    onChange={(value) => updateOverride("geoOptimization", value)}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-                  <Button type="button" variant="secondary" onClick={closeTopicEditor} className="!h-11 !rounded-xl !px-5">
-                    Cancel
-                  </Button>
-                  <Button type="button" onClick={saveTopicCustomizations} className="!h-11 !rounded-xl !px-6">
-                    Save Customizations
-                  </Button>
-                </div>
               </div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </>
   );
 }
