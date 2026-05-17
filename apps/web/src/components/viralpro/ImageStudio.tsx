@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { AiScanLine, AiStatus, PoweredByAiBadge } from "@/components/ui/AiVisuals";
+import { AiScanLine, AiStatus, ProBadge, OutputBadge } from "@/components/ui/AiVisuals";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -225,7 +225,7 @@ export function ImageStudio() {
           <AiScanLine active={loading} />
           <div className="relative z-10 flex flex-wrap items-start justify-between gap-6">
             <div className="max-w-2xl">
-              <PoweredByAiBadge>Powered by AI image generation</PoweredByAiBadge>
+              <ProBadge variant="glow">Pro Image Engine</ProBadge>
               <h2 className="mt-3 text-[28px] font-semibold leading-[1.18] tracking-tight text-[var(--text)] sm:text-[32px]">
                 Visual Studio
               </h2>
@@ -346,7 +346,7 @@ export function ImageStudio() {
                         unoptimized={image.url.startsWith("data:") || image.url.startsWith("blob:")}
                         className="h-52 w-full object-cover"
                       />
-                      <PoweredByAiBadge className="absolute left-3 top-3 bg-[var(--surface)]/80 backdrop-blur">AI Generated</PoweredByAiBadge>
+                      <OutputBadge className="absolute left-3 top-3 border-transparent bg-[var(--surface)]/80 backdrop-blur">Studio Asset</OutputBadge>
                     </div>
                   </button>
                   <div className="space-y-2 p-3">
@@ -394,7 +394,7 @@ export function ImageStudio() {
                     unoptimized={image.url.startsWith("data:") || image.url.startsWith("blob:")}
                     className="h-52 w-full object-cover"
                   />
-                  <PoweredByAiBadge className="absolute left-3 top-3 bg-[var(--surface)]/80 backdrop-blur">AI Generated</PoweredByAiBadge>
+                  <OutputBadge className="absolute left-3 top-3 border-transparent bg-[var(--surface)]/80 backdrop-blur">Studio Asset</OutputBadge>
                 </div>
                 <div className="space-y-1 p-3">
                   <p className="text-sm font-medium text-[var(--text)]">{image.title}</p>
@@ -451,7 +451,7 @@ export function ImageStudio() {
                     />
                   </div>
                   <div className="px-4 py-3">
-                    <PoweredByAiBadge className="mb-2">AI Generated</PoweredByAiBadge>
+                    <OutputBadge className="mb-2">Studio Asset</OutputBadge>
                     <p className="text-sm text-[var(--text-muted)]">{selectedImage.prompt}</p>
                   </div>
                 </motion.div>

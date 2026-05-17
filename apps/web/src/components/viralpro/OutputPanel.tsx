@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { AiStatus, PoweredByAiBadge } from "@/components/ui/AiVisuals";
+import { AiStatus, OutputBadge } from "@/components/ui/AiVisuals";
 import { Card } from "@/components/ui/Card";
 import { LoadingState } from "@/components/ui/LoadingState";
 
@@ -32,6 +32,12 @@ function normalizeArticleHtml(rawHtml: string): string {
     .replace(/<script[\s\S]*?<\/script>/gi, "")
     .replace(/\son\w+\s*=\s*"[^"]*"/gi, "")
     .replace(/\son\w+\s*=\s*'[^']*'/gi, "");
+
+  // Un-nest the AI's <article> wrapper if present (since we render our own)
+  const articleMatch = html.match(/^\s*<article[^>]*>([\s\S]*?)<\/article>\s*$/i);
+  if (articleMatch?.[1]) {
+    html = articleMatch[1];
+  }
 
   return html.trim();
 }
@@ -159,7 +165,7 @@ export function OutputPanel({
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="text-base font-semibold text-[var(--text)]">Article Preview</h3>
-            {normalizedHtml ? <PoweredByAiBadge>AI Generated</PoweredByAiBadge> : null}
+            {normalizedHtml ? <OutputBadge>Studio Output</OutputBadge> : null}
           </div>
           {loading ? <div className="mt-2"><AiStatus text="Generating insights..." /></div> : null}
         </div>

@@ -12,6 +12,7 @@ import type {
 export const navItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard" },
   { label: "Studio", href: "/generate" },
+  { label: "Bulk Generate", href: "/bulk-generate" },
   { label: "Library", href: "/content" },
   { label: "Images", href: "/images" },
   { label: "Settings", href: "/settings" },

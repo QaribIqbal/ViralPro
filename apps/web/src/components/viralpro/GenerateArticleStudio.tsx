@@ -2,14 +2,13 @@
 
 import { type ReactNode, useState, type CSSProperties } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { AiScanLine, AiStatus, PoweredByAiBadge } from "@/components/ui/AiVisuals";
+import { AiScanLine, AiStatus, ProBadge } from "@/components/ui/AiVisuals";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Stagger, StaggerItem } from "@/components/ui/Motion";
 import { OutputPanel } from "@/components/viralpro/OutputPanel";
 import { apiRequest } from "@/lib/api-client";
-import type { Article, GeneratedImage } from "@/server/domain/types";
 
 type IconName =
   | "article"
@@ -180,7 +179,7 @@ export function GenerateArticleStudio() {
     return null;
   };
 
-  const updateField = (key: string, value: any) => {
+  const updateField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -193,11 +192,44 @@ export function GenerateArticleStudio() {
     setError(null);
     setOutputHtml(null);
     try {
-      const result = await apiRequest<any>("/articles/generate", {
+      const payload = {
+        contentBrief: {
+          topic: form.topic,
+          liveWebResearch: form.liveWebResearch,
+          targetKeyword: form.targetKeyword,
+          customOutline: form.customOutline,
+        },
+        configuration: {
+          aiModel: form.aiModel,
+          articleType: form.articleType,
+          tone: form.tone,
+          language: form.language,
+          intendedAudience: form.intendedAudience,
+          additionalContext: form.additionalContext,
+          wordCount: form.wordCount,
+          brandVoiceKnowledge: form.brandVoiceKnowledge,
+          competitorAnalysis: form.competitorAnalysis,
+          geoOptimization: form.geoOptimization,
+          firstPerson: form.firstPerson,
+          hook: form.hook,
+          htmlElement: form.htmlElement,
+          readabilityLevel: form.readabilityLevel,
+          internalLinks: form.internalLinks,
+          generateContentImages: form.generateContentImages,
+          generateCoverImage: form.generateCoverImage,
+          contentImageCount: form.contentImageCount,
+          includeTextInImages: form.includeTextInImages,
+          imageStyle: form.imageStyle,
+          imageAspectRatio: form.imageAspectRatio,
+        },
+      };
+
+      const result = await apiRequest<unknown>("/articles/generate", {
         method: "POST",
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
-      const html = extractHtmlDocument(result.content_html || result);
+      const resultRecord = typeof result === "object" && result !== null ? result as Record<string, unknown> : null;
+      const html = extractHtmlDocument(resultRecord?.content_html ?? result);
       if (html) {
         setOutputHtml(html);
         setOutput("Article generated and saved to your library.");
@@ -218,7 +250,7 @@ export function GenerateArticleStudio() {
           <AiScanLine active={loading} />
           <div className="relative flex flex-wrap items-center justify-between gap-4">
             <div>
-              <PoweredByAiBadge>ViralPro Intelligence</PoweredByAiBadge>
+              <ProBadge variant="glow">ViralPro Exclusive</ProBadge>
               <h2 className="mt-3 text-2xl font-bold tracking-tight text-[var(--text)]">Content Studio</h2>
               <p className="mt-1 text-sm text-[var(--text-muted)]">Generate high-authority articles in seconds.</p>
             </div>
@@ -374,7 +406,7 @@ export function GenerateArticleStudio() {
             </Button>
             <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
               <Icon name="info" className="h-4 w-4" />
-              <span>Est. time: 60-90 seconds. We'll notify you when it's ready.</span>
+              <span>Est. time: 60-90 seconds. We&apos;ll notify you when it&apos;s ready.</span>
             </div>
             {error && <p className="text-red-500 font-medium">{error}</p>}
           </div>

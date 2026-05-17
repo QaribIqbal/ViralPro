@@ -29,15 +29,35 @@ const imageGenerationResponseSchema = z.object({
 export type ArticleGenerationPayload = {
   articleId: string;
   userId: string;
-  topic: string;
-  primaryKeyword?: string;
-  articleType?: string;
-  tone?: string;
-  language?: string;
-  wordCount?: number;
-  aiSearchOptimized: boolean;
-  generateImage: boolean;
-  extraInstructions?: string;
+  contentBrief: {
+    topic: string;
+    targetKeyword?: string;
+    customOutline?: string;
+    liveWebResearch?: boolean;
+  };
+  configuration: {
+    aiModel?: string;
+    articleType?: string;
+    tone?: string;
+    language?: string;
+    intendedAudience?: string;
+    additionalContext?: string;
+    wordCount?: number;
+    brandVoiceKnowledge?: boolean;
+    competitorAnalysis?: boolean;
+    geoOptimization?: boolean;
+    firstPerson?: boolean;
+    hook?: boolean;
+    htmlElement?: boolean;
+    readabilityLevel?: string;
+    internalLinks?: boolean;
+    generateContentImages?: boolean;
+    generateCoverImage?: boolean;
+    contentImageCount?: number;
+    includeTextInImages?: boolean;
+    imageStyle?: string;
+    imageAspectRatio?: string;
+  };
 };
 
 export type ArticleGenerationResult = z.infer<

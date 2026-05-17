@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Topbar } from "@/components/layout/Topbar";
-import { PoweredByAiBadge } from "@/components/ui/AiVisuals";
+import { ProBadge } from "@/components/ui/AiVisuals";
 import { Card } from "@/components/ui/Card";
 import { Stagger, StaggerItem } from "@/components/ui/Motion";
 import { ApiClientError, apiRequest } from "@/lib/api-client";
@@ -128,7 +128,7 @@ export default function DashboardPage() {
           <div className="pointer-events-none absolute inset-y-0 right-0 w-[30%] bg-[radial-gradient(circle_at_70%_50%,var(--cta),transparent_60%)] opacity-[0.08]" />
           <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_320px]">
             <div>
-              <PoweredByAiBadge className="uppercase tracking-[0.12em]">Powered by AI insights</PoweredByAiBadge>
+              <ProBadge variant="glow" className="uppercase tracking-[0.12em]">Insight Engine</ProBadge>
               <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[var(--text)] sm:text-4xl">Performance Overview</h2>
               <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-[var(--text-muted)]">
                 Track your content production, usage limits, and library health in real-time. Our AI engine is
@@ -161,12 +161,12 @@ export default function DashboardPage() {
                   <path d="M20 90 h 60 l 20 20 h 70" />
                   <path d="M20 160 h 60 l 20 -20 h 70" />
                   <path d="M40 200 h 60 l 40 -40 h 30" />
-                  
+
                   <path d="M360 50 h -60 l -40 40 h -30" />
                   <path d="M380 90 h -60 l -20 20 h -70" />
                   <path d="M380 160 h -60 l -20 -20 h -70" />
                   <path d="M360 200 h -60 l -40 -40 h -30" />
-                  
+
                   <circle cx="40" cy="50" r="2" fill="currentColor" />
                   <circle cx="20" cy="90" r="2" fill="currentColor" />
                   <circle cx="20" cy="160" r="2" fill="currentColor" />

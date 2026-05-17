@@ -24,6 +24,10 @@ app.use(
   "*",
   cors({
     origin: (origin, c) => {
+      // In development, dynamically accept all origins to support access via network IPs
+      if (c.env.APP_ENV === "development" || !origin) {
+        return origin || "*";
+      }
       const allowedOrigins = getAllowedOrigins(c);
       return allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
     },

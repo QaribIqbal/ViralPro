@@ -1,21 +1,19 @@
 "use client";
 
 import { useTheme } from "@/components/providers/ThemeProvider";
-import { PoweredByAiBadge } from "@/components/ui/AiVisuals";
 
 export function Topbar({ title, subtitle }: { title: string; subtitle?: string }) {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
 
   return (
-    <header className="sticky top-0 z-20 mx-3 mt-3 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[var(--border)] vp-glass-panel px-4 py-3 sm:mx-4 sm:px-5">
-      <div className="flex min-w-0 flex-col justify-center">
+    <header className="sticky top-0 z-20 mx-3 mt-3 flex min-w-0 flex-wrap items-center justify-between gap-4 overflow-hidden rounded-2xl border border-[var(--border)] vp-glass-panel px-4 py-3 sm:mx-4 sm:px-5">
+      <div className="flex w-full min-w-0 flex-col justify-center md:w-auto">
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-lg font-semibold tracking-tight text-[var(--text)] sm:text-xl">{title}</h1>
-          <PoweredByAiBadge className="hidden sm:inline-flex" />
+          <h1 className="min-w-0 text-lg font-semibold tracking-tight text-[var(--text)] sm:text-xl">{title}</h1>
         </div>
         {subtitle && (
-          <p className="text-xs text-[var(--text-muted)] sm:text-sm">{subtitle}</p>
+          <p className="max-w-full break-words text-xs text-[var(--text-muted)] sm:text-sm">{subtitle}</p>
         )}
       </div>
 

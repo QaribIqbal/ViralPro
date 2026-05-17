@@ -1,101 +1,96 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { MarketingFooter } from "@/components/marketing/MarketingFooter";
-import { MarketingNavbar } from "@/components/marketing/MarketingNavbar";
-import { FaqAccordion } from "@/components/marketing/FaqAccordion";
-import { SectionTitle } from "@/components/marketing/SectionTitle";
-import { featureFaqs, featureHighlights, testimonials } from "@/lib/marketing-data";
+"use client";
 
-const deepFeatures = [
-  {
-    title: "AI SEO Automation",
-    detail:
-      "Automated keyword research, competitor pattern analysis, and practical on-page recommendations aligned with search intent.",
-  },
-  {
-    title: "Content & Blog Generator",
-    detail:
-      "Generate long-form articles with structured outlines, adaptive tone controls, and built-in optimization cues for rankings.",
-  },
-  {
-    title: "AI Image Generation",
-    detail:
-      "Create relevant article visuals with style/aspect controls and one-click insertion into your publishing workflow.",
-  },
-];
+import { motion } from "framer-motion";
+import { MarketingNavbar } from "@/components/marketing/MarketingNavbar";
+import { MarketingFooter } from "@/components/marketing/MarketingFooter";
+import { FaqAccordion } from "@/components/marketing/FaqAccordion";
+import { featureHighlights, featureFaqs } from "@/lib/marketing-data";
 
 export default function FeaturesPage() {
   return (
-    <main className="bg-[var(--bg)] text-[var(--text)]">
-      <MarketingNavbar />
+    <main className="relative min-h-screen overflow-x-hidden bg-[#030509] text-white selection:bg-[var(--cta)] selection:text-white">
+      <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[800px] w-[1000px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--cta-soft)_0%,transparent_60%)] opacity-20 blur-[100px]" />
+      
+      <div className="dark">
+        <MarketingNavbar />
+      </div>
 
-      <section className="border-b border-[var(--border)]">
-        <div className="mx-auto w-full max-w-7xl px-4 py-18 sm:px-6 lg:px-8 vp-reveal">
-          <SectionTitle
-            eyebrow="Features"
-            title="The leading AI-powered SEO and content automation suite"
-            description="ViralPro helps teams plan, generate, review, and publish high-performing content with less operational overhead."
-          />
+      <section className="relative px-4 pb-32 pt-48 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+            <h1 className="text-[3rem] font-bold leading-[1.1] tracking-tight sm:text-[4.5rem]">
+              The architecture of <br className="hidden sm:block" />
+              <span className="bg-gradient-to-r from-[var(--cta)] to-[var(--ai-accent)] bg-clip-text text-transparent">content velocity.</span>
+            </h1>
+            <p className="mt-8 text-lg font-light leading-relaxed text-slate-400">
+              Not just an AI writer. An entire operational model designed to map, draft, and visualize your SEO strategy at scale.
+            </p>
+          </motion.div>
         </div>
-      </section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-4 lg:grid-cols-3">
-          {deepFeatures.map((item) => (
-            <article key={item.title} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 vp-card-hover vp-reveal">
-              <h3 className="text-xl font-semibold">{item.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-[var(--text-muted)]">{item.detail}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-y border-[var(--border)] bg-[var(--surface)]">
-        <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="grid gap-4 lg:grid-cols-3">
-            {featureHighlights.map((item) => (
-              <article key={item.title} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 vp-card-hover vp-reveal">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-[var(--primary)] text-xs font-bold text-white">{item.icon}</span>
-                <h3 className="mt-4 text-xl font-semibold">{item.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[var(--text-muted)]">{item.summary}</p>
-              </article>
+        <div className="mx-auto mt-32 max-w-7xl">
+          <div className="grid gap-8 lg:grid-cols-3">
+            {featureHighlights.map((feature, i) => (
+              <motion.div 
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.6 }}
+                className="group relative overflow-hidden rounded-[32px] border border-white/10 bg-[#0A0D14] p-10 transition-colors hover:border-white/20"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-[var(--cta)]/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-xl font-bold text-white shadow-inner">
+                  {feature.icon}
+                </div>
+                <h3 className="relative z-10 mt-8 text-2xl font-semibold text-white">{feature.title}</h3>
+                <p className="relative z-10 mt-4 text-[15px] leading-relaxed text-slate-400">
+                  {feature.summary}
+                </p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <SectionTitle eyebrow="Customer Impact" title="What teams say after adopting ViralPro" />
-        <div className="mt-8 grid gap-4 lg:grid-cols-2">
-          {testimonials.map((item) => (
-            <article key={item.name} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 vp-card-hover vp-reveal">
-              <p className="text-base text-[var(--text)]">“{item.quote}”</p>
-              <p className="mt-5 text-sm font-semibold">{item.name}</p>
-              <p className="text-xs text-[var(--text-muted)]">{item.role}, {item.company}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-y border-[var(--border)] bg-[var(--surface)]">
-        <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <SectionTitle eyebrow="Feature FAQ" title="Answers for technical and editorial teams" />
-          <FaqAccordion items={featureFaqs} />
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--primary)] px-8 py-10 text-white vp-reveal">
-          <h3 className="text-3xl font-semibold">Ready to run ViralPro with your team?</h3>
-          <p className="mt-3 text-white/80">Start free or request a guided demo for your workflow.</p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/sign-up"><Button type="button" className="bg-white !text-slate-900 hover:bg-slate-100">Start Free Trial</Button></Link>
-            <Link href="/contact"><Button type="button" variant="secondary" className="border-white/30 bg-transparent text-white hover:bg-white/10">Get a Demo</Button></Link>
+      {/* Interactive Architecture Diagram */}
+      <section className="relative overflow-hidden py-32 border-y border-white/5">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(var(--cta-rgb),0.03)_0%,transparent_70%)]" />
+        <div className="mx-auto max-w-7xl px-4 text-center">
+          <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-5xl">Built for scale.</h2>
+          <div className="mt-20 flex justify-center">
+            <div className="relative flex h-[400px] w-full max-w-4xl items-center justify-center rounded-[32px] border border-white/10 bg-[#0A0D14]/50 p-8 backdrop-blur-xl">
+               {/* Abstract nodes connected */}
+               <div className="flex w-full items-center justify-between">
+                 <div className="flex h-32 w-32 flex-col items-center justify-center rounded-full border border-[var(--cta)]/30 bg-[var(--cta)]/10 shadow-[0_0_30px_rgba(var(--cta-rgb),0.2)]">
+                   <p className="text-xs font-bold uppercase tracking-widest text-white/50">Strategy</p>
+                 </div>
+                 <div className="h-0.5 flex-1 bg-gradient-to-r from-[var(--cta)]/30 to-[var(--ai-accent)]/30" />
+                 <div className="flex h-40 w-40 flex-col items-center justify-center rounded-full border border-[var(--ai-accent)]/50 bg-[var(--ai-accent)]/10 shadow-[0_0_50px_rgba(var(--ai-accent-rgb),0.3)]">
+                   <p className="text-xs font-bold uppercase tracking-widest text-white">Generation</p>
+                 </div>
+                 <div className="h-0.5 flex-1 bg-gradient-to-r from-[var(--ai-accent)]/30 to-[var(--success)]/30" />
+                 <div className="flex h-32 w-32 flex-col items-center justify-center rounded-full border border-[var(--success)]/30 bg-[var(--success)]/10 shadow-[0_0_30px_rgba(var(--success-rgb),0.2)]">
+                   <p className="text-xs font-bold uppercase tracking-widest text-white/50">Publish</p>
+                 </div>
+               </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <MarketingFooter />
+      <section className="relative mx-auto w-full max-w-3xl px-4 py-32 sm:px-6 lg:px-8">
+        <div className="mb-12 text-center">
+          <h2 className="text-3xl font-semibold tracking-tight text-white">Capabilities FAQ</h2>
+        </div>
+        <div className="dark">
+          <FaqAccordion items={featureFaqs} />
+        </div>
+      </section>
+
+      <div className="dark">
+        <MarketingFooter />
+      </div>
     </main>
   );
 }

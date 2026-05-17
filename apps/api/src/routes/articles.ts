@@ -8,11 +8,13 @@ import {
   listArticles,
   updateArticle,
 } from "../services/articles.service";
+import { callBulkGenerationWorkflow } from "../services/n8n.service";
 import {
   generateArticleSchema,
   listArticlesQuerySchema,
   updateArticleSchema,
 } from "../validation/article.schema";
+import { bulkGenerateSchema } from "../validation/bulk.schema";
 import { AppError } from "../utils/errors";
 import { successResponse } from "../utils/response";
 
@@ -28,6 +30,28 @@ articleRoutes.post("/generate", async (c) => {
   const article = await generateArticle(c.env, c.get("user").id, input);
 
   return successResponse(c, article);
+});
+
+articleRoutes.post("/bulk-generate", async (c) => {
+  const body = await c.req.json().catch(() => {
+    throw new AppError(400, "BAD_REQUEST", "Invalid JSON request body.");
+  });
+  const input = bulkGenerateSchema.parse(body);
+
+  const result = await callBulkGenerationWorkflow(c.env, {
+    userId: c.get("user").id,
+    batchName: input.batchName,
+    source: input.source,
+    globalSettings: input.globalSettings,
+    topics: input.topics,
+    meta: input.meta,
+  });
+
+  return successResponse(c, {
+    accepted: true,
+    upstream: result,
+    topicCount: input.topics.length,
+  });
 });
 
 articleRoutes.get("/", async (c) => {

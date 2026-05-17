@@ -1,72 +1,78 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { MarketingFooter } from "@/components/marketing/MarketingFooter";
+import { motion } from "framer-motion";
 import { MarketingNavbar } from "@/components/marketing/MarketingNavbar";
-import { FaqAccordion } from "@/components/marketing/FaqAccordion";
-import { SectionTitle } from "@/components/marketing/SectionTitle";
-import { blogPosts, homeFaqs } from "@/lib/marketing-data";
+import { MarketingFooter } from "@/components/marketing/MarketingFooter";
+import { blogPosts } from "@/lib/marketing-data";
 
 export default function BlogPage() {
-  const [featured, ...rest] = blogPosts;
-
   return (
-    <main className="bg-[var(--bg)] text-[var(--text)]">
-      <MarketingNavbar />
+    <main className="relative min-h-screen overflow-x-hidden bg-[#030509] text-white selection:bg-[var(--cta)] selection:text-white">
+      <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[800px] w-[1000px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--ai-accent-muted)_0%,transparent_60%)] opacity-20 blur-[100px]" />
+      
+      <div className="dark">
+        <MarketingNavbar />
+      </div>
 
-      <section className="border-b border-[var(--border)]">
-        <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8 vp-reveal">
-          <SectionTitle
-            eyebrow="Blog"
-            title="SEO insights, AI workflows, and growth strategy"
-            description="Actionable frameworks from the ViralPro team on shipping high-performing content systems."
-          />
+      <section className="relative px-4 pb-20 pt-48 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+            <h1 className="text-[3rem] font-bold leading-[1.1] tracking-tight sm:text-[4.5rem]">
+              The ViralPro Journal.
+            </h1>
+            <p className="mt-8 text-lg font-light leading-relaxed text-slate-400">
+              Insights, operational playbooks, and strategic deep-dives for elite marketing teams.
+            </p>
+          </motion.div>
         </div>
-      </section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <Link href={`/blog/${featured.slug}`} className="group grid gap-6 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 lg:grid-cols-2 vp-card-hover vp-reveal">
-          <Image src={featured.heroImage} alt={featured.title} width={1200} height={760} className="h-72 w-full rounded-xl object-cover" />
-          <div className="flex flex-col justify-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--cta)]">Featured</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight group-hover:text-[var(--cta)]">{featured.title}</h2>
-            <p className="mt-3 text-sm text-[var(--text-muted)]">{featured.excerpt}</p>
-            <p className="mt-4 text-xs text-[var(--text-muted)]">{featured.publishDate} • {featured.readTime}</p>
+        <div className="mx-auto mt-32 max-w-7xl">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {blogPosts.map((post, i) => (
+              <motion.div 
+                key={post.slug}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.6 }}
+              >
+                <Link href={`/blog/${post.slug}`} className="group block h-full">
+                  <div className="relative h-full overflow-hidden rounded-[32px] border border-white/10 bg-[#0A0D14] p-2 transition-colors hover:border-white/20">
+                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[24px]">
+                      <div className="absolute inset-0 z-10 bg-black/20 transition-colors group-hover:bg-transparent" />
+                      <Image 
+                        src={post.heroImage} 
+                        alt={post.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="p-6">
+                      <div className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-widest text-[var(--cta)]">
+                        <span>{post.tag}</span>
+                        <span className="h-1 w-1 rounded-full bg-white/20" />
+                        <span className="text-white/40">{post.readTime}</span>
+                      </div>
+                      <h3 className="mt-4 text-xl font-semibold leading-snug text-white transition-colors group-hover:text-[var(--cta)]">
+                        {post.title}
+                      </h3>
+                      <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-slate-400">
+                        {post.excerpt}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
           </div>
-        </Link>
-      </section>
-
-      <section className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {rest.map((post) => (
-            <Link key={post.slug} href={`/blog/${post.slug}`} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 vp-card-hover vp-reveal">
-              <Image src={post.heroImage} alt={post.title} width={900} height={520} className="h-44 w-full rounded-lg object-cover" />
-              <p className="mt-3 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--cta)]">{post.tag}</p>
-              <h3 className="mt-2 text-xl font-semibold">{post.title}</h3>
-              <p className="mt-2 text-sm text-[var(--text-muted)]">{post.excerpt}</p>
-              <p className="mt-3 text-xs text-[var(--text-muted)]">{post.readTime}</p>
-            </Link>
-          ))}
         </div>
       </section>
 
-      <section className="border-y border-[var(--border)] bg-[var(--surface)]">
-        <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <SectionTitle eyebrow="FAQ" title="Questions about our blog and updates" />
-          <FaqAccordion items={homeFaqs.slice(0, 4)} />
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8 vp-reveal">
-          <SectionTitle eyebrow="Newsletter" title="Get weekly SEO and AI content updates" />
-          <form className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <input aria-label="Email" type="email" placeholder="you@company.com" className="h-11 flex-1 rounded-xl border border-[var(--border)] px-4 text-sm" />
-            <button type="submit" className="h-11 rounded-xl bg-[var(--cta)] px-6 text-sm font-semibold text-white">Subscribe</button>
-          </form>
-        </div>
-      </section>
-
-      <MarketingFooter />
+      <div className="dark">
+        <MarketingFooter />
+      </div>
     </main>
   );
 }

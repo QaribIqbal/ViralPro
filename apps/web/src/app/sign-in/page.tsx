@@ -70,6 +70,7 @@ export default function SignInPage() {
                 width={44}
                 height={44}
                 className="h-full w-full object-cover"
+                style={{ width: "auto", height: "auto" }}
                 priority
               />
             </div>

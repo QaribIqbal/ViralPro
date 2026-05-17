@@ -30,17 +30,35 @@ const imageGenerationResponseSchema = z.object({
 export type ArticleGenerationPayload = {
   articleId: string;
   userId: string;
-  topic: string;
-  primaryKeyword?: string;
-  articleType?: string;
-  tone?: string;
-  language?: string;
-  intendedAudience?: string;
-  customOutline?: string;
-  wordCount?: number;
-  aiSearchOptimized: boolean;
-  generateImage: boolean;
-  extraInstructions?: string;
+  contentBrief: {
+    topic: string;
+    liveWebResearch?: boolean;
+    targetKeyword?: string;
+    customOutline?: string;
+  };
+  configuration: {
+    aiModel?: string;
+    articleType?: string;
+    tone?: string;
+    language?: string;
+    intendedAudience?: string;
+    additionalContext?: string;
+    wordCount?: number;
+    brandVoiceKnowledge?: boolean;
+    competitorAnalysis?: boolean;
+    geoOptimization?: boolean;
+    firstPerson?: boolean;
+    hook?: boolean;
+    htmlElement?: boolean;
+    readabilityLevel?: string;
+    internalLinks?: boolean;
+    generateContentImages?: boolean;
+    generateCoverImage?: boolean;
+    contentImageCount?: number;
+    includeTextInImages?: boolean;
+    imageStyle?: string;
+    imageAspectRatio?: string;
+  };
 };
 
 export type ImageGenerationPayload = {
@@ -52,6 +70,70 @@ export type ImageGenerationPayload = {
   style?: string;
   altText?: string;
 };
+
+export type BulkGenerationPayload = {
+  userId: string;
+  batchName: string;
+  source?: string;
+  globalSettings: {
+    batchName: string;
+    wordCount: number;
+    tone: string;
+    articleType: string;
+    language: string;
+    aiModel: string;
+    liveWebResearch: boolean;
+    intendedAudience: string;
+    additionalContext: string;
+    geoOptimization: boolean;
+    firstPerson: boolean;
+    hook: boolean;
+    readabilityLevel: string;
+    brandVoiceKnowledge: boolean;
+    competitorAnalysis: boolean;
+    internalLinks: boolean;
+    generateContentImages: boolean;
+    includeTextInImages: boolean;
+    contentImageCount: number;
+  };
+  topics: Array<{
+    id: string;
+    topic: string;
+    customSettings?: Partial<{
+      batchName: string;
+      wordCount: number;
+      tone: string;
+      articleType: string;
+      language: string;
+      aiModel: string;
+      liveWebResearch: boolean;
+      intendedAudience: string;
+      additionalContext: string;
+      geoOptimization: boolean;
+      firstPerson: boolean;
+      hook: boolean;
+      readabilityLevel: string;
+      brandVoiceKnowledge: boolean;
+      competitorAnalysis: boolean;
+      internalLinks: boolean;
+      generateContentImages: boolean;
+      includeTextInImages: boolean;
+      contentImageCount: number;
+    }>;
+  }>;
+  meta?: {
+    topicCount?: number;
+    createdAt?: string;
+  };
+};
+
+const bulkGenerationResponseSchema = z
+  .object({
+    accepted: z.boolean().optional(),
+    runId: z.string().optional().nullable(),
+    message: z.string().optional().nullable(),
+  })
+  .passthrough();
 
 function requireBinding(env: Env, key: keyof Env) {
   const value = env[key];
@@ -161,7 +243,7 @@ async function postJsonToWebhook<TPayload, TResult>(params: {
     }
 
     const result = parsed.data as any;
-    
+
     // Map 'output' to 'contentHtml' if it exists and contentHtml is empty
     if (result.output && !result.contentHtml) {
       result.contentHtml = result.output;
@@ -198,10 +280,61 @@ export function callArticleGenerationWorkflow(
   env: Env,
   payload: ArticleGenerationPayload
 ) {
+  const structuredPayload = {
+    // Tracking metadata for database update callback
+    articleId: payload.articleId,
+    userId: payload.userId,
+
+    // Core grouped payload from frontend
+    contentBrief: {
+      topic: payload.contentBrief.topic,
+      targetKeyword: payload.contentBrief.targetKeyword ?? "",
+      customOutline: payload.contentBrief.customOutline ?? "",
+      liveWebResearch: payload.contentBrief.liveWebResearch ?? false,
+    },
+    configuration: {
+      articleType: payload.configuration.articleType ?? "informational",
+      tone: payload.configuration.tone ?? "professional",
+      language: payload.configuration.language ?? "english",
+      intendedAudience: payload.configuration.intendedAudience ?? "",
+      additionalContext: payload.configuration.additionalContext ?? "",
+      wordCount: payload.configuration.wordCount ?? 1500,
+      aiModel: payload.configuration.aiModel ?? "claude-sonnet-4.6",
+    },
+
+    // Keep compatibility fields for existing n8n workflow nodes.
+    topic: payload.contentBrief.topic,
+    targetKeyword: payload.contentBrief.targetKeyword ?? "",
+
+    intelligence: {
+      brandVoiceKnowledge: payload.configuration.brandVoiceKnowledge ?? false,
+      competitorAnalysis: payload.configuration.competitorAnalysis ?? false,
+    },
+
+    structuralElements: {
+      geoOptimization: payload.configuration.geoOptimization ?? false,
+      firstPerson: payload.configuration.firstPerson ?? false,
+      hook: payload.configuration.hook ?? false,
+      htmlElement: payload.configuration.htmlElement ?? false,
+      readabilityLevel: payload.configuration.readabilityLevel ?? "default-7th",
+      internalLinks: payload.configuration.internalLinks ?? false,
+    },
+
+    visualEngine: {
+      generateContentImages: payload.configuration.generateContentImages ?? false,
+      generateCoverImage: payload.configuration.generateCoverImage ?? false,
+      contentImageCount: payload.configuration.contentImageCount ?? 0,
+      advanced: {
+        style: payload.configuration.imageStyle ?? "photoreal",
+        aspectRatio: payload.configuration.imageAspectRatio ?? "16:9",
+      },
+    },
+  };
+
   return postJsonToWebhook({
     env,
     webhookUrl: requireBinding(env, "N8N_ARTICLE_GENERATION_WEBHOOK_URL"),
-    payload,
+    payload: structuredPayload,
     schema: articleGenerationResponseSchema,
     timeoutMs: 300000,
     allowPlainTextOutput: true,
@@ -328,4 +461,34 @@ export function callImageGenerationWorkflow(
     .finally(() => {
       clearTimeout(timeout);
     });
+}
+
+export function callBulkGenerationWorkflow(
+  env: Env,
+  payload: BulkGenerationPayload
+) {
+  const structuredPayload = {
+    source: payload.source ?? "viralpro-bulk-studio",
+    userId: payload.userId,
+    batchName: payload.batchName,
+    globalSettings: payload.globalSettings,
+    topics: payload.topics,
+    meta: {
+      topicCount: payload.meta?.topicCount ?? payload.topics.length,
+      createdAt: payload.meta?.createdAt ?? new Date().toISOString(),
+    },
+  };
+
+  const webhookUrl =
+    env.N8N_BULK_GENERATION_WEBHOOK_URL?.trim() ||
+    "http://local.pegasus:5678/webhook-test/5641d6aa-66f7-4bc1-9be3-4bb462f84794";
+
+  return postJsonToWebhook({
+    env,
+    webhookUrl,
+    payload: structuredPayload,
+    schema: bulkGenerationResponseSchema,
+    timeoutMs: 300000,
+    allowPlainTextOutput: true,
+  });
 }

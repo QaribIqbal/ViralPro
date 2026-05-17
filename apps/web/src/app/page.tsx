@@ -1,164 +1,281 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { MarketingNavbar } from "@/components/marketing/MarketingNavbar";
 import { FaqAccordion } from "@/components/marketing/FaqAccordion";
 import { PricingCards } from "@/components/marketing/PricingCards";
-import { InlineBadge, SectionTitle } from "@/components/marketing/SectionTitle";
-import { homeFaqs, homeFeatures, homeStats, testimonials, workflowSteps } from "@/lib/marketing-data";
+import { homeFaqs } from "@/lib/marketing-data";
+
+function GlowingBadge({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="inline-flex items-center gap-2 rounded-full border border-[var(--cta)]/30 bg-[var(--cta)]/10 px-3 py-1 text-[13px] font-semibold tracking-wide text-[var(--cta)] backdrop-blur-md">
+      <span className="relative flex h-1.5 w-1.5">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--cta)] opacity-75"></span>
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--cta)]"></span>
+      </span>
+      {children}
+    </div>
+  );
+}
 
 export default function HomePage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, { damping: 20, stiffness: 100 });
+  const scale = useTransform(smoothProgress, [0, 0.15], [0.9, 1]);
+  const opacity = useTransform(smoothProgress, [0, 0.15], [0.3, 1]);
+  const y = useTransform(smoothProgress, [0, 0.15], [100, 0]);
+
   return (
-    <main className="bg-[var(--bg)] text-[var(--text)]">
-      <MarketingNavbar />
+    <main
+      className="relative min-h-screen overflow-x-hidden bg-[#030509] text-white selection:bg-[var(--cta)] selection:text-white"
+      ref={containerRef}
+    >
+      {/* Deep Space Background glow effects */}
+      <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[800px] w-[1000px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--cta-soft)_0%,transparent_60%)] opacity-20 blur-[100px]" />
 
-      <section className="relative overflow-hidden border-b border-[var(--border)] bg-[var(--surface-muted)]">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--cta)]/5 via-transparent to-[var(--ai-accent)]/5" />
-        <div className="pointer-events-none absolute left-[12%] top-24 h-48 w-48 rounded-full bg-[var(--cta)] opacity-10 blur-3xl" />
-        <div className="pointer-events-none absolute right-[18%] top-40 h-64 w-64 rounded-full bg-[var(--ai-accent)] opacity-10 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-28 left-[44%] h-56 w-56 rounded-full bg-[var(--ai-accent-2)] opacity-5 blur-3xl" />
-        <div className="relative mx-auto grid w-full max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
-          <div className="vp-reveal">
-            <InlineBadge>AI-Powered SEO & Content Automation</InlineBadge>
-            <h1 className="mt-5 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl vp-reveal vp-delay-1">
-              Grow traffic faster with a single AI content operating system.
-            </h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--text-muted)] vp-reveal vp-delay-2">
-              ViralPro unifies keyword strategy, blog generation, and automated image workflows so your team publishes higher-quality SEO content at scale.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3 vp-reveal vp-delay-3">
-              <Link href="/sign-up"><Button type="button" className="h-12 px-6 text-sm">Start Free Trial</Button></Link>
-              <Link href="/features"><Button type="button" variant="secondary" className="h-12 px-6 text-sm">Explore Features</Button></Link>
-            </div>
+      <div className="dark">
+        <MarketingNavbar />
+      </div>
+
+      {/* 1. The Cinematic Hero */}
+      <section className="relative flex min-h-[90vh] flex-col items-center justify-center px-4 pt-40 text-center sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col items-center"
+        >
+          <GlowingBadge>ViralPro Intelligence Engine</GlowingBadge>
+
+          <h1 className="mt-8 max-w-5xl text-[3.5rem] font-bold leading-[1.05] tracking-tight sm:text-[5rem] lg:text-[6.5rem]">
+            Content that feels <br className="hidden sm:block" />
+            <span className="bg-gradient-to-r from-white via-white to-white/30 bg-clip-text text-transparent">
+              inevitable.
+            </span>
+          </h1>
+
+          <p className="mt-8 max-w-2xl text-lg font-light leading-relaxed text-slate-400 sm:text-xl">
+            An invite-only caliber workspace for elite marketing teams. Stop scaling editorial chaos. Start compounding authority with a unified intelligence engine.
+          </p>
+
+          <div className="mt-12 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <Link href="/sign-up">
+              <Button className="group relative h-14 overflow-hidden rounded-full bg-white px-8 text-base font-semibold text-black transition-all hover:scale-[1.02] hover:bg-slate-100 active:scale-95">
+                <span className="relative z-10 flex items-center gap-2">
+                  Request Access
+                  <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none">
+                    <path d="M6.5 3.5L11 8L6.5 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[var(--cta)] to-[var(--ai-accent)] opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-20" />
+              </Button>
+            </Link>
           </div>
+        </motion.div>
 
-          <article className="relative rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-xl shadow-black/5 vp-reveal vp-delay-2">
-            <Image
-              src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=1600&q=80&auto=format&fit=crop"
-              alt="ViralPro platform preview"
-              width={1200}
-              height={820}
-              className="h-auto w-full rounded-xl border border-[var(--border)] object-cover"
-              priority
-            />
-            <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              {homeStats.map((stat) => (
-                <div key={stat.label} className="rounded-lg bg-[var(--surface-muted)] p-3 vp-card-hover">
-                  <p className="text-lg font-semibold">{stat.value}</p>
-                  <p className="text-xs text-[var(--text-muted)]">{stat.label}</p>
+        {/* 2. The Awe-Inducing Scroll (Product Reveal) */}
+        <motion.div
+          style={{ scale, opacity, y }}
+          className="relative mt-24 w-full max-w-[1200px] rounded-[32px] border border-white/10 bg-[#0A0D14]/80 p-2 shadow-[0_0_120px_rgba(var(--cta-rgb),0.15)] backdrop-blur-3xl"
+        >
+          <div className="absolute inset-x-32 top-0 h-px bg-gradient-to-r from-transparent via-[var(--cta)]/60 to-transparent" />
+          <div className="relative overflow-hidden rounded-[24px] border border-white/5 bg-[#030509] shadow-inner">
+            
+            {/* Mocked UI Engine Header */}
+            <div className="flex items-center gap-4 border-b border-white/5 bg-white/[0.02] px-6 py-4">
+              <div className="flex gap-2">
+                <div className="h-3 w-3 rounded-full bg-white/20" />
+                <div className="h-3 w-3 rounded-full bg-white/20" />
+                <div className="h-3 w-3 rounded-full bg-white/20" />
+              </div>
+              <div className="flex h-7 flex-1 items-center justify-center rounded-lg bg-black/40 text-[11px] tracking-wider text-white/30 shadow-inner">
+                viralpro.app / intelligence-engine / processing
+              </div>
+              <div className="w-12" /> {/* Spacer */}
+            </div>
+
+            {/* Mocked UI Engine Body */}
+            <div className="relative aspect-[16/9] w-full overflow-hidden bg-[radial-gradient(ellipse_at_center,rgba(var(--cta-rgb),0.08)_0%,transparent_70%)] p-8">
+              {/* Abstract Processing Nodes */}
+              <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
+                <div className="relative flex h-40 w-40 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-xl">
+                  <div className="absolute inset-0 animate-[spin_6s_linear_infinite] rounded-full border-t-2 border-[var(--cta)] opacity-70" />
+                  <div className="absolute inset-4 animate-[spin_4s_linear_infinite_reverse] rounded-full border-b-2 border-[var(--ai-accent)] opacity-50" />
+                  <div className="vp-idle-pulse h-16 w-16 rounded-full bg-[var(--cta)] shadow-[0_0_60px_rgba(var(--cta-rgb),0.8)]" />
                 </div>
-              ))}
-            </div>
-          </article>
-        </div>
-      </section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <SectionTitle
-          eyebrow="Core Benefits"
-          title="Everything your content team needs to execute end-to-end"
-          description="From strategy to publishing outputs, ViralPro keeps your workflow focused, measurable, and scalable."
-        />
-        <div className="mt-10 grid gap-4 lg:grid-cols-3">
-          {homeFeatures.map((feature) => (
-            <article key={feature.title} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 vp-card-hover vp-reveal" style={{ animationDelay: `${70 * (Number(feature.icon) || 1)}ms` }}>
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-[var(--primary)] text-xs font-bold text-white">{feature.icon}</span>
-              <h3 className="mt-4 text-xl font-semibold">{feature.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-[var(--text-muted)]">{feature.summary}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-y border-[var(--border)] bg-[var(--surface)]">
-        <div className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <SectionTitle
-            eyebrow="How It Works"
-            title="Keyword Input → Generation → Review"
-            description="A simple execution loop that reduces operational drag and improves consistency across every piece."
-          />
-          <div className="mt-10 grid gap-4 lg:grid-cols-3">
-            {workflowSteps.map((step, idx) => (
-              <article key={step.title} className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6 vp-card-hover vp-reveal" style={{ animationDelay: `${80 * (idx + 1)}ms` }}>
-                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--cta)]">Step {idx + 1}</p>
-                <h3 className="mt-2 text-xl font-semibold">{step.title}</h3>
-                <p className="mt-3 text-sm text-[var(--text-muted)]">{step.detail}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <SectionTitle eyebrow="Testimonials" title="Teams trust ViralPro to scale quality content" />
-        <div className="mt-10 grid gap-4 lg:grid-cols-2">
-          {testimonials.map((item) => (
-            <article key={item.name} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 vp-card-hover vp-reveal">
-              <p className="text-base leading-relaxed text-[var(--text)]">“{item.quote}”</p>
-              <div className="mt-6 flex items-center gap-3">
-                <Image src={item.avatar} alt={item.name} width={48} height={48} className="h-12 w-12 rounded-full object-cover" />
-                <div>
-                  <p className="text-sm font-semibold">{item.name}</p>
-                  <p className="text-xs text-[var(--text-muted)]">{item.role}, {item.company}</p>
+                <div className="mt-12 flex gap-12">
+                  {["Strategic Mapping", "Editorial Drafting", "Visual Generation"].map((label, i) => (
+                    <motion.div
+                      key={label}
+                      animate={{ y: [0, -15, 0] }}
+                      transition={{ duration: 4, repeat: Infinity, delay: i * 0.5, ease: "easeInOut" }}
+                      className="flex flex-col items-center gap-4"
+                    >
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md">
+                        <div className="h-4 w-4 rounded-full bg-white/30" />
+                      </div>
+                      <p className="text-[10px] font-semibold tracking-[0.15em] text-white/40 uppercase">{label}</p>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
-            </article>
-          ))}
+
+              {/* Data Streams */}
+              <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#030509] to-transparent" />
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* 3. Awe-Inducing Credibility Scroll */}
+      <section className="relative py-40">
+        <div className="mx-auto max-w-5xl px-4 text-center">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1 }}
+            className="text-4xl font-light leading-[1.3] tracking-tight text-white/80 sm:text-5xl lg:text-6xl"
+          >
+            "It’s not just faster drafting. It’s a completely new operational model for content velocity."
+          </motion.h2>
         </div>
       </section>
 
-      <section className="border-y border-[var(--border)] bg-[var(--surface)]">
-        <div className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <SectionTitle eyebrow="Pricing" title="Plans built for creators, growth teams, and enterprises" align="center" />
-          <div className="mt-10"><PricingCards /></div>
-        </div>
-      </section>
-
+      {/* 4. Bento Box Feature Grid (Linear Style) */}
       <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--primary)] px-6 py-10 text-white sm:px-10 sm:py-12 vp-reveal">
-          <p className="text-sm font-semibold uppercase tracking-[0.12em] text-[var(--ai-accent-2)]">Start Building</p>
-          <h3 className="mt-3 max-w-2xl text-3xl font-semibold leading-tight sm:text-4xl">Launch your AI SEO content pipeline today.</h3>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/sign-up"><Button type="button" className="bg-white !text-slate-900 hover:bg-slate-100">Start Free Trial</Button></Link>
-            <Link href="/contact"><Button type="button" variant="secondary" className="border-white/30 bg-transparent text-white hover:bg-white/10">Talk to Sales</Button></Link>
+        <div className="mb-20 text-center">
+          <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-5xl">Intelligence at every layer.</h2>
+          <p className="mt-6 text-lg text-slate-400">Everything you need to dominate search, built into one seamless architecture.</p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3 md:grid-rows-2">
+          {/* Bento 1: Large */}
+          <motion.div
+            whileHover={{ y: -5 }}
+            className="group relative overflow-hidden rounded-[32px] border border-white/10 bg-[#0A0D14] p-10 transition-colors hover:border-white/20 md:col-span-2"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--cta)]/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <h3 className="relative z-10 text-2xl font-semibold text-white">Strategic Topic Intelligence</h3>
+            <p className="relative z-10 mt-3 max-w-md text-[15px] leading-relaxed text-slate-400">
+              Map intent clusters and opportunity gaps before a single word is written. Every article has a reason to rank.
+            </p>
+            <div className="relative mt-10 flex h-48 w-full items-end gap-3 overflow-hidden rounded-2xl border border-white/5 bg-black/40 p-6 shadow-inner">
+              {[40, 70, 45, 90, 65, 100, 80].map((h, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ height: 0 }}
+                  whileInView={{ height: `${h}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1, delay: i * 0.1, type: "spring", bounce: 0.2 }}
+                  className="w-full rounded-t-sm bg-gradient-to-t from-[var(--cta)]/20 to-[var(--cta)]"
+                />
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Bento 2 */}
+          <motion.div
+            whileHover={{ y: -5 }}
+            className="group relative overflow-hidden rounded-[32px] border border-white/10 bg-[#0A0D14] p-10 transition-colors hover:border-white/20"
+          >
+            <div className="absolute inset-0 bg-gradient-to-bl from-[var(--ai-accent)]/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <h3 className="relative z-10 text-xl font-semibold text-white">Editorial-Grade AI</h3>
+            <p className="relative z-10 mt-3 text-[15px] leading-relaxed text-slate-400">
+              Long-form generation with strict voice controls, avoiding generic AI syntax.
+            </p>
+            <div className="mt-10 space-y-4">
+              <div className="h-3 w-full rounded-full bg-white/5" />
+              <div className="h-3 w-5/6 rounded-full bg-white/5" />
+              <div className="h-3 w-4/6 rounded-full bg-[var(--ai-accent)]/50 shadow-[0_0_15px_rgba(var(--ai-accent-rgb),0.5)]" />
+            </div>
+          </motion.div>
+
+          {/* Bento 3 */}
+          <motion.div
+            whileHover={{ y: -5 }}
+            className="group relative overflow-hidden rounded-[32px] border border-white/10 bg-[#0A0D14] p-10 transition-colors hover:border-white/20"
+          >
+            <div className="absolute right-0 top-0 h-40 w-40 bg-[var(--warning)]/10 blur-[60px] transition-opacity duration-500 group-hover:opacity-100" />
+            <h3 className="relative z-10 text-xl font-semibold text-white">Automation-Native Visuals</h3>
+            <p className="relative z-10 mt-3 text-[15px] leading-relaxed text-slate-400">
+              Contextual images generated directly within the drafting flow, matching your exact aspect ratios.
+            </p>
+          </motion.div>
+
+          {/* Bento 4: Wide */}
+          <motion.div
+            whileHover={{ y: -5 }}
+            className="group relative flex overflow-hidden rounded-[32px] border border-white/10 bg-[#0A0D14] p-10 transition-colors hover:border-white/20 md:col-span-2"
+          >
+            <div className="z-10 max-w-lg">
+              <h3 className="text-2xl font-semibold text-white">Predictable Momentum</h3>
+              <p className="mt-3 text-[15px] leading-relaxed text-slate-400">
+                Stop reacting to publishing deadlines. Run predictable content cycles with measurable output quality and parallel bulk generation.
+              </p>
+            </div>
+            <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full border-[30px] border-white/5 transition-transform duration-700 group-hover:scale-110" />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 5. Loss-Aversion Pricing Tier */}
+      <section className="relative mx-auto w-full max-w-7xl px-4 py-32 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--cta)]/[0.03] to-transparent" />
+        <div className="relative">
+          <div className="text-center">
+            <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-5xl">The cost of manual execution.</h2>
+            <p className="mt-6 text-lg text-slate-400">
+              A 5-person editorial team costs $350k+/year. <br className="hidden sm:block" />
+              ViralPro gives you their output velocity for a fraction.
+            </p>
+          </div>
+          <div className="mt-20 dark">
+            <PricingCards />
           </div>
         </div>
       </section>
 
-      <section className="border-y border-[var(--border)] bg-[var(--surface)]">
-        <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <div>
-            <SectionTitle
-              eyebrow="FAQ"
-              title="Questions teams ask before they scale"
-              description="Security, AI reliability, and workflow quality are all addressed with practical controls."
-            />
-          </div>
+      {/* FAQ */}
+      <section className="relative mx-auto w-full max-w-3xl px-4 py-24 sm:px-6 lg:px-8">
+        <div className="mb-12 text-center">
+          <h2 className="text-3xl font-semibold tracking-tight text-white">Questions before you scale</h2>
+        </div>
+        <div className="dark">
           <FaqAccordion items={homeFaqs} />
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8 sm:p-10 vp-reveal">
-          <SectionTitle
-            eyebrow="Newsletter"
-            title="Get SEO playbooks, product updates, and free resources"
-            description="One practical update each week. No noise."
-          />
-          <form className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <input
-              aria-label="Email"
-              type="email"
-              placeholder="you@company.com"
-              className="h-11 flex-1 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-sm"
-            />
-            <Button type="submit" className="h-11 px-6">Subscribe</Button>
-          </form>
+      {/* 6. Glowing CTA Bottom */}
+      <section className="relative overflow-hidden py-40 text-center">
+        <div className="absolute left-1/2 top-1/2 -z-10 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--cta)]/20 blur-[150px]" />
+
+        <h2 className="text-5xl font-bold tracking-tight text-white sm:text-7xl">Ready to dominate?</h2>
+        <p className="mt-6 text-xl text-slate-400">Join the elite marketing teams compounding their growth.</p>
+
+        <div className="mt-12">
+          <Link href="/sign-up">
+            <Button className="h-16 rounded-full bg-white px-12 text-lg font-bold text-black shadow-[0_0_60px_rgba(255,255,255,0.2)] transition-transform hover:scale-105 active:scale-95">
+              Secure Your Access
+            </Button>
+          </Link>
         </div>
       </section>
 
-      <MarketingFooter />
+      <div className="dark">
+        <MarketingFooter />
+      </div>
     </main>
   );
 }

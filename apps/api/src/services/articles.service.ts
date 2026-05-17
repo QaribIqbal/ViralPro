@@ -61,31 +61,46 @@ export async function generateArticle(
   input: GenerateArticleInput
 ) {
   const supabase = createSupabaseAdmin(env);
+  const { contentBrief, configuration } = input;
 
   await assertArticleLimit(env, userId);
   await assertTemplateOwnership(env, userId, input.templateId);
 
   const generationSettings = {
-    articleType: input.articleType ?? null,
-    tone: input.tone ?? null,
-    language: input.language ?? "English",
-    intendedAudience: input.intendedAudience ?? null,
-    customOutline: input.customOutline ?? null,
-    wordCount: input.wordCount ?? 1500,
-    generateImage: input.generateImage ?? false,
-    aiSearchOptimized: input.aiSearchOptimized ?? false,
+    articleType: configuration.articleType ?? null,
+    tone: configuration.tone ?? null,
+    language: configuration.language ?? "English",
+    intendedAudience: configuration.intendedAudience ?? null,
+    customOutline: contentBrief.customOutline ?? null,
+    wordCount: configuration.wordCount ?? 1500,
+    liveWebResearch: contentBrief.liveWebResearch ?? false,
+    aiModel: configuration.aiModel ?? "claude-sonnet-4.6",
+    additionalContext: configuration.additionalContext ?? null,
+    brandVoiceKnowledge: configuration.brandVoiceKnowledge ?? false,
+    competitorAnalysis: configuration.competitorAnalysis ?? false,
+    geoOptimization: configuration.geoOptimization ?? false,
+    firstPerson: configuration.firstPerson ?? false,
+    hook: configuration.hook ?? true,
+    htmlElement: configuration.htmlElement ?? false,
+    readabilityLevel: configuration.readabilityLevel ?? "default-7th",
+    internalLinks: configuration.internalLinks ?? false,
+    generateContentImages: configuration.generateContentImages ?? true,
+    generateCoverImage: configuration.generateCoverImage ?? true,
+    contentImageCount: configuration.contentImageCount ?? 2,
+    includeTextInImages: configuration.includeTextInImages ?? false,
+    imageStyle: configuration.imageStyle ?? "photoreal",
+    imageAspectRatio: configuration.imageAspectRatio ?? "16:9",
     templateId: input.templateId ?? null,
-    extraInstructions: input.extraInstructions ?? null,
   };
 
   const { data: article, error: createError } = await supabase
     .from("articles")
     .insert({
       user_id: userId,
-      topic: input.topic,
-      primary_keyword: input.primaryKeyword ?? null,
+      topic: contentBrief.topic,
+      primary_keyword: contentBrief.targetKeyword ?? null,
       status: "generating",
-      ai_search_optimized: input.aiSearchOptimized ?? false,
+      ai_search_optimized: false,
       generation_settings: generationSettings,
     })
     .select("*")
@@ -99,17 +114,35 @@ export async function generateArticle(
     const result = await callArticleGenerationWorkflow(env, {
       articleId: article.id,
       userId,
-      topic: input.topic,
-      primaryKeyword: input.primaryKeyword,
-      articleType: input.articleType,
-      tone: input.tone,
-      language: input.language ?? "English",
-      intendedAudience: input.intendedAudience,
-      customOutline: input.customOutline,
-      wordCount: input.wordCount ?? 1500,
-      aiSearchOptimized: input.aiSearchOptimized ?? false,
-      generateImage: input.generateImage ?? false,
-      extraInstructions: input.extraInstructions,
+      contentBrief: {
+        topic: contentBrief.topic,
+        targetKeyword: contentBrief.targetKeyword,
+        customOutline: contentBrief.customOutline,
+        liveWebResearch: contentBrief.liveWebResearch,
+      },
+      configuration: {
+        aiModel: configuration.aiModel,
+        articleType: configuration.articleType,
+        tone: configuration.tone,
+        language: configuration.language ?? "English",
+        intendedAudience: configuration.intendedAudience,
+        additionalContext: configuration.additionalContext,
+        wordCount: configuration.wordCount ?? 1500,
+        brandVoiceKnowledge: configuration.brandVoiceKnowledge,
+        competitorAnalysis: configuration.competitorAnalysis,
+        geoOptimization: configuration.geoOptimization,
+        firstPerson: configuration.firstPerson,
+        hook: configuration.hook,
+        htmlElement: configuration.htmlElement,
+        readabilityLevel: configuration.readabilityLevel,
+        internalLinks: configuration.internalLinks,
+        generateContentImages: configuration.generateContentImages,
+        generateCoverImage: configuration.generateCoverImage,
+        contentImageCount: configuration.contentImageCount,
+        includeTextInImages: configuration.includeTextInImages,
+        imageStyle: configuration.imageStyle,
+        imageAspectRatio: configuration.imageAspectRatio,
+      },
     });
 
     const { data: completed, error: updateError } = await supabase
@@ -142,16 +175,16 @@ export async function generateArticle(
 
     let featuredImage: GeneratedImage | null = null;
 
-    if (input.generateImage) {
+    if (configuration.generateCoverImage) {
       try {
         featuredImage = await generateImage(env, userId, {
           prompt:
             result.imagePrompt ??
-            `Professional SEO blog image for: ${result.title ?? input.topic}`,
+            `Professional SEO blog image for: ${result.title ?? contentBrief.topic}`,
           articleId: article.id,
           aspectRatio: "16:9",
           style: "professional SaaS blog image",
-          altText: result.title ?? input.topic,
+          altText: result.title ?? contentBrief.topic,
         });
 
         await supabase

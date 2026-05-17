@@ -9,20 +9,42 @@ export const articleStatusSchema = z.enum([
   "published",
 ]);
 
-export const generateArticleSchema = z.object({
+const articleContentBriefSchema = z.object({
   topic: z.string().trim().min(2).max(240),
-  primaryKeyword: z.string().trim().max(160).optional(),
+  liveWebResearch: z.boolean().optional(),
+  targetKeyword: z.string().trim().max(160).optional(),
+  customOutline: z.string().trim().max(10000).optional(),
+}).strict();
+
+const articleConfigurationSchema = z.object({
+  aiModel: z.string().trim().max(80).optional(),
   articleType: z.string().trim().max(80).optional(),
   tone: z.string().trim().max(80).optional(),
   language: z.string().trim().max(80).optional(),
   intendedAudience: z.string().trim().max(240).optional(),
-  customOutline: z.string().trim().max(10000).optional(),
+  additionalContext: z.string().trim().max(4000).optional(),
   wordCount: z.number().int().min(300).max(5000).optional(),
-  generateImage: z.boolean().optional(),
-  aiSearchOptimized: z.boolean().optional(),
+  brandVoiceKnowledge: z.boolean().optional(),
+  competitorAnalysis: z.boolean().optional(),
+  geoOptimization: z.boolean().optional(),
+  firstPerson: z.boolean().optional(),
+  hook: z.boolean().optional(),
+  htmlElement: z.boolean().optional(),
+  readabilityLevel: z.string().trim().max(80).optional(),
+  internalLinks: z.boolean().optional(),
+  generateContentImages: z.boolean().optional(),
+  generateCoverImage: z.boolean().optional(),
+  contentImageCount: z.number().int().min(0).max(20).optional(),
+  includeTextInImages: z.boolean().optional(),
+  imageStyle: z.string().trim().max(80).optional(),
+  imageAspectRatio: z.string().trim().max(20).optional(),
+}).strict();
+
+export const generateArticleSchema = z.object({
+  contentBrief: articleContentBriefSchema,
+  configuration: articleConfigurationSchema,
   templateId: z.string().uuid().optional(),
-  extraInstructions: z.string().trim().max(4000).optional(),
-});
+}).strict();
 
 export const listArticlesQuerySchema = z.object({
   status: articleStatusSchema.optional(),

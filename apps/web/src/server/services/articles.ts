@@ -56,29 +56,30 @@ export async function generateArticleForUser(
   input: GenerateArticleInput
 ) {
   const supabase = await createServerSupabaseClient();
+  const { contentBrief, configuration } = input;
 
   await assertArticleLimit(userId);
   await assertTemplateOwnership(userId, input.templateId);
 
   const generationSettings = {
-    articleType: input.articleType ?? null,
-    tone: input.tone ?? null,
-    language: input.language ?? "English",
-    wordCount: input.wordCount ?? 1500,
-    generateImage: input.generateImage ?? false,
-    aiSearchOptimized: input.aiSearchOptimized ?? false,
+    articleType: configuration.articleType ?? null,
+    tone: configuration.tone ?? null,
+    language: configuration.language ?? "English",
+    wordCount: configuration.wordCount ?? 1500,
+    generateCoverImage: configuration.generateCoverImage ?? false,
+    generateContentImages: configuration.generateContentImages ?? false,
     templateId: input.templateId ?? null,
-    extraInstructions: input.extraInstructions ?? null,
+    additionalContext: configuration.additionalContext ?? null,
   };
 
   const { data: article, error: createError } = await supabase
     .from("articles")
     .insert({
       user_id: userId,
-      topic: input.topic,
-      primary_keyword: input.primaryKeyword ?? null,
+      topic: contentBrief.topic,
+      primary_keyword: contentBrief.targetKeyword ?? null,
       status: "generating",
-      ai_search_optimized: input.aiSearchOptimized ?? false,
+      ai_search_optimized: false,
       generation_settings: generationSettings,
     })
     .select("*")
@@ -92,15 +93,35 @@ export async function generateArticleForUser(
     const result = await callArticleGenerationWorkflow({
       articleId: article.id,
       userId,
-      topic: input.topic,
-      primaryKeyword: input.primaryKeyword,
-      articleType: input.articleType,
-      tone: input.tone,
-      language: input.language ?? "English",
-      wordCount: input.wordCount ?? 1500,
-      aiSearchOptimized: input.aiSearchOptimized ?? false,
-      generateImage: input.generateImage ?? false,
-      extraInstructions: input.extraInstructions,
+      contentBrief: {
+        topic: contentBrief.topic,
+        targetKeyword: contentBrief.targetKeyword,
+        customOutline: contentBrief.customOutline,
+        liveWebResearch: contentBrief.liveWebResearch,
+      },
+      configuration: {
+        aiModel: configuration.aiModel,
+        articleType: configuration.articleType,
+        tone: configuration.tone,
+        language: configuration.language ?? "English",
+        intendedAudience: configuration.intendedAudience,
+        additionalContext: configuration.additionalContext,
+        wordCount: configuration.wordCount ?? 1500,
+        brandVoiceKnowledge: configuration.brandVoiceKnowledge,
+        competitorAnalysis: configuration.competitorAnalysis,
+        geoOptimization: configuration.geoOptimization,
+        firstPerson: configuration.firstPerson,
+        hook: configuration.hook,
+        htmlElement: configuration.htmlElement,
+        readabilityLevel: configuration.readabilityLevel,
+        internalLinks: configuration.internalLinks,
+        generateContentImages: configuration.generateContentImages,
+        generateCoverImage: configuration.generateCoverImage,
+        contentImageCount: configuration.contentImageCount,
+        includeTextInImages: configuration.includeTextInImages,
+        imageStyle: configuration.imageStyle,
+        imageAspectRatio: configuration.imageAspectRatio,
+      },
     });
 
     const { data: completed, error: updateError } = await supabase
@@ -133,18 +154,18 @@ export async function generateArticleForUser(
 
     let featuredImage: GeneratedImage | null = null;
 
-    if (input.generateImage) {
+    if (configuration.generateCoverImage) {
       try {
         featuredImage = await generateImageForUser(
           userId,
           {
             prompt:
               result.imagePrompt ??
-              `Professional SEO blog image for: ${result.title ?? input.topic}`,
+              `Professional SEO blog image for: ${result.title ?? contentBrief.topic}`,
             articleId: article.id,
             aspectRatio: "16:9",
             style: "professional SaaS blog image",
-            altText: result.title ?? input.topic,
+            altText: result.title ?? contentBrief.topic,
           },
           { skipLimitCheck: false }
         );

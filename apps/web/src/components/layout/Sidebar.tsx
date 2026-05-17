@@ -10,6 +10,7 @@ import type { NavItem } from "@/server/domain/types";
 type SidebarIconName =
   | "dashboard"
   | "generate"
+  | "bulk"
   | "content"
   | "images"
   | "settings"
@@ -39,6 +40,8 @@ function SidebarIcon({
       return <svg {...base}><rect x="3" y="3" width="8" height="8" rx="1.5" /><rect x="13" y="3" width="8" height="5" rx="1.5" /><rect x="13" y="10" width="8" height="11" rx="1.5" /><rect x="3" y="13" width="8" height="8" rx="1.5" /></svg>;
     case "generate":
       return <svg {...base}><path d="m12 3 1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z" /><path d="M5 18h4M15 18h4M12 19v2" /></svg>;
+    case "bulk":
+      return <svg {...base}><rect x="3" y="4" width="7" height="7" rx="1.5" /><rect x="14" y="4" width="7" height="7" rx="1.5" /><rect x="3" y="15" width="7" height="5" rx="1.5" /><path d="M14 17.5h7M17.5 14v7" /></svg>;
     case "content":
       return <svg {...base}><path d="M7 3h7l5 5v13H7z" /><path d="M14 3v5h5" /><path d="M10 13h6M10 17h6" /></svg>;
     case "images":
@@ -55,6 +58,7 @@ function SidebarIcon({
 const iconByHref: Record<string, SidebarIconName> = {
   "/dashboard": "dashboard",
   "/generate": "generate",
+  "/bulk-generate": "bulk",
   "/content": "content",
   "/images": "images",
   "/settings": "settings",
@@ -88,7 +92,7 @@ export function Sidebar() {
   }, []);
 
   return (
-    <aside className="relative z-20 m-3 flex w-auto flex-col rounded-3xl border border-[var(--border)] p-4 vp-glass-panel lg:m-4 lg:h-[calc(100vh-2rem)] lg:w-64 lg:p-5 lg:sticky lg:top-4">
+    <aside className="relative z-20 m-3 flex w-[calc(100%_-_1.5rem)] max-w-[calc(100vw_-_1.5rem)] flex-col overflow-hidden rounded-3xl border border-[var(--border)] p-4 vp-glass-panel lg:m-4 lg:h-[calc(100vh-2rem)] lg:w-64 lg:p-5 lg:sticky lg:top-4">
       <div className="mb-6 flex items-center gap-3 px-2">
         <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-[10px] bg-[var(--cta)] shadow-sm">
           <Image
@@ -97,6 +101,7 @@ export function Sidebar() {
             width={24}
             height={24}
             className="relative z-10 brightness-0 invert"
+            style={{ width: "auto", height: "auto" }}
             priority
           />
         </div>
@@ -106,7 +111,7 @@ export function Sidebar() {
         </div>
       </div>
 
-      <nav className="flex flex-col gap-0.5 overflow-y-auto">
+      <nav className="flex min-w-0 flex-col gap-0.5 overflow-y-auto overflow-x-hidden">
         {items.map((item) => {
           const active = pathname === item.href;
           const iconName = iconByHref[item.href];
@@ -115,7 +120,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium tracking-tight transition-all duration-200 ${
+              className={`group relative flex w-full min-w-0 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium tracking-tight transition-all duration-200 ${
                 active
                   ? "text-[var(--cta-foreground)]"
                   : "text-[var(--text-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--text)]"
@@ -134,14 +139,14 @@ export function Sidebar() {
                   active ? "text-[var(--cta-foreground)]" : "text-[var(--text-muted)] group-hover:scale-105"
                 }`}
               />
-              <span className="relative z-10">{item.label}</span>
+              <span className="relative z-10 min-w-0 truncate">{item.label}</span>
             </Link>
           );
         })}
       </nav>
 
       <div className="mt-auto pt-6">
-        <div className="rounded-[14px] border border-[var(--border)] bg-[var(--surface-muted)] p-4 shadow-sm">
+        <div className="min-w-0 rounded-[14px] border border-[var(--border)] bg-[var(--surface-muted)] p-4 shadow-sm">
            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">Usage This Month</p>
            <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--border)]">
               <div className="h-full origin-left scale-x-[0.74] rounded-full bg-[var(--cta)] transition-transform duration-700 ease-[var(--motion-ease-premium)]" />
