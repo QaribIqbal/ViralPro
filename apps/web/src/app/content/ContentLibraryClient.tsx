@@ -51,7 +51,64 @@ type ArticleDraft = {
 
 const TRANSPARENT_PIXEL_DATA_URI =
   "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
-const failedArticleImageSources = new Set<string>();
+class BrokenImageCache {
+  private cache: Set<string>;
+  private key = "vp_failed_image_sources";
+
+  constructor() {
+    this.cache = new Set<string>();
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(this.key);
+        if (stored) {
+          const urls = JSON.parse(stored);
+          if (Array.isArray(urls)) {
+            urls.forEach((u) => {
+              if (typeof u === "string") {
+                this.cache.add(u);
+              }
+            });
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load broken image cache from localStorage", e);
+      }
+    }
+  }
+
+  has(url: string): boolean {
+    return this.cache.has(url);
+  }
+
+  add(url: string) {
+    if (!url || url === TRANSPARENT_PIXEL_DATA_URI) return;
+    const trimmed = url.trim();
+    if (!this.cache.has(trimmed)) {
+      this.cache.add(trimmed);
+      this.save();
+    }
+  }
+
+  private save() {
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(this.key, JSON.stringify(Array.from(this.cache)));
+      } catch (e) {
+        console.error("Failed to save broken image cache to localStorage", e);
+      }
+    }
+  }
+}
+
+const failedArticleImageSources = new BrokenImageCache();
+
+if (typeof window !== "undefined") {
+  (window as any).registerFailedImage = (url: string) => {
+    if (url && url !== TRANSPARENT_PIXEL_DATA_URI) {
+      failedArticleImageSources.add(url);
+    }
+  };
+}
 
 function isInvalidImageUrl(url: string): boolean {
   if (!url) return true;
@@ -283,6 +340,14 @@ function readerBodyHtml(article: ArticleDetail | null, draft: ArticleDraft | nul
     const src = img.getAttribute("src") || "";
     const absoluteSrc = img.src || "";
 
+    // Save original src to data-original-src for reference in error caching
+    img.setAttribute("data-original-src", src);
+    // Add a synchronous native error handler to instantly hide the element and notify the global register callback
+    img.setAttribute(
+      "onerror",
+      "if(window.registerFailedImage){window.registerFailedImage(this.getAttribute('data-original-src')||this.src)};this.style.display='none';this.parentElement.classList.add('article-image-shell--broken');"
+    );
+
     const hasFailed =
       isInvalidImageUrl(src) ||
       isInvalidImageUrl(absoluteSrc) ||
@@ -310,6 +375,7 @@ function readerBodyHtml(article: ArticleDetail | null, draft: ArticleDraft | nul
       img.dataset.imageErrorLocked = "true";
       img.dataset.originalSrc = src;
       img.classList.add("article-image-broken");
+      img.style.display = "none"; // Hide completely in initial HTML string
       img.removeAttribute("srcset");
       img.removeAttribute("sizes");
       img.setAttribute("src", TRANSPARENT_PIXEL_DATA_URI);
@@ -432,6 +498,7 @@ function enhanceArticleImageFallback(root: HTMLElement | null) {
   };
 
   const lockImageAsFallback = (img: HTMLImageElement, source?: string) => {
+    img.style.display = "none"; // Hide completely
     const shell = ensureImageShell(img);
     if (source && source !== TRANSPARENT_PIXEL_DATA_URI) {
       failedArticleImageSources.add(source);
@@ -482,6 +549,9 @@ function enhanceArticleImageFallback(root: HTMLElement | null) {
       img.getAttribute("src") ||
       "";
 
+    const literalSrc = img.getAttribute("src") || "";
+    const absoluteSrc = img.src || "";
+
     if (!img.dataset.fallbackBound) {
       if (!shell.querySelector(".article-image-fallback")) {
         const fallback = document.createElement("span");
@@ -491,6 +561,14 @@ function enhanceArticleImageFallback(root: HTMLElement | null) {
         fallback.textContent = "Image is invalid";
         shell.appendChild(fallback);
       }
+
+      // Save original src to data-original-src for reference in error caching
+      img.setAttribute("data-original-src", currentSource || literalSrc || absoluteSrc);
+      // Add a synchronous native error handler to instantly hide the element and notify the global register callback
+      img.setAttribute(
+        "onerror",
+        "if(window.registerFailedImage){window.registerFailedImage(this.getAttribute('data-original-src')||this.src)};this.style.display='none';this.parentElement.classList.add('article-image-shell--broken');"
+      );
 
       img.addEventListener("error", () => {
         const failedSourceCandidate =
@@ -518,9 +596,6 @@ function enhanceArticleImageFallback(root: HTMLElement | null) {
 
       img.dataset.fallbackBound = "true";
     }
-
-    const literalSrc = img.getAttribute("src") || "";
-    const absoluteSrc = img.src || "";
     const hasFailed =
       img.dataset.imageErrorLocked === "true" ||
       shell.classList.contains("article-image-shell--broken") ||
