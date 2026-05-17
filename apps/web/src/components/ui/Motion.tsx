@@ -37,7 +37,7 @@ export function Reveal({
       className={className}
       initial={reduceMotion ? false : "hidden"}
       whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, margin: "-50px" }}
       variants={sectionVariants}
       style={{ willChange: reduceMotion ? undefined : "opacity, transform" }}
     >
@@ -50,10 +50,11 @@ export function Stagger({
   children,
   className = "",
 }: PropsWithChildren<{ className?: string }>) {
+  const reduceMotion = useReducedMotion();
   return (
     <motion.div
       className={className}
-      initial={false}
+      initial={reduceMotion ? false : "hidden"}
       animate="visible"
       variants={staggerContainer}
     >
@@ -66,8 +67,14 @@ export function StaggerItem({
   children,
   className = "",
 }: PropsWithChildren<{ className?: string }>) {
+  const reduceMotion = useReducedMotion();
   return (
-    <motion.div className={`animate-page-in ${className}`} initial={false} variants={staggerItem}>
+    <motion.div 
+      className={className} 
+      variants={staggerItem}
+      whileHover={reduceMotion ? undefined : { y: -3, transition: { duration: 0.2, ease: "easeOut" } }}
+      style={{ willChange: reduceMotion ? undefined : "opacity, transform" }}
+    >
       {children}
     </motion.div>
   );

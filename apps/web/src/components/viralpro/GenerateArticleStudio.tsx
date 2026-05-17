@@ -394,16 +394,34 @@ export function GenerateArticleStudio() {
         <Card className="relative overflow-hidden rounded-[24px] border border-[var(--cta)]/20 bg-[var(--surface)]/70 p-8 shadow-2xl">
           <AiScanLine active={loading} />
           <div className="flex flex-col items-center gap-6">
-            <Button onClick={handleGenerate} disabled={loading} className="!h-16 !w-full max-w-md !rounded-2xl !text-xl !font-bold shadow-[0_20px_50px_-20px_rgba(var(--cta-rgb),0.5)] transition-transform hover:scale-[1.02] active:scale-[0.98]">
-              {loading ? (
-                <span className="flex items-center gap-3">
-                  <svg className="h-6 w-6 animate-spin" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
-                  Processing...
-                </span>
-              ) : (
-                <span className="flex items-center gap-3"><Icon name="rocket" className="h-6 w-6" /> Generate High-Authority Article</span>
+            <motion.button 
+              onClick={handleGenerate} 
+              disabled={loading} 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative flex h-16 w-full max-w-md items-center justify-center overflow-hidden rounded-2xl bg-[var(--cta)] text-xl font-bold text-white shadow-[0_20px_50px_-20px_rgba(var(--cta-rgb),0.5)] transition-colors hover:bg-[var(--cta-hover)] disabled:opacity-50"
+            >
+              <span className="relative z-10 flex items-center gap-3">
+                {loading ? (
+                  <>
+                    <svg className="h-6 w-6 animate-spin" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Icon name="rocket" className="h-6 w-6" /> 
+                    Generate High-Authority Article
+                  </>
+                )}
+              </span>
+              {!loading && (
+                <motion.div 
+                  animate={{ x: ["-200%", "200%"] }}
+                  transition={{ repeat: Infinity, duration: 2.5, ease: "linear", repeatDelay: 1 }}
+                  className="absolute inset-0 z-0 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                />
               )}
-            </Button>
+            </motion.button>
             <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
               <Icon name="info" className="h-4 w-4" />
               <span>Est. time: 60-90 seconds. We&apos;ll notify you when it&apos;s ready.</span>

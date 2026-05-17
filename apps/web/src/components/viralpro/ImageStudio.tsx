@@ -296,9 +296,23 @@ export function ImageStudio() {
           {error ? <p className="mt-3 text-sm text-rose-500">{error}</p> : null}
 
           <div className="relative z-10 mt-8 flex flex-wrap items-center gap-3">
-            <Button type="button" onClick={handleGenerateImage} disabled={loading || !prompt.trim()} className="h-12 rounded-full px-7 shadow-[0_16px_44px_-22px_var(--cta)]">
-              {loading ? "Generating Visual..." : "Generate Visual"}
-            </Button>
+            <motion.button 
+              type="button" 
+              onClick={handleGenerateImage} 
+              disabled={loading || !prompt.trim()} 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative h-12 overflow-hidden rounded-full bg-[var(--cta)] px-8 font-semibold text-white shadow-[0_16px_44px_-22px_var(--cta)] transition-colors hover:bg-[var(--cta-hover)] disabled:opacity-50"
+            >
+              <span className="relative z-10">{loading ? "Generating Visual..." : "Generate Visual"}</span>
+              {!loading && (
+                <motion.div 
+                  animate={{ x: ["-200%", "200%"] }}
+                  transition={{ repeat: Infinity, duration: 2.5, ease: "linear", repeatDelay: 1 }}
+                  className="absolute inset-0 z-0 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                />
+              )}
+            </motion.button>
             {loading ? <AiStatus text="AI is scanning composition..." /> : null}
           </div>
         </div>

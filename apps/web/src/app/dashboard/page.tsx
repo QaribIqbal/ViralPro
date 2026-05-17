@@ -6,7 +6,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { Topbar } from "@/components/layout/Topbar";
 import { ProBadge } from "@/components/ui/AiVisuals";
 import { Card } from "@/components/ui/Card";
-import { Stagger, StaggerItem } from "@/components/ui/Motion";
+import { Stagger, StaggerItem, Reveal } from "@/components/ui/Motion";
 import { ApiClientError, apiRequest } from "@/lib/api-client";
 
 type UsageResponse = {
@@ -124,7 +124,7 @@ export default function DashboardPage() {
       <Topbar title="Overview" subtitle="Monitor your usage and content library at a glance" />
       <div className="space-y-6 p-4 sm:p-6">
         {error ? <p className="text-sm text-rose-500">{error}</p> : null}
-        <div className="vp-reveal vp-glass-panel relative overflow-hidden rounded-[28px] border border-[var(--border)] p-7 sm:p-9">
+        <Reveal className="vp-glass-panel relative overflow-hidden rounded-[28px] border border-[var(--border)] p-7 sm:p-9">
           <div className="pointer-events-none absolute inset-y-0 right-0 w-[30%] bg-[radial-gradient(circle_at_70%_50%,var(--cta),transparent_60%)] opacity-[0.08]" />
           <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_320px]">
             <div>
@@ -223,7 +223,7 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
-        </div>
+        </Reveal>
 
         <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
           {cards.map((card) => (

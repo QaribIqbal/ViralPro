@@ -1,41 +1,37 @@
 import type { Variants } from "framer-motion";
 
-export const motionDurations = {
-  instant: 0.16,
-  fast: 0.22,
-  base: 0.34,
-  slow: 0.52,
-};
-
-export const motionEase = [0.16, 1, 0.3, 1] as const;
+export const premiumEase = [0.22, 1, 0.36, 1] as const;
+export const gentleEase = [0.16, 1, 0.3, 1] as const;
 
 export const spring = {
   type: "spring",
-  stiffness: 420,
-  damping: 34,
-  mass: 0.8,
+  stiffness: 300,
+  damping: 30,
+  mass: 1,
 } as const;
 
 export const pageVariants: Variants = {
-  initial: { opacity: 0, y: 8 },
+  initial: { opacity: 0, y: 15, filter: "blur(4px)" },
   animate: {
     opacity: 1,
     y: 0,
-    transition: { duration: motionDurations.base, ease: motionEase },
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: premiumEase },
   },
   exit: {
     opacity: 0,
-    y: -8,
-    transition: { duration: motionDurations.fast, ease: motionEase },
+    y: -10,
+    filter: "blur(2px)",
+    transition: { duration: 0.3, ease: premiumEase },
   },
 };
 
 export const sectionVariants: Variants = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: motionDurations.slow, ease: motionEase },
+    transition: { duration: 0.8, ease: premiumEase },
   },
 };
 
@@ -43,46 +39,46 @@ export const staggerContainer: Variants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.065,
-      delayChildren: 0.04,
+      staggerChildren: 0.1,
+      delayChildren: 0.05,
     },
   },
 };
 
 export const staggerItem: Variants = {
-  hidden: { opacity: 0, y: 16, scale: 0.985 },
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: motionDurations.base, ease: motionEase },
+    transition: { duration: 0.5, ease: premiumEase },
   },
 };
 
 export const panelReveal: Variants = {
-  hidden: { opacity: 0, y: 14, scale: 0.985 },
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: motionDurations.base, ease: motionEase },
+    transition: { duration: 0.6, ease: premiumEase },
   },
   exit: {
     opacity: 0,
-    y: -8,
-    scale: 0.99,
-    transition: { duration: motionDurations.fast, ease: motionEase },
+    y: -10,
+    scale: 0.98,
+    transition: { duration: 0.3, ease: premiumEase },
   },
 };
 
 export const modalBackdrop: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: motionDurations.fast } },
-  exit: { opacity: 0, transition: { duration: motionDurations.fast } },
+  hidden: { opacity: 0, backdropFilter: "blur(0px)" },
+  visible: { opacity: 1, backdropFilter: "blur(8px)", transition: { duration: 0.3, ease: premiumEase } },
+  exit: { opacity: 0, backdropFilter: "blur(0px)", transition: { duration: 0.2, ease: premiumEase } },
 };
 
 export const modalPanel: Variants = {
-  hidden: { opacity: 0, y: 10, scale: 0.98 },
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
   visible: {
     opacity: 1,
     y: 0,
@@ -91,8 +87,8 @@ export const modalPanel: Variants = {
   },
   exit: {
     opacity: 0,
-    y: 8,
-    scale: 0.98,
-    transition: { duration: motionDurations.fast, ease: motionEase },
+    y: 10,
+    scale: 0.95,
+    transition: { duration: 0.2, ease: premiumEase },
   },
 };
